@@ -1,20 +1,36 @@
 ---
 /**
- * Base.astro — the document shell for wickedagile.com
+ * Base.astro — the shared document shell for ALL wicked-* family sites.
  *
- * Holds the <head> (meta, fonts, favicon, global stylesheet) and a
- * no-flash theme-init script that reads localStorage 'wa-theme' and
- * sets data-theme BEFORE paint. The theme TOGGLE button lives in
- * Topbar; this layout only prevents the flash.
+ * Holds <head> (meta, fonts, favicon, global stylesheet), SEO/OG/Twitter +
+ * canonical (derived from Astro.site/Astro.url when available), and a no-flash
+ * theme-init that reads localStorage 'wa-theme' and sets data-theme BEFORE
+ * paint. The theme TOGGLE lives in Topbar; this layout only prevents the flash.
  *
- * Note: the source has no global film-grain / grid overlay — the only
- * texture (radial grid + accent glow) is scoped to #terminal-section,
- * so it travels with the Hero component, not here.
+ * Fonts cover the whole family: Archivo (display, width axis), Hanken Grotesk
+ * (sans body — used by the Tailwind sites), JetBrains Mono (mono).
+ *
+ * Backward compatible: plain sites pass just title/description.
  */
 const {
   title = 'wickedagile — the best code tells a story',
   description = 'Nine local-first tools for AI-native teams.',
+  image = '',
+  bodyClass = '',
+  themeColorDark = '#0d1117',
+  themeColorLight = '#1c4053',
 } = Astro.props;
+
+// Base-aware asset path (sites under a project base like /wicked-garden/).
+const withBase = (p) => `${import.meta.env.BASE_URL}/${p}`.replace(/\/{2,}/g, '/');
+const favicon = withBase('favicon.svg');
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url?.href;
+const ogImage = image
+  ? (Astro.site ? new URL(image, Astro.site).href : image)
+  : '';
 
 import '../styles/global.css';
 ---
@@ -23,15 +39,28 @@ import '../styles/global.css';
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="theme-color" content="#0d1117" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content={themeColorDark} media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content={themeColorLight} media="(prefers-color-scheme: light)" />
+  {canonical && <link rel="canonical" href={canonical} />}
+  <link rel="icon" href={favicon} type="image/svg+xml" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  {canonical && <meta property="og:url" content={canonical} />}
+  {ogImage && <meta property="og:image" content={ogImage} />}
+  <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {ogImage && <meta name="twitter:image" content={ogImage} />}
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62.5..125,400..900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62.5..125,400..900&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet"
   />
   <!-- no-flash theme init: set data-theme before first paint -->
@@ -44,7 +73,7 @@ import '../styles/global.css';
     })();
   </script>
 </head>
-<body>
+<body class={bodyClass}>
   <slot />
   <script>
     import '../scripts/scroll-wheel.js';
