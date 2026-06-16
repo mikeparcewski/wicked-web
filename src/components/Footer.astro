@@ -1,9 +1,15 @@
 ---
 /**
  * Footer.astro — site footer. Canonical for the wicked-* family.
- * Markup + CSS ported verbatim. CSS is is:global to preserve the
- * original class names.
+ * CSS is is:global. Self-contained width constraint (.footer .wrap) so it
+ * works on sites that don't define a global .wrap.
+ *
+ * Props (per-site):
+ *   repo — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
  */
+const {
+  repo = 'https://github.com/mikeparcewski',
+} = Astro.props;
 ---
 
 <!-- FOOTER -->
@@ -15,7 +21,7 @@
         <p class="footer-title">wicked<br><span class="footer-accent">good.</span></p>
         <p class="footer-desc">The plan is a hypothesis. The work is the evidence.</p>
         <div class="footer-cta">
-          <a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href={repo} target="_blank" rel="noopener">GitHub ↗</a>
           <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">Medium ↗</a>
         </div>
       </div>
@@ -65,6 +71,10 @@
 /* FOOTER */
 /* footer: +20% size (spacing ×1.2), fonts ×1.5, dark-blue 75% panel */
 .footer{border-top:1px solid var(--hairline);color:var(--muted);scroll-snap-align:start;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+/* self-contained width constraint — must NOT depend on a host-site .wrap rule
+   (sites with their own token CSS don't define one, which blew the footer to
+   full width). Scoped to .footer so it never collides. */
+.footer .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
 [data-theme="light"] .footer{background:rgba(24,47,60,.94)}
 .footer .kicker{font-size:1.02rem}
 .footer-main{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-start;gap:53px 67px;padding:53px 0 34px}
