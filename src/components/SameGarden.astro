@@ -1,16 +1,24 @@
 ---
 /**
- * SameGarden.astro — the shared "From the same garden" cross-promo grid.
+ * SameGarden.astro — the shared "From the toolbox" cross-promo grid.
  * Plain CSS on the family tokens, so it works on every site (Tailwind or not).
  *
  * Prop:
- *   current — this site's package name (e.g. "wicked-estate"); that card is
- *             excluded so a site never cross-promotes itself. No hardcoding
- *             per site — just pass the package name.
+ *   current — this site's package name (e.g. "wicked-estate" / "wickedagile");
+ *             that card is excluded so a site never cross-promotes itself.
+ *             Dynamic: with N entries each page shows N-1 cards (2–4), and the
+ *             grid auto-fits whatever remains.
  */
 const { current = '' } = Astro.props;
 
 const SITES = [
+  {
+    name: 'wickedagile',
+    href: 'https://wickedagile.com',
+    tagline: 'The plan is a hypothesis. The work is the evidence.',
+    blurb: 'The umbrella for the local-first, AI-native toolkit — quality, velocity, and execution, with no black box.',
+    tags: ['MIT', 'local-first', 'AI-native'],
+  },
   {
     name: 'wicked-interactive',
     href: 'https://wi.wickedagile.com',
@@ -34,26 +42,32 @@ const SITES = [
   },
 ];
 
-const sites = SITES.filter((s) => s.name !== current);
+// Brand-agnostic name split: "wicked" stays ink, the rest takes the accent.
+// 'wicked-garden' → wicked + "-garden"; 'wickedagile' → wicked + "agile".
+const sites = SITES.filter((s) => s.name !== current).map((s) => ({
+  ...s,
+  wk: s.name.slice(0, 6),
+  rest: s.name.slice(6),
+}));
 ---
 
 <section class="same-garden" aria-labelledby="sg-h">
   <div class="sg-inner">
     <div class="sg-head">
-      <span class="kicker">From the same garden</span>
+      <span class="kicker sg-kicker">From the toolbox</span>
       <h2 class="sg-h2" id="sg-h">More tools. Same ethos.</h2>
       <p class="sg-sub">Local-first, no cloud dependency, no checkmark you can't re-run.</p>
     </div>
     <div class="sg-grid">
-      {sites.map((s) => (
+      {sites.map((s, i) => (
         <a class="sg-card" href={s.href}>
-          <span class="sg-pkg">wicked-</span>
-          <h3 class="sg-name">{s.name.replace('wicked-', '')}</h3>
+          <span class="sg-num">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="sg-name"><span class="sg-wk">{s.wk}</span><span class="sg-rest">{s.rest}</span></h3>
           <p class="sg-tagline">{s.tagline}</p>
           <p class="sg-blurb">{s.blurb}</p>
           <div class="sg-foot">
             <div class="sg-tags">{s.tags.map((t) => <span class="sg-tag">{t}</span>)}</div>
-            <span class="sg-visit">visit ↗</span>
+            <span class="sg-visit">visit <span class="sg-arrow">↗</span></span>
           </div>
         </a>
       ))}
@@ -63,22 +77,34 @@ const sites = SITES.filter((s) => s.name !== current);
 
 <style is:global>
 /* No hardcoded background — inherit the consuming site's section treatment
-   (band / vortex / palette). The site decides; the component just lays out. */
+   (band / motif / palette). The site decides; the component just lays out. */
 .same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
-.same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; }
+.same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 .same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
-.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:10px 0 0; letter-spacing:-.02em; }
+.same-garden .sg-kicker{ color:var(--accent); }
+.same-garden .sg-kicker::before{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin:0 10px 3px 0; }
+.same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin:0 0 3px 10px; }
+.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
 .same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:52ch; line-height:1.6; }
-.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
-.same-garden .sg-card{ display:flex; flex-direction:column; padding:22px; border:1px solid var(--hairline); border-radius:16px; background:color-mix(in oklab, var(--surface) 80%, transparent); text-decoration:none; transition:border-color .22s var(--ease), transform .22s var(--ease); }
-.same-garden .sg-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
-.same-garden .sg-pkg{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); }
-.same-garden .sg-name{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:1.5rem; color:var(--ink); line-height:1; margin:2px 0 0; }
-.same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.72rem; color:var(--ink); margin:10px 0 0; }
-.same-garden .sg-blurb{ font-size:.9rem; color:var(--muted); line-height:1.6; margin:10px 0 0; flex:1; }
-.same-garden .sg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--hairline); }
+.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px; }
+
+.same-garden .sg-card{ position:relative; overflow:hidden; display:flex; flex-direction:column; padding:24px 22px; border:1px solid var(--hairline-strong); border-radius:16px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease); }
+/* accent rule that wipes across the top on hover */
+.same-garden .sg-card::before{ content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .3s var(--ease); }
+.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 26px 50px -28px rgba(0,0,0,.65); }
+.same-garden .sg-card:hover::before{ transform:scaleX(1); }
+
+.same-garden .sg-num{ position:absolute; top:16px; right:18px; font-family:var(--font-mono); font-size:.7rem; font-weight:700; letter-spacing:.1em; color:var(--faint); }
+.same-garden .sg-name{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:1.55rem; line-height:1; margin:0; letter-spacing:-.01em; }
+.same-garden .sg-wk{ color:var(--ink); }
+.same-garden .sg-rest{ color:var(--accent); }
+.same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.72rem; color:var(--ink); margin:12px 0 0; }
+.same-garden .sg-blurb{ font-size:.9rem; color:var(--muted); line-height:1.6; margin:12px 0 0; flex:1; }
+.same-garden .sg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:20px; padding-top:14px; border-top:1px solid var(--hairline); }
 .same-garden .sg-tags{ display:flex; flex-wrap:wrap; gap:6px; }
 .same-garden .sg-tag{ font-family:var(--font-mono); font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--hairline-strong); border-radius:999px; padding:3px 8px; }
-.same-garden .sg-visit{ font-family:var(--font-mono); font-size:.68rem; color:var(--faint); white-space:nowrap; }
+.same-garden .sg-visit{ font-family:var(--font-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); white-space:nowrap; transition:color .22s var(--ease); }
+.same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
 .same-garden .sg-card:hover .sg-visit{ color:var(--accent); }
+.same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
 </style>
