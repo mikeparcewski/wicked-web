@@ -14,7 +14,7 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
   :root{
-    --canvas:#0d1117;--canvas-2:#0a0e14;--surface:#161b22;--surface-2:#0f1419;
+    --canvas:#0d1117;--canvas-2:#161c26;--surface:#1b222e;--surface-2:#0f1419;
     --ink:#e6edf3;--muted:rgba(230,237,243,.55);--faint:rgba(230,237,243,.24);
     --hairline:rgba(230,237,243,.07);--hairline-strong:rgba(230,237,243,.14);
     --accent:#ffda19;--accent-ink:#0d1117;--link:#79c0ff;
