@@ -115,6 +115,7 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 /* ── specimen terminal card ─────────────────────────────────────────────── */
 .same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--hairline-strong); border-radius:12px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
 .same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 28px 54px -28px rgba(0,0,0,.7); }
+.same-garden{ --sg-screen:#f3efe4; } /* paper "screen" behind each tool's motif */
 
 /* window chrome */
 .same-garden .sg-chrome{ display:flex; align-items:center; gap:12px; height:34px; padding:0 14px; border-bottom:1px solid var(--hairline); background:color-mix(in oklab, var(--canvas) 45%, transparent); }
@@ -126,14 +127,14 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 .same-garden .sg-card:hover .sg-title{ width:var(--len); animation:sg-type .5s steps(var(--steps)) both; }
 @keyframes sg-type{ from{ width:0; } to{ width:var(--len); } }
 
-/* motif strip + scanline */
-.same-garden .sg-art{ position:relative; height:62px; overflow:hidden; }
-.same-garden .sg-art-svg{ position:absolute; inset:0; color:var(--ink); opacity:.15; transition:opacity .3s var(--ease), color .3s var(--ease); }
+/* motif strip = a bright paper "screen" with the motif in dark ink, so it pops
+   against the dark card (the app's screen inside the window chrome) */
+.same-garden .sg-art{ position:relative; height:66px; overflow:hidden; background:var(--sg-screen); border-bottom:1px solid color-mix(in oklab, #000 14%, transparent); }
+.same-garden .sg-art-svg{ position:absolute; inset:0; color:#1c2c36; opacity:.92; }
 .same-garden .sg-art-svg svg{ position:absolute; inset:0; width:100%; height:100%; }
-.same-garden .sg-card:hover .sg-art-svg{ opacity:.4; color:var(--sg-accent); }
-.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:1px; background:var(--sg-accent); box-shadow:0 0 8px var(--sg-accent); opacity:0; }
+.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 10px var(--accent); opacity:0; }
 .same-garden .sg-card:hover .sg-scan{ animation:sg-scan .85s var(--ease); }
-@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.9; } 88%{ opacity:.9; } 100%{ transform:translateY(62px); opacity:0; } }
+@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.9; } 88%{ opacity:.9; } 100%{ transform:translateY(66px); opacity:0; } }
 
 /* body */
 .same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.74rem; color:var(--ink); margin:0; padding:16px 18px 0; }
