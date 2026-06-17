@@ -7,4 +7,6 @@
 @import "./tokens.css";
 
 /* SNAP */
-.snap-section{scroll-snap-align:start;min-height:100vh}
+@layer base {
+  .snap-section{scroll-snap-align:start;min-height:100vh}
+}
