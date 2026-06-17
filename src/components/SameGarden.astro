@@ -62,7 +62,9 @@ const sites = SITES.filter((s) => s.name !== current);
 </section>
 
 <style is:global>
-.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; background:color-mix(in oklab, var(--canvas-2) 60%, transparent); scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
+/* No hardcoded background — inherit the consuming site's section treatment
+   (band / vortex / palette). The site decides; the component just lays out. */
+.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; }
 .same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:10px 0 0; letter-spacing:-.02em; }
