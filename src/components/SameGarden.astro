@@ -1,13 +1,12 @@
 ---
 /**
  * SameGarden.astro — the shared "From the toolbox" cross-promo grid.
- * Each card is a "specimen terminal": window chrome (dots + typewriter title),
- * a faint per-tool motif strip that a scanline sweeps on hover, a prompt-line
- * tagline, and inline --flag tags. Native to the portfolio's terminal vocabulary.
+ * Each card is a MINI BROWSER previewing the tool's site: a browser bar (dots +
+ * URL), a light hero viewport (the tool's motif as imagery + headline), and a
+ * bottom status bar with the --flag tags.
  *
  * Prop:
- *   current — this site's package name; that card is excluded. Dynamic: with N
- *             entries each page shows N-1 cards (2-4), auto-fit grid.
+ *   current — this site's package name; that card is excluded. Dynamic 2-4 cards.
  */
 const { current = '' } = Astro.props;
 
@@ -16,42 +15,42 @@ const SITES = [
   {
     name: 'wicked-interactive', motif: 'storyboard',
     href: 'https://wi.wickedagile.com',
-    tagline: 'if you can say it, you can make it',
-    blurb: "Describe a page, deck, or demo out loud and watch it build live in your browser. Point at what's wrong and say what to fix.",
+    tagline: 'If you can say it, you can make it.',
+    blurb: 'Describe a page, deck, or demo out loud and watch it build live in your browser.',
     tags: ['MIT', 'Claude plugin', 'live builder'],
   },
   {
     name: 'wicked-garden', motif: 'trellis',
     href: 'https://wg.wickedagile.com',
-    tagline: 'the local-first kit for AI-native dev',
-    blurb: 'One gate that reads the shape of your work and applies exactly the right rigor — evidence-gated phases, 40+ specialist agents, no black box.',
+    tagline: 'The local-first kit for AI-native dev.',
+    blurb: 'One gate that reads the shape of your work and applies exactly the right rigor — no black box.',
     tags: ['MIT', 'Claude plugin', '9 archetypes'],
   },
   {
     name: 'wicked-estate', motif: 'graph',
     href: 'https://we.wickedagile.com',
-    tagline: 'the code graph agents actually trust',
-    blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language. Built for LLM agents.',
+    tagline: 'The code graph agents actually trust.',
+    blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language.',
     tags: ['MIT', 'Rust', 'MCP'],
   },
 ];
 
 // Faint per-tool motif fragments (recolour via currentColor).
 const MOTIFS = {
-  graph: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <line x1="140" y1="32" x2="70" y2="12"/><line x1="140" y1="32" x2="44" y2="50"/><line x1="140" y1="32" x2="206" y2="14"/><line x1="140" y1="32" x2="236" y2="48"/><line x1="140" y1="32" x2="110" y2="58"/><line x1="206" y1="14" x2="262" y2="8"/><line x1="44" y1="50" x2="18" y2="40"/>
-    <g fill="currentColor" stroke="none"><circle cx="140" cy="32" r="6"/><circle cx="70" cy="12" r="3"/><circle cx="44" cy="50" r="3"/><circle cx="206" cy="14" r="4"/><circle cx="236" cy="48" r="3"/><circle cx="110" cy="58" r="2.5"/><circle cx="262" cy="8" r="2.5"/><circle cx="18" cy="40" r="2.5"/></g>
+  graph: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <line x1="150" y1="86" x2="70" y2="36"/><line x1="150" y1="86" x2="44" y2="120"/><line x1="150" y1="86" x2="220" y2="40"/><line x1="150" y1="86" x2="258" y2="120"/><line x1="150" y1="86" x2="110" y2="150"/><line x1="220" y1="40" x2="284" y2="20"/><line x1="44" y1="120" x2="20" y2="150"/><line x1="70" y1="36" x2="86" y2="8"/>
+    <g fill="currentColor" stroke="none"><circle cx="150" cy="86" r="7"/><circle cx="70" cy="36" r="3.5"/><circle cx="44" cy="120" r="3.5"/><circle cx="220" cy="40" r="4.5"/><circle cx="258" cy="120" r="3.5"/><circle cx="110" cy="150" r="3"/><circle cx="284" cy="20" r="2.5"/><circle cx="20" cy="150" r="2.5"/><circle cx="86" cy="8" r="2.5"/></g>
   </svg>`,
-  trellis: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g opacity="0.5"><path d="M40 0v64M110 0v64M180 0v64M250 0v64"/><path d="M0 24h280M0 48h280"/></g>
-    <path d="M55 64C35 46 70 36 52 18C42 6 64 2 52 0"/><path d="M225 64C245 46 210 36 228 18C238 6 216 2 228 0"/>
-    <path d="M52 22c-14-9-24-7-30-2c6 9 17 12 30 2z" fill="currentColor" stroke="none"/><path d="M228 40c14-9 24-7 30-2c-6 9-17 12-30 2z" fill="currentColor" stroke="none"/>
+  trellis: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g opacity="0.5"><path d="M50 0v170M120 0v170M190 0v170M260 0v170"/><path d="M0 55h300M0 115h300"/></g>
+    <path d="M62 170C40 130 82 108 60 70C46 42 70 30 58 0"/><path d="M232 170C254 130 212 108 234 70C248 42 224 30 236 0"/>
+    <path d="M58 56c-18-13-30-10-38-2c8 13 22 17 38 2z" fill="currentColor" stroke="none"/><path d="M236 98c18-13 30-10 38-2c-8 13-22 17-38 2z" fill="currentColor" stroke="none"/><path d="M60 112c-16-12-27-9-34-2c7 12 20 16 34 2z" fill="currentColor" stroke="none"/>
   </svg>`,
-  storyboard: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <rect x="22" y="14" width="48" height="36" rx="5"/><path d="M32 26h26M32 36h18"/>
-    <rect x="116" y="14" width="48" height="36" rx="5"/><path d="M126 24l16-8v28M126 42h28"/>
-    <rect x="210" y="14" width="48" height="36" rx="5"/><circle cx="234" cy="28" r="7"/><path d="M222 44c8-14 16 6 22-4"/>
-    <path d="M74 32h12M78 27l6 5l-6 5"/><path d="M168 32h12M172 27l6 5l-6 5"/>
+  storyboard: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect x="20" y="46" width="64" height="78" rx="6"/><path d="M32 70h40M32 86h28M32 102h44"/>
+    <rect x="118" y="46" width="64" height="78" rx="6"/><path d="M130 66l22-12v56M130 108h40"/>
+    <rect x="216" y="46" width="64" height="78" rx="6"/><circle cx="242" cy="74" r="11"/><path d="M228 110c12-26 24 8 32-6"/>
+    <path d="M88 85h18M92 78l9 7l-9 7"/><path d="M186 85h18M190 78l9 7l-9 7"/>
   </svg>`,
 };
 
@@ -59,11 +58,9 @@ const flagify = (t) => '--' + t.toLowerCase().replace(/\s+/g, '-');
 
 const sites = SITES.filter((s) => s.name !== current).map((s) => ({
   ...s,
-  wk: s.name.slice(0, 6),
-  rest: s.name.slice(6),
   art: MOTIFS[s.motif] || MOTIFS.graph,
   flags: s.tags.map(flagify).join(' '),
-  len: s.name.length,
+  url: s.href.replace(/^https?:\/\//, ''),
 }));
 ---
 
@@ -77,17 +74,23 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
     <div class="sg-grid">
       {sites.map((s) => (
         <a class="sg-card" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
-          <div class="sg-chrome">
+          <div class="sg-bar">
             <span class="sg-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="sg-title" style={`--len:${s.len}ch;--steps:${s.len}`}><span class="sg-wk">{s.wk}</span><span class="sg-rest">{s.rest}</span></span>
+            <span class="sg-url">
+              <svg class="sg-lock" viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              {s.url}
+            </span>
           </div>
-          <div class="sg-art">
-            <div class="sg-art-svg" set:html={s.art} />
+          <div class="sg-hero">
+            <div class="sg-hero-art" set:html={s.art} />
             <span class="sg-scan" aria-hidden="true"></span>
+            <div class="sg-hero-copy">
+              <span class="sg-eyebrow">{s.name}</span>
+              <h3 class="sg-headline">{s.tagline}</h3>
+              <p class="sg-blurb">{s.blurb}</p>
+            </div>
           </div>
-          <p class="sg-tagline"><span class="sg-prompt" aria-hidden="true">&gt;</span> {s.tagline}</p>
-          <p class="sg-blurb">{s.blurb}</p>
-          <div class="sg-foot">
+          <div class="sg-status">
             <span class="sg-flags">{s.flags}</span>
             <span class="sg-visit">visit <span class="sg-arrow">↗</span></span>
           </div>
@@ -98,11 +101,10 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 </section>
 
 <style is:global>
-/* No hardcoded background — inherit the consuming site's section treatment. */
 .same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center;
-  /* readable accent for small mono text on the light-theme harbor canvas */
-  --sg-accent: var(--accent); }
-[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 80%, #fff); }
+  --sg-accent: var(--accent); --sg-screen:#e7e0cb; --sg-ink:#1b2a34;
+  --sg-nav: rgba(13,17,23,.92); } /* match the Topbar/Footer nav background */
+[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 80%, #fff); --sg-nav: rgba(24,47,60,.94); }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 .same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
 .same-garden .sg-kicker{ color:var(--accent); }
@@ -110,37 +112,40 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
 .same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:52ch; line-height:1.6; }
-.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px; }
+.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
 
-/* ── specimen terminal card ─────────────────────────────────────────────── */
+/* ── mini-browser card ──────────────────────────────────────────────────── */
 .same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--hairline-strong); border-radius:12px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
 .same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 28px 54px -28px rgba(0,0,0,.7); }
-.same-garden{ --sg-screen:#f3efe4; } /* paper "screen" behind each tool's motif */
 
-/* window chrome */
-.same-garden .sg-chrome{ display:flex; align-items:center; gap:12px; height:34px; padding:0 14px; border-bottom:1px solid var(--hairline); background:color-mix(in oklab, var(--canvas) 45%, transparent); }
+/* browser bar */
+.same-garden .sg-bar{ display:flex; align-items:center; gap:12px; height:38px; padding:0 14px; border-bottom:1px solid var(--hairline); background:var(--sg-nav); }
 .same-garden .sg-dots{ display:inline-flex; gap:6px; flex-shrink:0; }
-.same-garden .sg-dots i{ width:8px; height:8px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
+.same-garden .sg-dots i{ width:9px; height:9px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
 .same-garden .sg-card:hover .sg-dots i:nth-child(1){ background:var(--sg-accent); }
-.same-garden .sg-title{ display:inline-block; overflow:hidden; white-space:nowrap; font-family:var(--font-mono); font-size:.78rem; font-weight:600; letter-spacing:.01em; }
-.same-garden .sg-wk{ color:var(--ink); } .same-garden .sg-rest{ color:var(--sg-accent); }
-.same-garden .sg-card:hover .sg-title{ width:var(--len); animation:sg-type .5s steps(var(--steps)) both; }
-@keyframes sg-type{ from{ width:0; } to{ width:var(--len); } }
+.same-garden .sg-url{ display:inline-flex; align-items:center; gap:6px; flex:1; min-width:0; height:22px; padding:0 10px; border-radius:999px; background:color-mix(in oklab, var(--canvas) 60%, transparent); border:1px solid var(--hairline); font-family:var(--font-mono); font-size:.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:color .25s var(--ease), border-color .25s var(--ease); }
+.same-garden .sg-lock{ flex-shrink:0; opacity:.7; }
+.same-garden .sg-card:hover .sg-url{ color:var(--sg-accent); border-color:color-mix(in oklab, var(--accent) 40%, var(--hairline)); }
 
-/* motif strip = a bright paper "screen" with the motif in dark ink, so it pops
-   against the dark card (the app's screen inside the window chrome) */
-.same-garden .sg-art{ position:relative; height:66px; overflow:hidden; background:var(--sg-screen); border-bottom:1px solid color-mix(in oklab, #000 14%, transparent); }
-.same-garden .sg-art-svg{ position:absolute; inset:0; color:#1c2c36; opacity:.92; }
-.same-garden .sg-art-svg svg{ position:absolute; inset:0; width:100%; height:100%; }
+/* light hero viewport — the tool's motif as imagery + headline */
+.same-garden .sg-hero{ position:relative; overflow:hidden; flex:1; min-height:158px; padding:22px 20px;
+  /* echo of the site background glow, scaled into the "page": warm top-right + faint cool bottom-left */
+  background:
+    radial-gradient(ellipse 60% 80% at 96% -10%, rgba(255,218,25,.30), transparent 62%),
+    radial-gradient(ellipse 55% 65% at -6% 110%, rgba(121,192,255,.16), transparent 60%),
+    var(--sg-screen); }
+.same-garden .sg-hero-art{ position:absolute; inset:0; color:var(--sg-ink); opacity:.11; }
+.same-garden .sg-hero-art svg{ position:absolute; inset:0; width:100%; height:100%; }
 .same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 10px var(--accent); opacity:0; }
-.same-garden .sg-card:hover .sg-scan{ animation:sg-scan .85s var(--ease); }
-@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.9; } 88%{ opacity:.9; } 100%{ transform:translateY(66px); opacity:0; } }
+.same-garden .sg-card:hover .sg-scan{ animation:sg-scan 1s var(--ease); }
+@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.85; } 88%{ opacity:.85; } 100%{ transform:translateY(220px); opacity:0; } }
+.same-garden .sg-hero-copy{ position:relative; }
+.same-garden .sg-eyebrow{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:color-mix(in oklab, var(--sg-ink) 60%, transparent); }
+.same-garden .sg-headline{ font-family:var(--font-display); font-weight:900; font-stretch:115%; font-size:1.4rem; line-height:1.04; letter-spacing:-.01em; color:var(--sg-ink); margin:8px 0 0; max-width:14ch; }
+.same-garden .sg-blurb{ font-size:.82rem; line-height:1.55; color:color-mix(in oklab, var(--sg-ink) 72%, transparent); margin:10px 0 0; max-width:34ch; }
 
-/* body */
-.same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.74rem; color:var(--ink); margin:0; padding:16px 18px 0; }
-.same-garden .sg-prompt{ color:var(--sg-accent); font-weight:700; }
-.same-garden .sg-blurb{ font-size:.88rem; color:var(--muted); line-height:1.6; margin:0; padding:10px 18px 0; flex:1; }
-.same-garden .sg-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:18px 0 0; padding:12px 18px; border-top:1px solid var(--hairline); }
+/* browser status bar */
+.same-garden .sg-status{ display:flex; align-items:center; justify-content:space-between; gap:12px; height:40px; padding:0 16px; border-top:1px solid var(--hairline); background:var(--sg-nav); }
 .same-garden .sg-flags{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .same-garden .sg-visit{ font-family:var(--font-mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); white-space:nowrap; flex-shrink:0; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
@@ -148,9 +153,7 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 .same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
 .same-garden .sg-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
 
-@media (max-width:560px){ .same-garden .sg-blurb{ display:none; } }
 @media (prefers-reduced-motion:reduce){
-  .same-garden .sg-card:hover .sg-title{ animation:none; width:auto; }
   .same-garden .sg-card:hover .sg-scan{ animation:none; }
   .same-garden .sg-card{ transition:border-color .2s, box-shadow .2s; }
   .same-garden .sg-card:hover{ transform:none; }

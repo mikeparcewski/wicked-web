@@ -10,7 +10,7 @@
 (function(){
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
   var COOLDOWN = 480, last = 0, animating = false;
-  var SEL = '.snap-section,.ide-step,.art-step,.chapter.chapter-shell,.footer';
+  var SEL = '.snap-section,.ide-step,.art-step,.chapter.chapter-shell,.same-garden,.footer';
 
   function snapTops(){
     var els = Array.prototype.slice.call(document.querySelectorAll(SEL));
