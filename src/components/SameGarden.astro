@@ -1,47 +1,69 @@
 ---
 /**
  * SameGarden.astro — the shared "From the toolbox" cross-promo grid.
- * Plain CSS on the family tokens, so it works on every site (Tailwind or not).
+ * Each card is a "specimen terminal": window chrome (dots + typewriter title),
+ * a faint per-tool motif strip that a scanline sweeps on hover, a prompt-line
+ * tagline, and inline --flag tags. Native to the portfolio's terminal vocabulary.
  *
  * Prop:
- *   current — this site's package name (e.g. "wicked-estate" / "wickedagile");
- *             that card is excluded so a site never cross-promotes itself.
- *             Dynamic: with N entries each page shows N-1 cards (2–4), and the
- *             grid auto-fits whatever remains.
+ *   current — this site's package name; that card is excluded. Dynamic: with N
+ *             entries each page shows N-1 cards (2-4), auto-fit grid.
  */
 const { current = '' } = Astro.props;
 
 // Only the tools are promoted — wickedagile is the umbrella/landing, never a card.
 const SITES = [
   {
-    name: 'wicked-interactive',
+    name: 'wicked-interactive', motif: 'storyboard',
     href: 'https://wi.wickedagile.com',
-    tagline: 'If you can say it, you can make it.',
+    tagline: 'if you can say it, you can make it',
     blurb: "Describe a page, deck, or demo out loud and watch it build live in your browser. Point at what's wrong and say what to fix.",
     tags: ['MIT', 'Claude plugin', 'live builder'],
   },
   {
-    name: 'wicked-garden',
+    name: 'wicked-garden', motif: 'trellis',
     href: 'https://wg.wickedagile.com',
-    tagline: 'The local-first toolkit for AI-native development.',
+    tagline: 'the local-first kit for AI-native dev',
     blurb: 'One gate that reads the shape of your work and applies exactly the right rigor — evidence-gated phases, 40+ specialist agents, no black box.',
     tags: ['MIT', 'Claude plugin', '9 archetypes'],
   },
   {
-    name: 'wicked-estate',
+    name: 'wicked-estate', motif: 'graph',
     href: 'https://we.wickedagile.com',
-    tagline: 'The code graph agents actually trust.',
+    tagline: 'the code graph agents actually trust',
     blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language. Built for LLM agents.',
     tags: ['MIT', 'Rust', 'MCP'],
   },
 ];
 
-// Brand-agnostic name split: "wicked" stays ink, the rest takes the accent.
-// 'wicked-garden' → wicked + "-garden"; 'wickedagile' → wicked + "agile".
+// Faint per-tool motif fragments (recolour via currentColor).
+const MOTIFS = {
+  graph: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <line x1="140" y1="32" x2="70" y2="12"/><line x1="140" y1="32" x2="44" y2="50"/><line x1="140" y1="32" x2="206" y2="14"/><line x1="140" y1="32" x2="236" y2="48"/><line x1="140" y1="32" x2="110" y2="58"/><line x1="206" y1="14" x2="262" y2="8"/><line x1="44" y1="50" x2="18" y2="40"/>
+    <g fill="currentColor" stroke="none"><circle cx="140" cy="32" r="6"/><circle cx="70" cy="12" r="3"/><circle cx="44" cy="50" r="3"/><circle cx="206" cy="14" r="4"/><circle cx="236" cy="48" r="3"/><circle cx="110" cy="58" r="2.5"/><circle cx="262" cy="8" r="2.5"/><circle cx="18" cy="40" r="2.5"/></g>
+  </svg>`,
+  trellis: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g opacity="0.5"><path d="M40 0v64M110 0v64M180 0v64M250 0v64"/><path d="M0 24h280M0 48h280"/></g>
+    <path d="M55 64C35 46 70 36 52 18C42 6 64 2 52 0"/><path d="M225 64C245 46 210 36 228 18C238 6 216 2 228 0"/>
+    <path d="M52 22c-14-9-24-7-30-2c6 9 17 12 30 2z" fill="currentColor" stroke="none"/><path d="M228 40c14-9 24-7 30-2c-6 9-17 12-30 2z" fill="currentColor" stroke="none"/>
+  </svg>`,
+  storyboard: `<svg viewBox="0 0 280 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect x="22" y="14" width="48" height="36" rx="5"/><path d="M32 26h26M32 36h18"/>
+    <rect x="116" y="14" width="48" height="36" rx="5"/><path d="M126 24l16-8v28M126 42h28"/>
+    <rect x="210" y="14" width="48" height="36" rx="5"/><circle cx="234" cy="28" r="7"/><path d="M222 44c8-14 16 6 22-4"/>
+    <path d="M74 32h12M78 27l6 5l-6 5"/><path d="M168 32h12M172 27l6 5l-6 5"/>
+  </svg>`,
+};
+
+const flagify = (t) => '--' + t.toLowerCase().replace(/\s+/g, '-');
+
 const sites = SITES.filter((s) => s.name !== current).map((s) => ({
   ...s,
   wk: s.name.slice(0, 6),
   rest: s.name.slice(6),
+  art: MOTIFS[s.motif] || MOTIFS.graph,
+  flags: s.tags.map(flagify).join(' '),
+  len: s.name.length,
 }));
 ---
 
@@ -53,14 +75,20 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
       <p class="sg-sub">Local-first, no cloud dependency, no checkmark you can't re-run.</p>
     </div>
     <div class="sg-grid">
-      {sites.map((s, i) => (
-        <a class="sg-card" href={s.href}>
-          <span class="sg-num">{String(i + 1).padStart(2, '0')}</span>
-          <h3 class="sg-name"><span class="sg-wk">{s.wk}</span><span class="sg-rest">{s.rest}</span></h3>
-          <p class="sg-tagline">{s.tagline}</p>
+      {sites.map((s) => (
+        <a class="sg-card" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
+          <div class="sg-chrome">
+            <span class="sg-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="sg-title" style={`--len:${s.len}ch;--steps:${s.len}`}><span class="sg-wk">{s.wk}</span><span class="sg-rest">{s.rest}</span></span>
+          </div>
+          <div class="sg-art">
+            <div class="sg-art-svg" set:html={s.art} />
+            <span class="sg-scan" aria-hidden="true"></span>
+          </div>
+          <p class="sg-tagline"><span class="sg-prompt" aria-hidden="true">&gt;</span> {s.tagline}</p>
           <p class="sg-blurb">{s.blurb}</p>
           <div class="sg-foot">
-            <div class="sg-tags">{s.tags.map((t) => <span class="sg-tag">{t}</span>)}</div>
+            <span class="sg-flags">{s.flags}</span>
             <span class="sg-visit">visit <span class="sg-arrow">↗</span></span>
           </div>
         </a>
@@ -70,35 +98,60 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 </section>
 
 <style is:global>
-/* No hardcoded background — inherit the consuming site's section treatment
-   (band / motif / palette). The site decides; the component just lays out. */
-.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
+/* No hardcoded background — inherit the consuming site's section treatment. */
+.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  /* readable accent for small mono text on the light-theme harbor canvas */
+  --sg-accent: var(--accent); }
+[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 80%, #fff); }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 .same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
 .same-garden .sg-kicker{ color:var(--accent); }
-.same-garden .sg-kicker::before{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin:0 10px 3px 0; }
-.same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin:0 0 3px 10px; }
+.same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
+.same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
 .same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:52ch; line-height:1.6; }
-.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px; }
+.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px; }
 
-.same-garden .sg-card{ position:relative; overflow:hidden; display:flex; flex-direction:column; padding:24px 22px; border:1px solid var(--hairline-strong); border-radius:16px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease); }
-/* accent rule that wipes across the top on hover */
-.same-garden .sg-card::before{ content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .3s var(--ease); }
-.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 26px 50px -28px rgba(0,0,0,.65); }
-.same-garden .sg-card:hover::before{ transform:scaleX(1); }
+/* ── specimen terminal card ─────────────────────────────────────────────── */
+.same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--hairline-strong); border-radius:12px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
+.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 28px 54px -28px rgba(0,0,0,.7); }
 
-.same-garden .sg-num{ position:absolute; top:16px; right:18px; font-family:var(--font-mono); font-size:.7rem; font-weight:700; letter-spacing:.1em; color:var(--faint); }
-.same-garden .sg-name{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:1.55rem; line-height:1; margin:0; letter-spacing:-.01em; }
-.same-garden .sg-wk{ color:var(--ink); }
-.same-garden .sg-rest{ color:var(--accent); }
-.same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.72rem; color:var(--ink); margin:12px 0 0; }
-.same-garden .sg-blurb{ font-size:.9rem; color:var(--muted); line-height:1.6; margin:12px 0 0; flex:1; }
-.same-garden .sg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:20px; padding-top:14px; border-top:1px solid var(--hairline); }
-.same-garden .sg-tags{ display:flex; flex-wrap:wrap; gap:6px; }
-.same-garden .sg-tag{ font-family:var(--font-mono); font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--hairline-strong); border-radius:999px; padding:3px 8px; }
-.same-garden .sg-visit{ font-family:var(--font-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); white-space:nowrap; transition:color .22s var(--ease); }
+/* window chrome */
+.same-garden .sg-chrome{ display:flex; align-items:center; gap:12px; height:34px; padding:0 14px; border-bottom:1px solid var(--hairline); background:color-mix(in oklab, var(--canvas) 45%, transparent); }
+.same-garden .sg-dots{ display:inline-flex; gap:6px; flex-shrink:0; }
+.same-garden .sg-dots i{ width:8px; height:8px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
+.same-garden .sg-card:hover .sg-dots i:nth-child(1){ background:var(--sg-accent); }
+.same-garden .sg-title{ display:inline-block; overflow:hidden; white-space:nowrap; font-family:var(--font-mono); font-size:.78rem; font-weight:600; letter-spacing:.01em; }
+.same-garden .sg-wk{ color:var(--ink); } .same-garden .sg-rest{ color:var(--sg-accent); }
+.same-garden .sg-card:hover .sg-title{ width:var(--len); animation:sg-type .5s steps(var(--steps)) both; }
+@keyframes sg-type{ from{ width:0; } to{ width:var(--len); } }
+
+/* motif strip + scanline */
+.same-garden .sg-art{ position:relative; height:62px; overflow:hidden; }
+.same-garden .sg-art-svg{ position:absolute; inset:0; color:var(--ink); opacity:.15; transition:opacity .3s var(--ease), color .3s var(--ease); }
+.same-garden .sg-art-svg svg{ position:absolute; inset:0; width:100%; height:100%; }
+.same-garden .sg-card:hover .sg-art-svg{ opacity:.4; color:var(--sg-accent); }
+.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:1px; background:var(--sg-accent); box-shadow:0 0 8px var(--sg-accent); opacity:0; }
+.same-garden .sg-card:hover .sg-scan{ animation:sg-scan .85s var(--ease); }
+@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.9; } 88%{ opacity:.9; } 100%{ transform:translateY(62px); opacity:0; } }
+
+/* body */
+.same-garden .sg-tagline{ font-family:var(--font-mono); font-size:.74rem; color:var(--ink); margin:0; padding:16px 18px 0; }
+.same-garden .sg-prompt{ color:var(--sg-accent); font-weight:700; }
+.same-garden .sg-blurb{ font-size:.88rem; color:var(--muted); line-height:1.6; margin:0; padding:10px 18px 0; flex:1; }
+.same-garden .sg-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:18px 0 0; padding:12px 18px; border-top:1px solid var(--hairline); }
+.same-garden .sg-flags{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.same-garden .sg-visit{ font-family:var(--font-mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); white-space:nowrap; flex-shrink:0; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
-.same-garden .sg-card:hover .sg-visit{ color:var(--accent); }
+.same-garden .sg-card:hover .sg-visit{ color:var(--sg-accent); }
 .same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
+.same-garden .sg-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+@media (max-width:560px){ .same-garden .sg-blurb{ display:none; } }
+@media (prefers-reduced-motion:reduce){
+  .same-garden .sg-card:hover .sg-title{ animation:none; width:auto; }
+  .same-garden .sg-card:hover .sg-scan{ animation:none; }
+  .same-garden .sg-card{ transition:border-color .2s, box-shadow .2s; }
+  .same-garden .sg-card:hover{ transform:none; }
+}
 </style>
