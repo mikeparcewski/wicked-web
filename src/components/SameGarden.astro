@@ -105,6 +105,9 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
   --sg-accent: var(--accent); --sg-screen:#e7e0cb; --sg-ink:#1b2a34;
   --sg-nav: rgba(13,17,23,.92); } /* match the Topbar/Footer nav background */
 [data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 80%, #fff); --sg-nav: rgba(24,47,60,.94); }
+/* Phones: the 100svh + vertical-centering left a big dead band above the toolbox
+   when the cards stack to one column — make the section content-height instead. */
+@media(max-width:768px){ .same-garden{ min-height:auto; justify-content:flex-start; padding:clamp(40px,6vh,64px) 0; } }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 .same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
 .same-garden .sg-kicker{ color:var(--accent); }
