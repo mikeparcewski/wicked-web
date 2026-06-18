@@ -30,6 +30,8 @@
   }
 
   html{-webkit-font-smoothing:antialiased;scroll-snap-type:y mandatory;overflow-x:clip;background:var(--canvas)}
+  /* Phones: scroll-snap locks feel janky (viewport yanking, URL-bar deadlocks). Free scroll on mobile. */
+  @media(max-width:768px){html{scroll-snap-type:none}}
   body{background:transparent;color:var(--ink);font-family:var(--font-display);line-height:1.5;overflow-x:clip}
   /* GLOBAL BACKGROUND — line grid + accent color-pop, fixed behind ALL content. */
   body::before{
