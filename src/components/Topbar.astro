@@ -57,7 +57,7 @@ const {
       <button class="icon-btn" id="themeBtn" aria-label="Toggle theme" data-tip="toggle theme">
         <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
       </button>
-      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu" aria-haspopup="true">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
         <svg class="menu-ic menu-ic--bars" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         <svg class="menu-ic menu-ic--x" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
       </button>
@@ -65,7 +65,7 @@ const {
   </div>
 
   <!-- MOBILE MENU — the expand version of the nav, phones only -->
-  <div class="mobile-menu" id="mobileMenu" hidden>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="wicked-* ecosystem" hidden>
     <span class="dropdown-kicker">wicked-* ecosystem</span>
     <a href="https://wg.wickedagile.com" class="mm-item">wicked-garden <span class="dropdown-tag">site ↗</span></a>
     <a href="https://wi.wickedagile.com" class="mm-item">wicked-interactive <span class="dropdown-tag">site ↗</span></a>
@@ -80,7 +80,7 @@ const {
     <div class="dropdown-divider"></div>
     <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item">Medium <span class="dropdown-tag">writing ↗</span></a>
     <a href={repo} target="_blank" rel="noopener" class="mm-item">GitHub <span class="dropdown-tag">this repo ↗</span></a>
-  </div>
+  </nav>
 </header>
 
 <style is:global>
