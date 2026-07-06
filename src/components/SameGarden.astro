@@ -33,6 +33,27 @@ const SITES = [
     blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language.',
     tags: ['MIT', 'Rust', 'MCP'],
   },
+  {
+    name: 'wicked-signals', motif: 'wave',
+    href: 'https://github.com/mikeparcewski/wicked-signals',
+    tagline: 'Text in. Intent out.',
+    blurb: 'Classifies any signal and routes it to the right crew with confidence-tiered precision.',
+    tags: ['MIT', 'TypeScript', 'npm'],
+  },
+  {
+    name: 'wicked-crew', motif: 'bridge',
+    href: 'https://github.com/mikeparcewski/wicked-crew',
+    tagline: 'The session layer your agent teams need.',
+    blurb: 'Phase-gated crew sessions with HITL, council voting, and a local SQLite audit trail.',
+    tags: ['MIT', 'npm', 'HITL'],
+  },
+  {
+    name: 'wicked-studio', motif: 'studio',
+    href: 'https://github.com/mikeparcewski/wicked-studio',
+    tagline: 'The UI your agent should have.',
+    blurb: 'Desktop HITL shell — Tauri-powered, stateful, offline. Human-in-the-loop done properly.',
+    tags: ['MIT', 'Rust', 'Tauri'],
+  },
 ];
 
 // Faint per-tool motif fragments (recolour via currentColor).
@@ -52,6 +73,33 @@ const MOTIFS = {
     <rect x="216" y="46" width="64" height="78" rx="6"/><circle cx="242" cy="74" r="11"/><path d="M228 110c12-26 24 8 32-6"/>
     <path d="M88 85h18M92 78l9 7l-9 7"/><path d="M186 85h18M190 78l9 7l-9 7"/>
   </svg>`,
+  wave: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <path d="M10 85 C30 40 50 40 70 85 C90 130 110 130 130 85 C150 40 170 40 190 85 C210 130 230 130 250 85 C268 42 282 42 295 85"/>
+  <line x1="70" y1="65" x2="70" y2="105" stroke-width="1"/>
+  <line x1="190" y1="65" x2="190" y2="105" stroke-width="1"/>
+  <path d="M262 52l22 12-22 12M262 94l22 12-22 12" stroke-width="1.2"/>
+  <g fill="currentColor" stroke="none"><circle cx="10" cy="85" r="3"/><circle cx="130" cy="85" r="5"/><circle cx="250" cy="85" r="3"/></g>
+</svg>`,
+  bridge: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <circle cx="150" cy="85" r="16"/>
+  <circle cx="52" cy="38" r="7"/><line x1="150" y1="85" x2="52" y2="38"/>
+  <circle cx="248" cy="38" r="7"/><line x1="150" y1="85" x2="248" y2="38"/>
+  <circle cx="40" cy="128" r="7"/><line x1="150" y1="85" x2="40" y2="128"/>
+  <circle cx="260" cy="128" r="7"/><line x1="150" y1="85" x2="260" y2="128"/>
+  <circle cx="150" cy="22" r="6"/><line x1="150" y1="85" x2="150" y2="22"/>
+  <g fill="currentColor" stroke="none"><circle cx="92" cy="62" r="2.5"/><circle cx="208" cy="62" r="2.5"/><circle cx="86" cy="110" r="2.5"/><circle cx="212" cy="110" r="2.5"/><circle cx="150" cy="54" r="2.5"/></g>
+</svg>`,
+  studio: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <rect x="18" y="18" width="264" height="134" rx="8"/>
+  <line x1="18" y1="38" x2="282" y2="38"/>
+  <g stroke-width="1" fill="currentColor" stroke="none"><circle cx="32" cy="28" r="3.5"/><circle cx="44" cy="28" r="3.5"/><circle cx="56" cy="28" r="3.5"/></g>
+  <rect x="32" y="52" width="148" height="30" rx="5"/>
+  <path d="M40 60h80M40 72h58" stroke-width="1.2"/>
+  <rect x="32" y="96" width="220" height="26" rx="5"/>
+  <path d="M44 105h100M44 113h68" stroke-width="1.2"/>
+  <path d="M246 104l18 9-18 9" stroke-width="1.8"/>
+  <rect x="32" y="130" width="40" height="10" rx="3" fill="currentColor" stroke="none" opacity="0.4"/>
+</svg>`,
 };
 
 const flagify = (t) => '--' + t.toLowerCase().replace(/\s+/g, '-');
@@ -62,6 +110,7 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
   flags: s.tags.map(flagify).join(' '),
   url: s.href.replace(/^https?:\/\//, ''),
 }));
+const featuredIdx = Math.floor(Math.random() * sites.length);
 ---
 
 <section class="same-garden" aria-labelledby="sg-h">
@@ -72,8 +121,8 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
       <p class="sg-sub">Local-first, no cloud dependency, no checkmark you can't re-run.</p>
     </div>
     <div class="sg-grid">
-      {sites.map((s) => (
-        <a class="sg-card" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
+      {sites.map((s, i) => (
+        <a class={`sg-card${i === featuredIdx ? ' sg-card--featured' : ''}`} href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
           <div class="sg-bar">
             <span class="sg-dots" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="sg-url">
@@ -115,7 +164,12 @@ const sites = SITES.filter((s) => s.name !== current).map((s) => ({
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
 .same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:52ch; line-height:1.6; }
-.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
+.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; }
+
+.same-garden .sg-card--featured { grid-column: span 2; }
+@media(max-width:768px){ .same-garden .sg-card--featured { grid-column: span 1; } }
+.same-garden .sg-card--featured .sg-headline { font-size: 1.7rem; max-width: 18ch; }
+.same-garden .sg-card--featured .sg-blurb { max-width: 44ch; }
 
 /* ── mini-browser card ──────────────────────────────────────────────────── */
 .same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--hairline-strong); border-radius:12px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
