@@ -1,65 +1,67 @@
 ---
 /**
- * SameGarden.astro — the shared "From the toolbox" cross-promo grid.
- * Each card is a MINI BROWSER previewing the tool's site: a browser bar (dots +
- * URL), a light hero viewport (the tool's motif as imagery + headline), and a
- * bottom status bar with the --flag tags.
+ * SameGarden.astro — the shared "product family" cross-promo showcase.
+ *
+ * Redesigned (Wave-2): no longer a flat mini-browser grid. The promo now
+ * reinforces the family structure — products are grouped into the same
+ * Build / Operate / Quality / Foundation taxonomy used by the Topbar
+ * dropdown and Footer, rendered as a vertical progression of phase bands.
+ * Each product is a designed card with its own family motif, a strong
+ * one-liner headline, tag chips, and a live hover treatment.
  *
  * Prop:
- *   current — this site's package name; that card is excluded. Dynamic 2-4 cards.
+ *   current — this site's package name; that card is excluded. Empty phase
+ *             bands (e.g. the only member is `current`) are dropped.
  */
 const { current = '' } = Astro.props;
 
-// The marketed set only: 5 products + the foundation (one entry → the estate
-// foundation site). wickedagile is the umbrella/landing, never a card. Absorbed
-// packages (loom, memory/knowledge/overlay, agent) and foundation-only repos
-// with no standalone site (crew, core, bus, brain) get no card here.
+// Fixed taxonomy order — the promo reads top-to-bottom as the family story.
+const PHASES = ['Build', 'Operate', 'Quality', 'Foundation'];
+
+// The MARKETED set only: the 5 products with live sites + the estate
+// foundation site. wickedagile is the umbrella/landing, never a card.
+// Absorbed packages (loom, memory/knowledge/overlay, agent) get no card.
+// wicked-signals has NO live site yet (deferred) → no card. wicked-studio
+// is retired → its slot is now wicked-crew (the Operate story).
 const SITES = [
   {
-    name: 'wicked-interactive', motif: 'storyboard',
-    href: 'https://wi.wickedagile.com',
-    tagline: 'If you can say it, you can make it.',
-    blurb: 'Describe a page, deck, or demo out loud and watch it build live in your browser.',
-    tags: ['MIT', 'Claude plugin', 'live builder'],
-  },
-  {
-    name: 'wicked-garden', motif: 'trellis',
+    name: 'wicked-garden', phase: 'Build', motif: 'trellis',
     href: 'https://wg.wickedagile.com',
-    tagline: 'The local-first kit for AI-native dev.',
-    blurb: 'One gate that reads the shape of your work and applies exactly the right rigor — no black box.',
-    tags: ['MIT', 'Claude plugin', '10 archetypes'],
+    tagline: "Curated toolkit for what coding agents can't do alone",
+    blurb: 'Fills only the gaps a planner-executor can\'t — re-derive "done" from evidence, see injected edges, refactor as a graph.',
+    tags: ['MIT', 'npm', 'Claude plugin'],
   },
   {
-    name: 'wicked-studio', motif: 'studio',
-    href: 'https://ws.wickedagile.com',
-    tagline: 'The UI your agent should have.',
-    blurb: 'Browser operator console for human-in-the-loop AI sessions — served by the crew daemon on localhost.',
-    tags: ['MIT', 'React', 'HITL'],
+    name: 'wicked-interactive', phase: 'Build', motif: 'storyboard',
+    href: 'https://wi.wickedagile.com',
+    tagline: 'Describe it, watch it build in your browser, ship it',
+    blurb: 'Point-and-say editing — highlight a block, state the change, only that block reworks. Export HTML, PDF, PPTX, or video.',
+    tags: ['MIT', 'npm', 'Claude plugin'],
   },
   {
-    name: 'wicked-testing', motif: 'bridge',
+    name: 'wicked-crew', phase: 'Operate', motif: 'daemon',
+    href: 'https://wc.wickedagile.com',
+    tagline: 'The daemon that governs multi-phase AI development',
+    blurb: 'One external daemon, two ways to drive it — headless CLI/API or the browser console. Deterministic gates, checkpointed, crash-and-resume.',
+    tags: ['MIT', 'npm', 'daemon'],
+  },
+  {
+    name: 'wicked-testing', phase: 'Quality', motif: 'bridge',
     href: 'https://wt.wickedagile.com',
-    tagline: "Your agent can't grade its own homework.",
-    blurb: 'A complete QE team for AI CLIs that can\'t self-grade.',
+    tagline: "Your agent can't grade its own homework",
+    blurb: 'A complete QE team for AI coding CLIs, with enforced separation between the agent that runs tests and the one that judges them.',
     tags: ['MIT', 'npm'],
   },
   {
-    name: 'wicked-signals', motif: 'wave',
-    href: 'https://wsig.wickedagile.com',
-    tagline: 'Text in. Intent out.',
-    blurb: 'Classifies any signal and routes it to the right handler with confidence-tiered precision.',
-    tags: ['MIT', 'TypeScript'],
-  },
-  {
-    name: 'wicked-estate', motif: 'graph',
+    name: 'wicked-estate', phase: 'Foundation', motif: 'graph',
     href: 'https://we.wickedagile.com',
-    tagline: 'The code graph agents actually trust.',
-    blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language.',
-    tags: ['MIT', 'Rust', 'MCP'],
+    tagline: 'The code graph agents actually trust',
+    blurb: 'Every repo — plus memory and knowledge — as one queryable, typed, ranked graph where every edge carries confidence and provenance.',
+    tags: ['crates.io', 'Rust', 'MCP'],
   },
 ];
 
-// Faint per-tool motif fragments (recolour via currentColor).
+// Faint per-product family motifs (recolour via currentColor).
 const MOTIFS = {
   graph: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <line x1="150" y1="86" x2="70" y2="36"/><line x1="150" y1="86" x2="44" y2="120"/><line x1="150" y1="86" x2="220" y2="40"/><line x1="150" y1="86" x2="258" y2="120"/><line x1="150" y1="86" x2="110" y2="150"/><line x1="220" y1="40" x2="284" y2="20"/><line x1="44" y1="120" x2="20" y2="150"/><line x1="70" y1="36" x2="86" y2="8"/>
@@ -76,77 +78,76 @@ const MOTIFS = {
     <rect x="216" y="46" width="64" height="78" rx="6"/><circle cx="242" cy="74" r="11"/><path d="M228 110c12-26 24 8 32-6"/>
     <path d="M88 85h18M92 78l9 7l-9 7"/><path d="M186 85h18M190 78l9 7l-9 7"/>
   </svg>`,
-  wave: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <path d="M10 85 C30 40 50 40 70 85 C90 130 110 130 130 85 C150 40 170 40 190 85 C210 130 230 130 250 85 C268 42 282 42 295 85"/>
-  <line x1="70" y1="65" x2="70" y2="105" stroke-width="1"/>
-  <line x1="190" y1="65" x2="190" y2="105" stroke-width="1"/>
-  <path d="M262 52l22 12-22 12M262 94l22 12-22 12" stroke-width="1.2"/>
-  <g fill="currentColor" stroke="none"><circle cx="10" cy="85" r="3"/><circle cx="130" cy="85" r="5"/><circle cx="250" cy="85" r="3"/></g>
-</svg>`,
   bridge: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <circle cx="150" cy="85" r="16"/>
-  <circle cx="52" cy="38" r="7"/><line x1="150" y1="85" x2="52" y2="38"/>
-  <circle cx="248" cy="38" r="7"/><line x1="150" y1="85" x2="248" y2="38"/>
-  <circle cx="40" cy="128" r="7"/><line x1="150" y1="85" x2="40" y2="128"/>
-  <circle cx="260" cy="128" r="7"/><line x1="150" y1="85" x2="260" y2="128"/>
-  <circle cx="150" cy="22" r="6"/><line x1="150" y1="85" x2="150" y2="22"/>
-  <g fill="currentColor" stroke="none"><circle cx="92" cy="62" r="2.5"/><circle cx="208" cy="62" r="2.5"/><circle cx="86" cy="110" r="2.5"/><circle cx="212" cy="110" r="2.5"/><circle cx="150" cy="54" r="2.5"/></g>
-</svg>`,
-  studio: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <rect x="18" y="18" width="264" height="134" rx="8"/>
-  <line x1="18" y1="38" x2="282" y2="38"/>
-  <g stroke-width="1" fill="currentColor" stroke="none"><circle cx="32" cy="28" r="3.5"/><circle cx="44" cy="28" r="3.5"/><circle cx="56" cy="28" r="3.5"/></g>
-  <rect x="32" y="52" width="148" height="30" rx="5"/>
-  <path d="M40 60h80M40 72h58" stroke-width="1.2"/>
-  <rect x="32" y="96" width="220" height="26" rx="5"/>
-  <path d="M44 105h100M44 113h68" stroke-width="1.2"/>
-  <path d="M246 104l18 9-18 9" stroke-width="1.8"/>
-  <rect x="32" y="130" width="40" height="10" rx="3" fill="currentColor" stroke="none" opacity="0.4"/>
-</svg>`,
+    <circle cx="150" cy="85" r="16"/>
+    <circle cx="52" cy="38" r="7"/><line x1="150" y1="85" x2="52" y2="38"/>
+    <circle cx="248" cy="38" r="7"/><line x1="150" y1="85" x2="248" y2="38"/>
+    <circle cx="40" cy="128" r="7"/><line x1="150" y1="85" x2="40" y2="128"/>
+    <circle cx="260" cy="128" r="7"/><line x1="150" y1="85" x2="260" y2="128"/>
+    <circle cx="150" cy="22" r="6"/><line x1="150" y1="85" x2="150" y2="22"/>
+    <g fill="currentColor" stroke="none"><circle cx="92" cy="62" r="2.5"/><circle cx="208" cy="62" r="2.5"/><circle cx="86" cy="110" r="2.5"/><circle cx="212" cy="110" r="2.5"/><circle cx="150" cy="54" r="2.5"/></g>
+  </svg>`,
+  // wicked-crew — an orchestration daemon: one governed core, a phase-lifecycle
+  // arc, and worker subprocess nodes dispatched along it.
+  daemon: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M46 128 A104 104 0 0 1 254 128" opacity="0.45"/>
+    <rect x="128" y="70" width="44" height="44" rx="10"/>
+    <path d="M138 92h24M138 100h16" stroke-width="1.2"/>
+    <line x1="150" y1="70" x2="150" y2="40"/><line x1="132" y1="78" x2="66" y2="52"/><line x1="168" y1="78" x2="234" y2="52"/><line x1="130" y1="106" x2="52" y2="128"/><line x1="170" y1="106" x2="248" y2="128"/>
+    <g fill="currentColor" stroke="none"><circle cx="150" cy="38" r="6"/><circle cx="64" cy="50" r="6"/><circle cx="236" cy="50" r="6"/><circle cx="50" cy="128" r="6"/><circle cx="250" cy="128" r="6"/></g>
+    <path d="M46 40l7 7l-7 7M247 40l7 7l-7 7" stroke-width="1.2" opacity="0.6"/>
+  </svg>`,
 };
 
-const flagify = (t) => '--' + t.toLowerCase().replace(/\s+/g, '-');
-
-const sites = SITES.filter((s) => s.name !== current).map((s) => ({
-  ...s,
-  art: MOTIFS[s.motif] || MOTIFS.graph,
-  flags: s.tags.map(flagify).join(' '),
-  url: s.href.replace(/^https?:\/\//, ''),
-}));
-const featuredIdx = Math.floor(Math.random() * sites.length);
+const phases = PHASES.map((phase, pi) => {
+  const cards = SITES
+    .filter((s) => s.phase === phase && s.name !== current)
+    .map((s) => ({
+      ...s,
+      art: MOTIFS[s.motif] || MOTIFS.graph,
+      url: s.href.replace(/^https?:\/\//, ''),
+    }));
+  return { phase, index: String(pi + 1).padStart(2, '0'), cards };
+}).filter((p) => p.cards.length > 0);
 ---
 
 <section class="same-garden" aria-labelledby="sg-h">
   <div class="sg-inner">
     <div class="sg-head">
-      <span class="kicker sg-kicker">From the toolbox</span>
-      <h2 class="sg-h2" id="sg-h">More tools. Same ethos.</h2>
-      <p class="sg-sub">Local-first, no cloud dependency, no checkmark you can't re-run.</p>
+      <span class="kicker sg-kicker">The wicked-* family</span>
+      <h2 class="sg-h2" id="sg-h">One toolbox. Four jobs.</h2>
+      <p class="sg-sub">Build it, operate it, prove it, and stand it all on a shared foundation — local-first, no cloud dependency, no checkmark you can't re-run.</p>
     </div>
-    <div class="sg-grid">
-      {sites.map((s, i) => (
-        <a class={`sg-card${i === featuredIdx ? ' sg-card--featured' : ''}`} href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
-          <div class="sg-bar">
-            <span class="sg-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="sg-url">
-              <svg class="sg-lock" viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-              {s.url}
-            </span>
+
+    <div class="sg-family">
+      {phases.map((p) => (
+        <div class="sg-phase">
+          <div class="sg-phase-rail">
+            <span class="sg-phase-idx">{p.index}</span>
+            <span class="sg-phase-name">{p.phase}</span>
+            <span class="sg-phase-tick" aria-hidden="true"></span>
           </div>
-          <div class="sg-hero">
-            <div class="sg-hero-art" set:html={s.art} />
-            <span class="sg-scan" aria-hidden="true"></span>
-            <div class="sg-hero-copy">
-              <span class="sg-eyebrow">{s.name}</span>
-              <h3 class="sg-headline">{s.tagline}</h3>
-              <p class="sg-blurb">{s.blurb}</p>
-            </div>
+          <div class="sg-phase-cards">
+            {p.cards.map((s) => (
+              <a class="sg-card" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
+                <span class="sg-card-art" set:html={s.art} />
+                <span class="sg-card-glow" aria-hidden="true"></span>
+                <span class="sg-scan" aria-hidden="true"></span>
+                <div class="sg-card-body">
+                  <span class="sg-eyebrow"><span class="sg-dot" aria-hidden="true"></span>{s.name}</span>
+                  <h3 class="sg-headline">{s.tagline}</h3>
+                  <p class="sg-blurb">{s.blurb}</p>
+                </div>
+                <div class="sg-card-foot">
+                  <span class="sg-tags">
+                    {s.tags.map((t) => <span class="sg-chip">{t}</span>)}
+                  </span>
+                  <span class="sg-visit">{s.url}<span class="sg-arrow">↗</span></span>
+                </div>
+              </a>
+            ))}
           </div>
-          <div class="sg-status">
-            <span class="sg-flags">{s.flags}</span>
-            <span class="sg-visit">visit <span class="sg-arrow">↗</span></span>
-          </div>
-        </a>
+        </div>
       ))}
     </div>
   </div>
@@ -154,64 +155,78 @@ const featuredIdx = Math.floor(Math.random() * sites.length);
 
 <style is:global>
 .same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center;
-  --sg-accent: var(--accent); --sg-screen:#e7e0cb; --sg-ink:#1b2a34;
-  --sg-nav: rgba(13,17,23,.92); } /* match the Topbar/Footer nav background */
-[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 80%, #fff); --sg-nav: rgba(24,47,60,.94); }
-/* Phones: the 100svh + vertical-centering left a big dead band above the toolbox
-   when the cards stack to one column — make the section content-height instead. */
+  --sg-accent: var(--accent); }
+[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 82%, #fff); }
+/* Phones: content-height instead of 100svh so the stacked bands don't leave a dead band. */
 @media(max-width:768px){ .same-garden{ min-height:auto; justify-content:flex-start; padding:clamp(40px,6vh,64px) 0; } }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
-.same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4vh,44px); }
+
+/* ── section head ───────────────────────────────────────────────────────── */
+.same-garden .sg-head{ text-align:center; margin-bottom:clamp(30px,4.5vh,52px); }
 .same-garden .sg-kicker{ color:var(--accent); }
 .same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
-.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:52ch; line-height:1.6; }
-.same-garden .sg-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; }
+.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:60ch; line-height:1.6; }
 
-.same-garden .sg-card--featured { grid-column: span 2; }
-@media(max-width:768px){ .same-garden .sg-card--featured { grid-column: span 1; } }
-.same-garden .sg-card--featured .sg-headline { font-size: 1.7rem; max-width: 18ch; }
-.same-garden .sg-card--featured .sg-blurb { max-width: 44ch; }
+/* ── family: vertical progression of phase bands ────────────────────────── */
+.same-garden .sg-family{ display:flex; flex-direction:column; gap:clamp(18px,3vh,30px); }
+.same-garden .sg-phase{ display:grid; grid-template-columns:168px minmax(0,1fr); gap:28px; align-items:start; position:relative; }
+/* the connecting spine between phases — reinforces the Build→…→Foundation flow */
+.same-garden .sg-phase::before{ content:''; position:absolute; left:11px; top:34px; bottom:calc(-1 * clamp(18px,3vh,30px) - 6px); width:1px; background:linear-gradient(var(--hairline-strong), transparent); }
+.same-garden .sg-phase:last-child::before{ display:none; }
 
-/* ── mini-browser card ──────────────────────────────────────────────────── */
-.same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--hairline-strong); border-radius:12px; background:color-mix(in oklab, var(--surface) 82%, transparent); text-decoration:none; transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
-.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 55%, var(--hairline-strong)); transform:translateY(-4px); box-shadow:0 28px 54px -28px rgba(0,0,0,.7); }
+.same-garden .sg-phase-rail{ position:relative; display:flex; flex-direction:column; gap:6px; padding-top:2px; }
+.same-garden .sg-phase-idx{ font-family:var(--font-mono); font-size:.7rem; letter-spacing:.2em; color:var(--faint); }
+.same-garden .sg-phase-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.28rem; letter-spacing:-.01em; color:var(--ink); line-height:1; }
+.same-garden .sg-phase-tick{ width:26px; height:3px; border-radius:2px; background:var(--accent); margin-top:4px; }
 
-/* browser bar */
-.same-garden .sg-bar{ display:flex; align-items:center; gap:12px; height:38px; padding:0 14px; border-bottom:1px solid var(--hairline); background:var(--sg-nav); }
-.same-garden .sg-dots{ display:inline-flex; gap:6px; flex-shrink:0; }
-.same-garden .sg-dots i{ width:9px; height:9px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
-.same-garden .sg-card:hover .sg-dots i:nth-child(1){ background:var(--sg-accent); }
-.same-garden .sg-url{ display:inline-flex; align-items:center; gap:6px; flex:1; min-width:0; height:22px; padding:0 10px; border-radius:999px; background:color-mix(in oklab, var(--canvas) 60%, transparent); border:1px solid var(--hairline); font-family:var(--font-mono); font-size:.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:color .25s var(--ease), border-color .25s var(--ease); }
-.same-garden .sg-lock{ flex-shrink:0; opacity:.7; }
-.same-garden .sg-card:hover .sg-url{ color:var(--sg-accent); border-color:color-mix(in oklab, var(--accent) 40%, var(--hairline)); }
+.same-garden .sg-phase-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:16px; }
 
-/* light hero viewport — the tool's motif as imagery + headline */
-.same-garden .sg-hero{ position:relative; overflow:hidden; flex:1; min-height:158px; padding:22px 20px;
-  /* echo of the site background glow, scaled into the "page": warm top-right + faint cool bottom-left */
-  background:
-    radial-gradient(ellipse 60% 80% at 96% -10%, rgba(255,218,25,.30), transparent 62%),
-    radial-gradient(ellipse 55% 65% at -6% 110%, rgba(121,192,255,.16), transparent 60%),
-    var(--sg-screen); }
-.same-garden .sg-hero-art{ position:absolute; inset:0; color:var(--sg-ink); opacity:.11; }
-.same-garden .sg-hero-art svg{ position:absolute; inset:0; width:100%; height:100%; }
-.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 10px var(--accent); opacity:0; }
-.same-garden .sg-card:hover .sg-scan{ animation:sg-scan 1s var(--ease); }
-@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.85; } 88%{ opacity:.85; } 100%{ transform:translateY(220px); opacity:0; } }
-.same-garden .sg-hero-copy{ position:relative; }
-.same-garden .sg-eyebrow{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:color-mix(in oklab, var(--sg-ink) 60%, transparent); }
-.same-garden .sg-headline{ font-family:var(--font-display); font-weight:900; font-stretch:115%; font-size:1.4rem; line-height:1.04; letter-spacing:-.01em; color:var(--sg-ink); margin:8px 0 0; max-width:14ch; }
-.same-garden .sg-blurb{ font-size:.82rem; line-height:1.55; color:color-mix(in oklab, var(--sg-ink) 72%, transparent); margin:10px 0 0; max-width:34ch; }
+/* ── product card ───────────────────────────────────────────────────────── */
+.same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; min-height:230px;
+  border:1px solid var(--hairline-strong); border-radius:14px;
+  background:color-mix(in oklab, var(--surface) 78%, transparent);
+  text-decoration:none; isolation:isolate;
+  transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
+.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 58%, var(--hairline-strong)); transform:translateY(-5px); box-shadow:0 30px 60px -30px rgba(0,0,0,.72); }
+.same-garden .sg-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
 
-/* browser status bar */
-.same-garden .sg-status{ display:flex; align-items:center; justify-content:space-between; gap:12px; height:40px; padding:0 16px; border-top:1px solid var(--hairline); background:var(--sg-nav); }
-.same-garden .sg-flags{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.same-garden .sg-visit{ font-family:var(--font-mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); white-space:nowrap; flex-shrink:0; transition:color .22s var(--ease); }
+/* motif watermark */
+.same-garden .sg-card-art{ position:absolute; inset:0; z-index:-2; color:var(--ink); opacity:.06; transition:opacity .3s var(--ease), color .3s var(--ease); }
+.same-garden .sg-card-art svg{ position:absolute; inset:0; width:100%; height:100%; }
+.same-garden .sg-card:hover .sg-card-art{ opacity:.13; color:var(--accent); }
+/* warm accent glow, top-right — echoes the site background pop */
+.same-garden .sg-card-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:radial-gradient(ellipse 62% 78% at 100% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%); }
+/* hover scan sweep */
+.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 12px var(--accent); opacity:0; z-index:0; }
+.same-garden .sg-card:hover .sg-scan{ animation:sg-scan 1.05s var(--ease); }
+@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.85; } 88%{ opacity:.85; } 100%{ transform:translateY(240px); opacity:0; } }
+
+.same-garden .sg-card-body{ position:relative; z-index:1; flex:1; padding:20px 20px 14px; }
+.same-garden .sg-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.same-garden .sg-dot{ width:6px; height:6px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
+.same-garden .sg-card:hover .sg-dot{ background:var(--sg-accent); }
+.same-garden .sg-headline{ font-family:var(--font-display); font-weight:900; font-stretch:112%; font-size:1.34rem; line-height:1.08; letter-spacing:-.015em; color:var(--ink); margin:12px 0 0; max-width:19ch; }
+.same-garden .sg-blurb{ font-size:.82rem; line-height:1.55; color:var(--muted); margin:10px 0 0; max-width:40ch; }
+
+.same-garden .sg-card-foot{ position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-top:1px solid var(--hairline); background:color-mix(in oklab, var(--canvas) 30%, transparent); }
+.same-garden .sg-tags{ display:flex; flex-wrap:wrap; gap:6px; min-width:0; }
+.same-garden .sg-chip{ font-family:var(--font-mono); font-size:.58rem; letter-spacing:.04em; color:var(--muted); border:1px solid var(--hairline-strong); border-radius:999px; padding:3px 8px; white-space:nowrap; transition:border-color .22s var(--ease), color .22s var(--ease); }
+.same-garden .sg-card:hover .sg-chip{ border-color:color-mix(in oklab, var(--accent) 34%, var(--hairline-strong)); color:var(--ink); }
+.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint); white-space:nowrap; flex-shrink:0; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
 .same-garden .sg-card:hover .sg-visit{ color:var(--sg-accent); }
 .same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
-.same-garden .sg-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  .same-garden .sg-phase{ grid-template-columns:1fr; gap:14px; }
+  .same-garden .sg-phase::before{ display:none; }
+  .same-garden .sg-phase-rail{ flex-direction:row; align-items:center; gap:10px; }
+  .same-garden .sg-phase-tick{ margin-top:0; }
+}
 
 @media (prefers-reduced-motion:reduce){
   .same-garden .sg-card:hover .sg-scan{ animation:none; }
