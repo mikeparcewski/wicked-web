@@ -29,7 +29,11 @@
     --accent:#ffda19;--accent-ink:#1c2c36;--link:#79c0ff;
   }
 
-  html{-webkit-font-smoothing:antialiased;scroll-snap-type:y mandatory;overflow-x:clip;background:var(--canvas)}
+  /* `proximity`, NOT `mandatory`: mandatory force-snaps the page to a lower snap point on
+     load when a site's sections aren't full-viewport snap panels — landing visitors past the
+     hero (looks blank). proximity only snaps when already near a point, so pages load at top.
+     A site that genuinely wants hard snapping sets `scroll-snap-type:y mandatory` itself. */
+  html{-webkit-font-smoothing:antialiased;scroll-snap-type:y proximity;overflow-x:clip;background:var(--canvas)}
   /* Phones: scroll-snap locks feel janky (viewport yanking, URL-bar deadlocks). Free scroll on mobile. */
   @media(max-width:768px){html{scroll-snap-type:none}}
   body{background:transparent;color:var(--ink);font-family:var(--font-display);line-height:1.5;overflow-x:clip}
