@@ -10,7 +10,10 @@
  */
 const { current = '' } = Astro.props;
 
-// Only the tools are promoted — wickedagile is the umbrella/landing, never a card.
+// The marketed set only: 5 products + the foundation (one entry → the estate
+// foundation site). wickedagile is the umbrella/landing, never a card. Absorbed
+// packages (loom, memory/knowledge/overlay, agent) and foundation-only repos
+// with no standalone site (crew, core, bus, brain) get no card here.
 const SITES = [
   {
     name: 'wicked-interactive', motif: 'storyboard',
@@ -24,7 +27,28 @@ const SITES = [
     href: 'https://wg.wickedagile.com',
     tagline: 'The local-first kit for AI-native dev.',
     blurb: 'One gate that reads the shape of your work and applies exactly the right rigor — no black box.',
-    tags: ['MIT', 'Claude plugin', '9 archetypes'],
+    tags: ['MIT', 'Claude plugin', '10 archetypes'],
+  },
+  {
+    name: 'wicked-studio', motif: 'studio',
+    href: 'https://ws.wickedagile.com',
+    tagline: 'The UI your agent should have.',
+    blurb: 'Browser operator console for human-in-the-loop AI sessions — served by the crew daemon on localhost.',
+    tags: ['MIT', 'React', 'HITL'],
+  },
+  {
+    name: 'wicked-testing', motif: 'bridge',
+    href: 'https://wt.wickedagile.com',
+    tagline: "Your agent can't grade its own homework.",
+    blurb: 'A complete QE team for AI CLIs that can\'t self-grade.',
+    tags: ['MIT', 'npm'],
+  },
+  {
+    name: 'wicked-signals', motif: 'wave',
+    href: 'https://wsig.wickedagile.com',
+    tagline: 'Text in. Intent out.',
+    blurb: 'Classifies any signal and routes it to the right handler with confidence-tiered precision.',
+    tags: ['MIT', 'TypeScript'],
   },
   {
     name: 'wicked-estate', motif: 'graph',
@@ -32,27 +56,6 @@ const SITES = [
     tagline: 'The code graph agents actually trust.',
     blurb: 'Turn any repo into a queryable graph — symbols, calls, types, refs across any language.',
     tags: ['MIT', 'Rust', 'MCP'],
-  },
-  {
-    name: 'wicked-signals', motif: 'wave',
-    href: 'https://github.com/mikeparcewski/wicked-signals',
-    tagline: 'Text in. Intent out.',
-    blurb: 'Classifies any signal and routes it to the right crew with confidence-tiered precision.',
-    tags: ['MIT', 'TypeScript', 'npm'],
-  },
-  {
-    name: 'wicked-crew', motif: 'bridge',
-    href: 'https://github.com/mikeparcewski/wicked-crew',
-    tagline: 'The session layer your agent teams need.',
-    blurb: 'Phase-gated crew sessions with HITL, council voting, and a local SQLite audit trail.',
-    tags: ['MIT', 'npm', 'HITL'],
-  },
-  {
-    name: 'wicked-studio', motif: 'studio',
-    href: 'https://github.com/mikeparcewski/wicked-studio',
-    tagline: 'The UI your agent should have.',
-    blurb: 'Desktop HITL shell — Tauri-powered, stateful, offline. Human-in-the-loop done properly.',
-    tags: ['MIT', 'Rust', 'Tauri'],
   },
 ];
 
