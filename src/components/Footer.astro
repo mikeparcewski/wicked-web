@@ -74,7 +74,10 @@ const {
 .footer-cta{margin:17px 0 0;display:flex;gap:8px;flex-wrap:wrap}
 .footer-cta a{font-family:var(--font-mono);font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--hairline-strong);padding:6px 16px;border-radius:999px;transition:border-color .22s var(--ease),color .22s var(--ease)}
 .footer-cta a:hover{border-color:var(--accent);color:var(--accent)}
-.footer-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 29px;flex:1;align-self:start;padding-top:2px}
+/* right-aligned nav block: auto-width columns pushed to the right (margin-left:auto),
+   so there's real space between the "wicked good" brand and the links — while the
+   column titles/links themselves stay left-aligned inside each column. */
+.footer-cols{display:grid;grid-template-columns:repeat(3,max-content);gap:24px 60px;margin-left:auto;align-self:start;padding-top:2px}
 .footer .footer-col-head{margin-bottom:12px;display:block;font-size:.765rem}
 .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
 .footer-links a{color:var(--ink);text-decoration:none;font-family:var(--font-mono);font-size:1.08rem;display:inline-flex;align-items:baseline;gap:6px;transition:color .22s var(--ease)}
