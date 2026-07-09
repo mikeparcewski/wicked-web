@@ -4,7 +4,7 @@
  *
  * Redesigned (Wave-2): no longer a flat mini-browser grid. The promo now
  * reinforces the family structure — products are grouped into the same
- * Build / Operate / Quality / Foundation taxonomy used by the Topbar
+ * Build / Operate / Foundation taxonomy used by the Topbar
  * dropdown and Footer, rendered as a vertical progression of phase bands.
  * Each product is a designed card with its own family motif, a strong
  * one-liner headline, tag chips, and a live hover treatment.
@@ -16,7 +16,7 @@
 const { current = '' } = Astro.props;
 
 // Fixed taxonomy order — the promo reads top-to-bottom as the family story.
-const PHASES = ['Build', 'Operate', 'Quality', 'Foundation'];
+const PHASES = ['Build', 'Operate', 'Foundation'];
 
 // The MARKETED set only: the 5 products with live sites + the estate
 // foundation site. wickedagile is the umbrella/landing, never a card.
@@ -46,7 +46,7 @@ const SITES = [
     tags: ['MIT', 'npm', 'daemon'],
   },
   {
-    name: 'wicked-testing', phase: 'Quality', motif: 'bridge',
+    name: 'wicked-testing', phase: 'Operate', motif: 'bridge',
     href: 'https://wt.wickedagile.com',
     tagline: "Your agent can't grade its own homework",
     blurb: 'A complete QE team for AI coding CLIs, with enforced separation between the agent that runs tests and the one that judges them.',
@@ -115,8 +115,8 @@ const phases = PHASES.map((phase, pi) => {
   <div class="sg-inner">
     <div class="sg-head">
       <span class="kicker sg-kicker">The wicked-* family</span>
-      <h2 class="sg-h2" id="sg-h">One toolbox. Four jobs.</h2>
-      <p class="sg-sub">Build it, operate it, prove it, and stand it all on a shared foundation — local-first, no cloud dependency, no checkmark you can't re-run.</p>
+      <h2 class="sg-h2" id="sg-h">One toolbox. Three jobs.</h2>
+      <p class="sg-sub">Build it, operate it, and stand it all on a shared foundation — local-first, no cloud dependency, no checkmark you can't re-run.</p>
     </div>
 
     <div class="sg-family">
