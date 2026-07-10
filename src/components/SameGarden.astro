@@ -2,62 +2,85 @@
 /**
  * SameGarden.astro — the shared "product family" cross-promo showcase.
  *
- * Redesigned (Wave-2): no longer a flat mini-browser grid. The promo now
- * reinforces the family structure — products are grouped into the same
- * Build / Operate / Foundation taxonomy used by the Topbar
- * dropdown and Footer, rendered as a vertical progression of phase bands.
- * Each product is a designed card with its own family motif, a strong
- * one-liner headline, tag chips, and a live hover treatment.
+ * Wave-4: grouped into the canonical family taxonomy — Building Blocks
+ * (estate·brain·bus, the bedrock) · Utilities (garden·testing) · Solutions
+ * (crew·interactive). Rendered as a stack read bottom→top: Solutions on top,
+ * Building Blocks at the base. Each product is a designed card with its own
+ * family motif, a strong one-liner headline, tag chips, and — ALWAYS — a
+ * GitHub repo link alongside its live site (a stretched primary link opens
+ * the site; the repo link sits above it). Copy is honest per
+ * CANONICAL-MESSAGING wave-4.
  *
  * Prop:
- *   current — this site's package name; that card is excluded. Empty phase
- *             bands (e.g. the only member is `current`) are dropped.
+ *   current — this site's package name; that card is excluded. Empty strata
+ *             (e.g. the only member is `current`) are dropped.
  */
 const { current = '' } = Astro.props;
 
-// Fixed taxonomy order — the promo reads top-to-bottom as the family story.
-const PHASES = ['Build', 'Operate', 'Foundation'];
+// Strata rendered TOP→BOTTOM = Solutions, Utilities, Building Blocks, so the
+// promo reads bottom→top with Building Blocks at the base.
+const STRATA = ['Solutions', 'Utilities', 'Building Blocks'];
 
-// The MARKETED set only: the 5 products with live sites + the estate
-// foundation site. wickedagile is the umbrella/landing, never a card.
-// Absorbed packages (loom, memory/knowledge/overlay, agent) get no card.
-// wicked-signals has NO live site yet (deferred) → no card. wicked-studio
-// is retired → its slot is now wicked-crew (the Operate story).
+// The MARKETED family. estate has a live site; brain + bus are repo-only.
+// wickedagile is the umbrella, never a card. Absorbed packages get no card.
+// wicked-signals is deferred → no card. wicked-studio ships inside crew → it
+// is represented by the crew card, not a standalone card.
 const SITES = [
   {
-    name: 'wicked-garden', phase: 'Build', motif: 'trellis',
-    href: 'https://wg.wickedagile.com',
-    tagline: "Curated toolkit for what coding agents can't do alone",
-    blurb: 'Fills only the gaps a planner-executor can\'t — re-derive "done" from evidence, see injected edges, refactor as a graph.',
-    tags: ['MIT', 'npm', 'Claude plugin'],
+    name: 'wicked-crew', stratum: 'Solutions', motif: 'daemon',
+    href: 'https://wc.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-crew',
+    tagline: 'The harness for your agent harnesses',
+    blurb: 'An agentic execution platform that harnesses the coding agents and subscriptions you already have to run durable, multi-agent workflows behind one interface.',
+    tags: ['MIT', 'npm', 'intent-driven'],
   },
   {
-    name: 'wicked-interactive', phase: 'Build', motif: 'storyboard',
+    name: 'wicked-interactive', stratum: 'Solutions', motif: 'storyboard',
     href: 'https://wi.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-interactive',
     tagline: 'Describe it, watch it build in your browser, ship it',
     blurb: 'Point-and-say editing — highlight a block, state the change, only that block reworks. Export HTML, PDF, PPTX, or video.',
     tags: ['MIT', 'npm', 'Claude plugin'],
   },
   {
-    name: 'wicked-crew', phase: 'Operate', motif: 'daemon',
-    href: 'https://wc.wickedagile.com',
-    tagline: 'The daemon that governs multi-phase AI development',
-    blurb: 'One external daemon, two ways to drive it — headless CLI/API or the browser console. Deterministic gates, checkpointed, crash-and-resume.',
-    tags: ['MIT', 'npm', 'daemon'],
+    name: 'wicked-garden', stratum: 'Utilities', motif: 'trellis',
+    href: 'https://wg.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-garden',
+    tagline: "Curated toolkit for what coding agents can't do alone",
+    blurb: 'Fills only the gaps a planner-executor can\'t — re-derive "done" from evidence, see injected edges, refactor as a graph.',
+    tags: ['MIT', 'npm', 'Claude plugin'],
   },
   {
-    name: 'wicked-testing', phase: 'Operate', motif: 'bridge',
+    name: 'wicked-testing', stratum: 'Utilities', motif: 'bridge',
     href: 'https://wt.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-testing',
     tagline: "Your agent can't grade its own homework",
     blurb: 'A complete QE team for AI coding CLIs, with enforced separation between the agent that runs tests and the one that judges them.',
     tags: ['MIT', 'npm'],
   },
   {
-    name: 'wicked-estate', phase: 'Foundation', motif: 'graph',
+    name: 'wicked-estate', stratum: 'Building Blocks', motif: 'graph',
     href: 'https://we.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-estate',
     tagline: 'The code graph agents actually trust',
-    blurb: 'Every repo — plus memory and knowledge — as one queryable, typed, ranked graph where every edge carries confidence and provenance.',
+    blurb: 'The substrate everything queries — every repo as one typed, ranked graph, with memory and knowledge in the same store.',
     tags: ['crates.io', 'Rust', 'MCP'],
+  },
+  {
+    name: 'wicked-brain', stratum: 'Building Blocks', motif: 'brain',
+    href: 'https://github.com/mikeparcewski/wicked-brain',
+    repo: 'https://github.com/mikeparcewski/wicked-brain',
+    tagline: 'Your AI agent’s memory — no vector DB',
+    blurb: 'Persistent, searchable agent memory on plain markdown and SQLite — every claim traces to a file you can open.',
+    tags: ['MIT', 'npm', 'repo-only'],
+  },
+  {
+    name: 'wicked-bus', stratum: 'Building Blocks', motif: 'bus',
+    href: 'https://github.com/mikeparcewski/wicked-bus',
+    repo: 'https://github.com/mikeparcewski/wicked-bus',
+    tagline: 'A durable, tiered event fabric',
+    blurb: 'At-least-once delivery with dead-letter + replay, causality tracking and tiered storage. Built for volume; single-host by design.',
+    tags: ['npm', 'durable', 'repo-only'],
   },
 ];
 
@@ -87,8 +110,8 @@ const MOTIFS = {
     <circle cx="150" cy="22" r="6"/><line x1="150" y1="85" x2="150" y2="22"/>
     <g fill="currentColor" stroke="none"><circle cx="92" cy="62" r="2.5"/><circle cx="208" cy="62" r="2.5"/><circle cx="86" cy="110" r="2.5"/><circle cx="212" cy="110" r="2.5"/><circle cx="150" cy="54" r="2.5"/></g>
   </svg>`,
-  // wicked-crew — an orchestration daemon: one governed core, a phase-lifecycle
-  // arc, and worker subprocess nodes dispatched along it.
+  // wicked-crew — an agentic execution platform: one governed core, a
+  // phase-lifecycle arc, and worker-agent nodes it harnesses along it.
   daemon: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <path d="M46 128 A104 104 0 0 1 254 128" opacity="0.45"/>
     <rect x="128" y="70" width="44" height="44" rx="10"/>
@@ -97,17 +120,32 @@ const MOTIFS = {
     <g fill="currentColor" stroke="none"><circle cx="150" cy="38" r="6"/><circle cx="64" cy="50" r="6"/><circle cx="236" cy="50" r="6"/><circle cx="50" cy="128" r="6"/><circle cx="250" cy="128" r="6"/></g>
     <path d="M46 40l7 7l-7 7M247 40l7 7l-7 7" stroke-width="1.2" opacity="0.6"/>
   </svg>`,
+  // wicked-brain — linked knowledge: documents joined by [[backlinks]].
+  brain: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect x="40" y="44" width="52" height="66" rx="6"/><path d="M52 62h28M52 74h20M52 86h30"/>
+    <rect x="208" y="60" width="52" height="66" rx="6"/><path d="M220 78h28M220 90h20M220 102h30"/>
+    <path d="M92 78c40 6 72 18 116 6" stroke-dasharray="4 5"/>
+    <g fill="currentColor" stroke="none"><circle cx="150" cy="86" r="4"/><circle cx="150" cy="130" r="2.5"/></g>
+    <path d="M132 128h36M138 122v12M162 122v12" opacity="0.7"/>
+  </svg>`,
+  // wicked-bus — a durable event fabric: events flowing along tiered tracks.
+  bus: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M20 58h260M20 86h260M20 114h260" opacity="0.4"/>
+    <g fill="currentColor" stroke="none"><circle cx="70" cy="58" r="5"/><circle cx="150" cy="58" r="5"/><circle cx="214" cy="58" r="5"/><circle cx="104" cy="86" r="5"/><circle cx="186" cy="86" r="5"/><circle cx="248" cy="86" r="5"/><circle cx="60" cy="114" r="5"/><circle cx="140" cy="114" r="5"/><circle cx="220" cy="114" r="5"/></g>
+    <path d="M280 58l-10-5v10zM280 86l-10-5v10zM280 114l-10-5v10z" fill="currentColor" stroke="none" opacity="0.7"/>
+  </svg>`,
 };
 
-const phases = PHASES.map((phase, pi) => {
+const strata = STRATA.map((stratum, pi) => {
   const cards = SITES
-    .filter((s) => s.phase === phase && s.name !== current)
+    .filter((s) => s.stratum === stratum && s.name !== current)
     .map((s) => ({
       ...s,
       art: MOTIFS[s.motif] || MOTIFS.graph,
       url: s.href.replace(/^https?:\/\//, ''),
+      hasSite: !/github\.com/.test(s.href),
     }));
-  return { phase, index: String(pi + 1).padStart(2, '0'), cards };
+  return { stratum, index: String(pi + 1).padStart(2, '0'), cards };
 }).filter((p) => p.cards.length > 0);
 ---
 
@@ -115,21 +153,21 @@ const phases = PHASES.map((phase, pi) => {
   <div class="sg-inner">
     <div class="sg-head">
       <span class="kicker sg-kicker">The wicked-* family</span>
-      <h2 class="sg-h2" id="sg-h">One toolbox. Three jobs.</h2>
-      <p class="sg-sub">Build it, operate it, and stand it all on a shared foundation — local-first, no cloud dependency, no checkmark you can't re-run.</p>
+      <h2 class="sg-h2" id="sg-h">One machine. Three strata.</h2>
+      <p class="sg-sub">Building Blocks at the base, Utilities in the middle, Solutions on top — local-first, no cloud dependency, no checkmark you can't re-run. Every card links to its site and its repo.</p>
     </div>
 
     <div class="sg-family">
-      {phases.map((p) => (
+      {strata.map((p) => (
         <div class="sg-phase">
           <div class="sg-phase-rail">
             <span class="sg-phase-idx">{p.index}</span>
-            <span class="sg-phase-name">{p.phase}</span>
+            <span class="sg-phase-name">{p.stratum}</span>
             <span class="sg-phase-tick" aria-hidden="true"></span>
           </div>
           <div class="sg-phase-cards">
             {p.cards.map((s) => (
-              <a class="sg-card" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>
+              <div class="sg-card">
                 <span class="sg-card-art" set:html={s.art} />
                 <span class="sg-card-glow" aria-hidden="true"></span>
                 <span class="sg-scan" aria-hidden="true"></span>
@@ -142,9 +180,15 @@ const phases = PHASES.map((phase, pi) => {
                   <span class="sg-tags">
                     {s.tags.map((t) => <span class="sg-chip">{t}</span>)}
                   </span>
-                  <span class="sg-visit">{s.url}<span class="sg-arrow">↗</span></span>
+                  <span class="sg-links">
+                    {s.hasSite && (
+                      <a class="sg-visit sg-primary" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>{s.url}<span class="sg-arrow">↗</span></a>
+                    )}
+                    <a class={`sg-repo${s.hasSite ? '' : ' sg-primary'}`} href={s.repo} aria-label={`${s.name} on GitHub`}>
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>{s.hasSite ? 'repo' : 'github ↗'}</a>
+                  </span>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </div>
@@ -157,7 +201,6 @@ const phases = PHASES.map((phase, pi) => {
 .same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center;
   --sg-accent: var(--accent); }
 [data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 82%, #fff); }
-/* Phones: content-height instead of 100svh so the stacked bands don't leave a dead band. */
 @media(max-width:768px){ .same-garden{ min-height:auto; justify-content:flex-start; padding:clamp(40px,6vh,64px) 0; } }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 
@@ -167,12 +210,11 @@ const phases = PHASES.map((phase, pi) => {
 .same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
 .same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
-.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:60ch; line-height:1.6; }
+.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:64ch; line-height:1.6; }
 
-/* ── family: vertical progression of phase bands ────────────────────────── */
+/* ── family: vertical stack of strata bands ─────────────────────────────── */
 .same-garden .sg-family{ display:flex; flex-direction:column; gap:clamp(18px,3vh,30px); }
 .same-garden .sg-phase{ display:grid; grid-template-columns:168px minmax(0,1fr); gap:28px; align-items:start; position:relative; }
-/* the connecting spine between phases — reinforces the Build→…→Foundation flow */
 .same-garden .sg-phase::before{ content:''; position:absolute; left:11px; top:34px; bottom:calc(-1 * clamp(18px,3vh,30px) - 6px); width:1px; background:linear-gradient(var(--hairline-strong), transparent); }
 .same-garden .sg-phase:last-child::before{ display:none; }
 
@@ -183,23 +225,20 @@ const phases = PHASES.map((phase, pi) => {
 
 .same-garden .sg-phase-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:16px; }
 
-/* ── product card ───────────────────────────────────────────────────────── */
+/* ── product card (stretched primary link + independent repo link) ──────── */
 .same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; min-height:230px;
   border:1px solid var(--hairline-strong); border-radius:14px;
   background:color-mix(in oklab, var(--surface) 78%, transparent);
-  text-decoration:none; isolation:isolate;
+  isolation:isolate;
   transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
 .same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 58%, var(--hairline-strong)); transform:translateY(-5px); box-shadow:0 30px 60px -30px rgba(0,0,0,.72); }
-.same-garden .sg-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+.same-garden .sg-card:focus-within{ border-color:color-mix(in oklab, var(--accent) 58%, var(--hairline-strong)); }
 
-/* motif watermark */
 .same-garden .sg-card-art{ position:absolute; inset:0; z-index:-2; color:var(--ink); opacity:.06; transition:opacity .3s var(--ease), color .3s var(--ease); }
 .same-garden .sg-card-art svg{ position:absolute; inset:0; width:100%; height:100%; }
 .same-garden .sg-card:hover .sg-card-art{ opacity:.13; color:var(--accent); }
-/* warm accent glow, top-right — echoes the site background pop */
 .same-garden .sg-card-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none;
   background:radial-gradient(ellipse 62% 78% at 100% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%); }
-/* hover scan sweep */
 .same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 12px var(--accent); opacity:0; z-index:0; }
 .same-garden .sg-card:hover .sg-scan{ animation:sg-scan 1.05s var(--ease); }
 @keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.85; } 88%{ opacity:.85; } 100%{ transform:translateY(240px); opacity:0; } }
@@ -215,10 +254,16 @@ const phases = PHASES.map((phase, pi) => {
 .same-garden .sg-tags{ display:flex; flex-wrap:wrap; gap:6px; min-width:0; }
 .same-garden .sg-chip{ font-family:var(--font-mono); font-size:.58rem; letter-spacing:.04em; color:var(--muted); border:1px solid var(--hairline-strong); border-radius:999px; padding:3px 8px; white-space:nowrap; transition:border-color .22s var(--ease), color .22s var(--ease); }
 .same-garden .sg-card:hover .sg-chip{ border-color:color-mix(in oklab, var(--accent) 34%, var(--hairline-strong)); color:var(--ink); }
-.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint); white-space:nowrap; flex-shrink:0; transition:color .22s var(--ease); }
+.same-garden .sg-links{ display:inline-flex; align-items:center; gap:12px; flex-shrink:0; }
+.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
 .same-garden .sg-card:hover .sg-visit{ color:var(--sg-accent); }
 .same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
+.same-garden .sg-repo{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.62rem; letter-spacing:.03em; color:var(--muted); white-space:nowrap; text-decoration:none; position:relative; z-index:3; transition:color .22s var(--ease); }
+.same-garden .sg-repo:hover{ color:var(--ink); }
+/* stretched primary link — covers the whole card (site when present, else repo) */
+.same-garden .sg-primary::after{ content:''; position:absolute; inset:0; z-index:2; }
+.same-garden .sg-card a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 @media(max-width:768px){
