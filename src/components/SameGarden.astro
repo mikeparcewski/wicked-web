@@ -298,6 +298,9 @@ const groups = GROUPS.map((role, pi) => {
 .same-garden .sg-repo:hover{ color:var(--ink); }
 /* stretched primary link — covers the whole card (site when present, else repo) */
 .same-garden .sg-primary::after{ content:''; position:absolute; inset:0; z-index:2; }
+/* when the repo link IS the stretched primary (repo-only cards), drop its own
+   positioning context so ::after resolves against .sg-card and covers it fully */
+.same-garden .sg-repo.sg-primary{ position:static; }
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
