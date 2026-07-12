@@ -1,3 +1,12 @@
+```
+          _      _            _                   _
+__      _(_) ___| | _____  __| |    __      _____| |__
+\ \ /\ / / |/ __| |/ / _ \/ _` |____\ \ /\ / / _ \ '_ \
+ \ V  V /| | (__|   <  __/ (_| |_____\ V  V /  __/ |_) |
+  \_/\_/ |_|\___|_|\_\___|\__,_|      \_/\_/ \___|_.__/
+
+```
+
 # wicked-web
 
 Shared chrome for the **wicked-\*** family sites — one place to update the look so every site stays consistent.
