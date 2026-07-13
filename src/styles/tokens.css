@@ -54,6 +54,9 @@
   ::selection{background:var(--accent);color:var(--accent-ink)}
   a{color:var(--link);text-decoration:none}
   :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+  /* fluid gutter matches the Topbar/Footer inner padding so header, content, and
+     footer stay left-aligned at every width. clamps to 28px at ≥700px, so desktop
+     rendering is unchanged; only narrow viewports tighten to 16px. */
+  .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
   .kicker{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:500}
 }

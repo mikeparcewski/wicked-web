@@ -78,7 +78,7 @@ const {
 /* self-contained width constraint — must NOT depend on a host-site .wrap rule
    (sites with their own token CSS don't define one, which blew the footer to
    full width). Scoped to .footer so it never collides. */
-.footer .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.footer .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
 [data-theme="light"] .footer{background:rgba(24,47,60,.94)}
 .footer .kicker{font-size:1.02rem}
 .footer-main{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-start;gap:53px 67px;padding:53px 0 34px}
@@ -109,9 +109,20 @@ const {
 /* RESPONSIVE (footer) */
 @media(max-width:960px){
   .footer-main{flex-wrap:wrap}
-  .footer-cols{grid-template-columns:repeat(2,1fr)}
+  /* once the nav block wraps onto its own line, margin-left:auto right-shifts the
+     whole cluster — reset it so the links align left under the brand */
+  .footer-cols{grid-template-columns:repeat(2,1fr);margin-left:0}
 }
+/* PHONES: brand block on top, every product link as ONE flat vertical list
+   beneath it — no grid, no columns. Each loop-role label is folded in as a
+   small left-hand tag on its product row; crew keeps its featured accent. */
 @media(max-width:600px){
-  .footer-cols{grid-template-columns:1fr}
+  .footer-main{gap:32px;padding:40px 0 28px}
+  .footer-brand-block{max-width:none}
+  /* margin-left:0 already inherited from the ≤960px block above */
+  .footer-cols{display:flex;flex-direction:column;gap:14px;width:100%;padding-top:0}
+  .footer-cols>div{display:flex;align-items:baseline;gap:16px}
+  .footer .footer-col-head{margin-bottom:0;flex:0 0 6.5rem;font-size:.72rem;line-height:1.35}
+  .footer-links{flex:1;gap:8px}
 }
 </style>

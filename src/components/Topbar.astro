@@ -13,6 +13,10 @@ const {
   pkg = '',
   repo = 'https://github.com/mikeparcewski',
 } = Astro.props;
+
+/* Single source for the Medium wordmark glyph — referenced by both the desktop
+   icon button and the mobile-menu row so the two paths can't drift. */
+const MEDIUM_GLYPH_PATH = 'M19.938 5.686L18.651 6.92a.376.376 0 0 0-.143.362v9.067a.376.376 0 0 0 .143.361l1.257 1.234v.271h-6.322v-.27l1.302-1.265c.128-.128.128-.165.128-.36V8.99l-3.62 9.195h-.49L6.69 8.99v6.163a.85.85 0 0 0 .233.707l1.694 2.054v.271H3.815v-.27L5.51 15.86a.82.82 0 0 0 .218-.707V8.027a.624.624 0 0 0-.203-.527L4.019 5.686v-.27h4.674l3.613 7.923 3.176-7.924h4.456v.271z';
 ---
 
 <!-- TOPBAR -->
@@ -46,7 +50,7 @@ const {
         </div>
       </div>
       <a href="https://medium.com/@mike.parcewski" class="icon-btn nav-inline" target="_blank" rel="noopener" aria-label="Medium" data-tip="writing">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.938 5.686L18.651 6.92a.376.376 0 0 0-.143.362v9.067a.376.376 0 0 0 .143.361l1.257 1.234v.271h-6.322v-.27l1.302-1.265c.128-.128.128-.165.128-.36V8.99l-3.62 9.195h-.49L6.69 8.99v6.163a.85.85 0 0 0 .233.707l1.694 2.054v.271H3.815v-.27L5.51 15.86a.82.82 0 0 0 .218-.707V8.027a.624.624 0 0 0-.203-.527L4.019 5.686v-.27h4.674l3.613 7.923 3.176-7.924h4.456v.271z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d={MEDIUM_GLYPH_PATH}/></svg>
       </a>
       <a class="icon-btn nav-inline" href={repo} target="_blank" rel="noopener" aria-label="GitHub" data-tip="github">
         <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -72,7 +76,7 @@ const {
     <a href="https://wt.wickedagile.com" class="mm-item"><span class="mm-label">testing <span class="di-loop">(Verify)</span></span><span class="dropdown-tag">site ↗</span></a>
     <a href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" class="mm-item"><span class="mm-label">bus <span class="di-loop">(Fabric)</span></span><span class="dropdown-tag">repo ↗</span></a>
     <div class="dropdown-divider"></div>
-    <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item">Medium <span class="dropdown-tag">writing ↗</span></a>
+    <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={MEDIUM_GLYPH_PATH}/></svg>Medium</span> <span class="dropdown-tag">writing ↗</span></a>
     <a href={repo} target="_blank" rel="noopener" class="mm-item">GitHub <span class="dropdown-tag">this repo ↗</span></a>
   </nav>
 </header>
@@ -81,7 +85,7 @@ const {
 /* TOPBAR */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--topbar-h);background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline-strong)}
 [data-theme="light"] .topbar{background:rgba(24,47,60,.94)}
-.topbar__inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 28px;max-width:1240px;margin:0 auto}
+.topbar__inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 clamp(16px,4vw,28px);max-width:1240px;margin:0 auto}
 .wordmark{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:900;font-stretch:125%;font-size:1.22rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .wordmark-mark{width:28px;height:28px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex-shrink:0}
 .wordmark .wk{color:var(--ink)}
@@ -141,6 +145,11 @@ const {
 .mm-item--crew:hover,.mm-item--crew:active{background:color-mix(in oklab,var(--accent) 15%,transparent)}
 /* mirror .di-label so a long crew label truncates instead of overflowing the row */
 .mm-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Medium row: small inline brand glyph so it reads like the other rows (which
+   carry an identity) instead of a bare word. Sized in em so it tracks the label
+   font and scales with any viewport clamp on the row text. */
+.mm-glyph{width:.95em;height:.95em;margin-right:.5em;vertical-align:-.13em;opacity:.82;flex-shrink:0;transition:opacity .15s}
+.mm-item:hover .mm-glyph,.mm-item:active .mm-glyph{opacity:1}
 .mm-item .dropdown-tag{font-family:var(--font-mono);font-weight:400;font-size:.62rem;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0}
 @keyframes mm-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){
