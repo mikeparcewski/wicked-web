@@ -114,9 +114,10 @@ const {
 .dropdown-item--crew{position:relative;background:color-mix(in oklab,var(--accent) 9%,transparent)}
 .dropdown-item--crew::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:2px;border-radius:2px;background:var(--accent)}
 .dropdown-item--crew .di-loop{color:var(--accent)}
-/* keep the featured tint on hover/active — the generic .dropdown-item:hover is
-   more specific than the single .dropdown-item--crew class, so without its own
-   hover rule the crew highlight disappears the moment you point at it */
+/* the resting .dropdown-item--crew tint (one class) is outranked by
+   .dropdown-item:hover (class + pseudo-class), so crew needs its own hover/active
+   rule — same specificity as the generic hover, winning by later source order —
+   or the featured highlight vanishes the moment you point at it */
 .dropdown-item--crew:hover,.dropdown-item--crew:active{background:color-mix(in oklab,var(--accent) 16%,transparent)}
 .dropdown-divider{height:1px;background:var(--hairline);margin:4px 0}
 
@@ -135,7 +136,8 @@ const {
 .mm-item:hover,.mm-item:active{background:rgba(255,218,25,.14)}
 .mm-item--crew{background:color-mix(in oklab,var(--accent) 8%,transparent);box-shadow:inset 2px 0 0 var(--accent)}
 .mm-item--crew .di-loop{color:var(--accent)}
-/* same specificity fix on mobile — keep the featured tint on tap/hover */
+/* same on mobile: a dedicated crew hover/active rule, or the generic
+   .mm-item:hover,.mm-item:active background replaces the featured tint on tap */
 .mm-item--crew:hover,.mm-item--crew:active{background:color-mix(in oklab,var(--accent) 15%,transparent)}
 /* mirror .di-label so a long crew label truncates instead of overflowing the row */
 .mm-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
