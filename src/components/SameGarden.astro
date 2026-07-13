@@ -2,14 +2,16 @@
 /**
  * SameGarden.astro — the shared "product family" showcase for the wicked family.
  *
- * The one canonical framing is THE LOOP around the harness (never a ranked
- * stack): intent → STEER → EQUIP → (your harness) → VERIFY · GOVERN → record,
- * all under human authority, each run feeding the next. wicked-bus is the
- * FABRIC beneath the loop; wicked-interactive is a SURFACE beside it. Products
- * are grouped by their loop role, in loop order. Each product is a designed
- * card with its own motif, the canonical headline + tagline, tag chips, and —
- * ALWAYS — a GitHub repo link alongside its live site (a stretched primary link
- * opens the site; the repo link sits above it).
+ * The one canonical framing: wicked-crew is THE CONTAINER — the harness for your
+ * agent harnesses — and the loop runs INSIDE it (never a ranked stack). crew is
+ * featured as the flagship; the other six are its loop: intent → STEER → EQUIP →
+ * (your harness) → VERIFY → record, all under human authority, each run feeding
+ * the next. wicked-bus is the FABRIC beneath the loop; wicked-interactive is a
+ * SURFACE beside it. wicked-core is not a card — it's the engine inside crew.
+ * Loop products are grouped by their loop role, in loop order. Each product is a
+ * designed card with its own motif, the canonical headline + tagline, tag chips,
+ * and — ALWAYS — a GitHub repo link alongside its live site (a stretched primary
+ * link opens the site; the repo link sits above it).
  *
  * Brand: the family is "wicked"; the owned public handle is "wickedagile".
  * wicked-garden is a PEER product (Steer), never the umbrella.
@@ -20,15 +22,19 @@
  */
 const { current = '' } = Astro.props;
 
-// Loop roles, in loop order: Steer → Equip → Verify → Govern, then the Fabric
-// beneath and the Surface beside. ONE home per product; garden's second arc
-// (→Equip) and testing's (→Equip) are named in copy, never a second slot.
-const GROUPS = ['Steer', 'Equip', 'Verify', 'Govern', 'Fabric', 'Surface'];
+// Loop roles, in loop order: Steer → Equip → Verify, then the Fabric beneath and
+// the Surface beside. crew is NOT a loop band — it's the container (featured
+// above), so there is no "Govern" band any more; governance is what the harness
+// does. ONE home per product; garden's second arc (→Equip) and testing's
+// (→Equip) are named in copy, never a second slot.
+const GROUPS = ['Steer', 'Equip', 'Verify', 'Fabric', 'Surface'];
 
-// The MARKETED family. estate + the four loop products have live sites; brain,
-// bus, and core are repo-only. wickedagile is the handle, never a card. Absorbed
-// packages get no card (studio ships inside crew). Each card's headline +
-// tagline are the canonical copy for that product.
+// The MARKETED family: crew (the container) + six loop products. crew, estate,
+// testing, and interactive have live sites (with garden that's FIVE live sites);
+// brain and bus are repo-only. wicked-core is not a card — it's the engine inside
+// crew. wickedagile is the handle, never a card. Absorbed packages get no card
+// (studio ships inside crew). Each card's headline + tagline are the canonical
+// copy for that product; crew is flagged `featured` and rendered as the flagship.
 const SITES = [
   {
     name: 'wicked-garden', role: 'Steer', motif: 'trellis',
@@ -63,20 +69,12 @@ const SITES = [
     tags: ['MIT', 'npm'],
   },
   {
-    name: 'wicked-core', role: 'Govern', motif: 'core',
-    href: 'https://github.com/mikeparcewski/wicked-core',
-    repo: 'https://github.com/mikeparcewski/wicked-core',
-    tagline: 'The engine that makes "done" a mechanism, not a claim',
-    blurb: 'Workflow-as-data, dual gates, state re-derived from evidence.',
-    tags: ['Rust', 'engine', 'repo-only'],
-  },
-  {
-    name: 'wicked-crew', role: 'Govern', motif: 'daemon',
+    name: 'wicked-crew', role: 'Harness', motif: 'daemon', featured: true,
     href: 'https://wc.wickedagile.com',
     repo: 'https://github.com/mikeparcewski/wicked-crew',
-    tagline: 'The control room for governed agent delivery',
-    blurb: 'Drive, gate, and audit the work; the human stays in command.',
-    tags: ['MIT', 'npm', 'intent-driven'],
+    tagline: 'The control room the whole loop runs inside',
+    blurb: 'The harness for your agent harnesses: it drives, gates, and audits the coding-agent CLIs you already run as governed workers. Evaluator ≠ creator, "done" re-derived from evidence, the human in command. (Engine: wicked-core, inside.)',
+    tags: ['MIT', 'npm', 'the harness'],
   },
   {
     name: 'wicked-bus', role: 'Fabric', motif: 'bus',
@@ -132,15 +130,6 @@ const MOTIFS = {
     <g fill="currentColor" stroke="none"><circle cx="150" cy="38" r="6"/><circle cx="64" cy="50" r="6"/><circle cx="236" cy="50" r="6"/><circle cx="50" cy="128" r="6"/><circle cx="250" cy="128" r="6"/></g>
     <path d="M46 40l7 7l-7 7M247 40l7 7l-7 7" stroke-width="1.2" opacity="0.6"/>
   </svg>`,
-  // wicked-core — the governed engine: a driven core between two gates, evidence
-  // flowing in from the sides.
-  core: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="150" cy="85" r="34"/>
-    <circle cx="150" cy="85" r="11" fill="currentColor" stroke="none"/>
-    <g opacity="0.9"><path d="M150 40v-15M150 145v-15M95 85h-16M221 85h16M112 47l-11-11M188 123l11 11M188 47l11-11M112 123l-11 11"/></g>
-    <path d="M64 85 A86 86 0 0 1 236 85" opacity="0.3" stroke-dasharray="4 6"/>
-    <g fill="currentColor" stroke="none"><circle cx="64" cy="85" r="5"/><circle cx="236" cy="85" r="5"/></g>
-  </svg>`,
   // wicked-brain — linked knowledge: documents joined by [[backlinks]].
   brain: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <rect x="40" y="44" width="52" height="66" rx="6"/><path d="M52 62h28M52 74h20M52 86h30"/>
@@ -168,17 +157,59 @@ const groups = GROUPS.map((role, pi) => {
     }));
   return { role, index: String(pi + 1).padStart(2, '0'), cards };
 }).filter((p) => p.cards.length > 0);
+
+// crew is the container the loop runs inside — pulled out of the bands and
+// rendered as the flagship above them. Excluded on its own site (current).
+const flag = SITES.find((s) => s.featured && s.name !== current);
+const flagship = flag && {
+  ...flag,
+  art: MOTIFS[flag.motif] || MOTIFS.graph,
+  url: flag.href.replace(/^https?:\/\//, ''),
+};
 ---
 
 <section class="same-garden" aria-labelledby="sg-h">
   <div class="sg-inner">
     <div class="sg-head">
       <span class="kicker sg-kicker">The wicked family</span>
-      <h2 class="sg-h2" id="sg-h">One loop around the harness.</h2>
-      <p class="sg-sub">You can't stabilize the harness — the models and CLIs shift under you. So the durable system sits around it: intent → steer → equip → (your harness) → verify · govern → record, under human authority, each run feeding the next. wicked-bus is the fabric beneath; wicked-interactive a surface beside. Local-first — every card links to its site and its repo.</p>
+      <h2 class="sg-h2" id="sg-h">The harness, and the loop it runs.</h2>
+      <p class="sg-sub">wicked-crew is the container the whole loop runs inside — the control room, the harness for your agent harnesses (wicked-core is its engine, not a separate product). Around it the loop turns: intent → steer → equip → (your harness) → verify → record, under human authority, each run feeding the next. wicked-bus is the fabric beneath; wicked-interactive a surface beside. Five product sites are live; local-first — every card links to its site and its repo.</p>
     </div>
 
     <div class="sg-family">
+      {flagship && (
+        <div class="sg-phase sg-phase--flagship">
+          <div class="sg-phase-rail">
+            <span class="sg-phase-node" aria-hidden="true"></span>
+            <span class="sg-phase-name">The harness</span>
+            <span class="sg-phase-tick" aria-hidden="true"></span>
+            <span class="sg-phase-note">the container the loop runs inside</span>
+          </div>
+          <div class="sg-phase-cards">
+            <div class="sg-card sg-card--flagship">
+              <span class="sg-flag-ribbon" aria-hidden="true">Flagship</span>
+              <span class="sg-card-art" set:html={flagship.art} />
+              <span class="sg-card-glow" aria-hidden="true"></span>
+              <span class="sg-scan" aria-hidden="true"></span>
+              <div class="sg-card-body">
+                <span class="sg-eyebrow"><span class="sg-dot" aria-hidden="true"></span>{flagship.name}</span>
+                <h3 class="sg-headline">{flagship.tagline}</h3>
+                <p class="sg-blurb">{flagship.blurb}</p>
+              </div>
+              <div class="sg-card-foot">
+                <span class="sg-tags">
+                  {flagship.tags.map((t) => <span class="sg-chip">{t}</span>)}
+                </span>
+                <span class="sg-links">
+                  <a class="sg-visit sg-primary" href={flagship.href} aria-label={`Visit ${flagship.name}: ${flagship.tagline}`}>{flagship.url}<span class="sg-arrow">↗</span></a>
+                  <a class="sg-repo" href={flagship.repo} aria-label={`${flagship.name} on GitHub`}>
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>repo</a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {groups.map((p) => (
         <div class="sg-phase">
           <div class="sg-phase-rail">
@@ -302,6 +333,16 @@ const groups = GROUPS.map((role, pi) => {
    positioning context so ::after resolves against .sg-card and covers it fully */
 .same-garden .sg-repo.sg-primary{ position:static; }
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+/* ── flagship: crew, the container the loop runs inside ─────────────────────── */
+.same-garden .sg-phase-note{ font-family:var(--font-mono); font-size:.58rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); line-height:1.4; margin-top:8px; max-width:150px; }
+.same-garden .sg-card--flagship{ min-height:200px; border-color:color-mix(in oklab, var(--accent) 46%, var(--hairline-strong)); background:color-mix(in oklab, var(--surface) 90%, transparent); box-shadow:0 0 0 1px color-mix(in oklab, var(--accent) 22%, transparent); }
+.same-garden .sg-card--flagship:hover{ border-color:color-mix(in oklab, var(--accent) 66%, var(--hairline-strong)); box-shadow:0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent), 0 30px 60px -30px rgba(0,0,0,.72); }
+.same-garden .sg-card--flagship .sg-card-art{ opacity:.11; }
+.same-garden .sg-card--flagship .sg-headline{ font-size:1.62rem; max-width:24ch; }
+.same-garden .sg-card--flagship .sg-blurb{ max-width:60ch; }
+.same-garden .sg-card--flagship .sg-dot{ background:var(--sg-accent); }
+.same-garden .sg-flag-ribbon{ position:absolute; top:14px; right:14px; z-index:2; pointer-events:none; font-family:var(--font-mono); font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent); padding:3px 10px; border-radius:999px; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 @media(max-width:768px){
