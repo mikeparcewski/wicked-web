@@ -101,7 +101,10 @@ const PLANES = [
   products: p.products.map((s) => ({
     ...s,
     here: s.name === current,
-    url: s.href.replace(/^https?:\/\//, ''),
+    // string ops, not a regex literal: the Astro 4 compiler mis-parses regex
+    // literals in shared-component frontmatter when imported via alias (see
+    // the README gotcha) — consumer sites still run Astro 4.
+    url: s.href.replace('https://', '').replace('http://', ''),
   })),
 }));
 ---
