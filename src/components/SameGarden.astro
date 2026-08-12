@@ -1,365 +1,289 @@
 ---
 /**
- * SameGarden.astro — the shared "product family" showcase for the wicked family.
+ * SameGarden.astro — THE four-plane map. The one canonical framing of the
+ * wicked platform, embeddable on every family site:
  *
- * The one canonical framing: wicked-crew is THE CONTAINER — the harness for your
- * agent harnesses — and the loop runs INSIDE it (never a ranked stack). crew is
- * featured as the flagship; the other six are its loop: intent → STEER → EQUIP →
- * (your harness) → VERIFY → record, all under human authority, each run feeding
- * the next. wicked-bus is the FABRIC beneath the loop; wicked-interactive is a
- * SURFACE beside it. wicked-core is not a card — it's the engine inside crew.
- * Loop products are grouped by their loop role, in loop order. Each product is a
- * designed card with its own motif, the canonical headline + tagline, tag chips,
- * and — ALWAYS — a GitHub repo link alongside its live site (a stretched primary
- * link opens the site; the repo link sits above it).
+ *   two skins, one control plane, one catalog, one record.
  *
- * Brand: the family is "wicked"; the owned public handle is "wickedagile".
- * wicked-garden is a PEER product (Steer), never the umbrella.
+ *     studio ◄─────► interactive    EXPERIENCE   two front doors, one project model
+ *            crew                   CONTROL      intent in → verified work out
+ *           garden                  CAPABILITY   the catalog agents act through
+ *           estate                  FOUNDATION   the system of record
+ *
+ * Planes stack top-to-bottom with the CONTRACT between each pair named on the
+ * seam. Retired/absorbed packages get no card: testing's skills live in garden
+ * (the qe fleet) and its gate lives in crew; bus/vault/ledger are internal to
+ * the foundation; wicked-core is the engine inside crew.
+ *
+ * INTERACTION MODEL (CSS-only — no JS, so it degrades and travels well):
+ *   - hover OR keyboard-focus into a plane → the plane lights in its hue
+ *     (border, glow, role caption) and BOTH adjacent contract seams light up,
+ *     showing what flows in and out of that plane.
+ *   - sibling planes dim slightly while one is lit (`:has()`; without support
+ *     the lit plane still lights — dimming is a progressive garnish).
+ *   - keyboard: product links are plain anchors, so Tab walks the map top to
+ *     bottom; :focus-within drives the exact same highlight as hover.
+ *   - reduced motion: all transitions drop; states still apply instantly.
  *
  * Prop:
- *   current — this site's package name; that card is excluded. Empty groups
- *             (e.g. the only member is `current`) are dropped.
+ *   current — this site's package name (e.g. "wicked-estate"). That product's
+ *             card renders as a non-link "you are here" marker so a site never
+ *             promotes itself, while the map stays complete.
  */
 const { current = '' } = Astro.props;
 
-// Loop roles, in loop order: Steer → Equip → Verify, then the Fabric beneath and
-// the Surface beside. crew is NOT a loop band — it's the container (featured
-// above), so there is no "Govern" band any more; governance is what the harness
-// does. ONE home per product; garden's second arc (→Equip) and testing's
-// (→Equip) are named in copy, never a second slot.
-const GROUPS = ['Steer', 'Equip', 'Verify', 'Fabric', 'Surface'];
+const GH = 'https://github.com/mikeparcewski';
 
-// The MARKETED family: crew (the container) + six loop products. crew, estate,
-// testing, and interactive have live sites (with garden that's FIVE live sites);
-// brain and bus are repo-only. wicked-core is not a card — it's the engine inside
-// crew. wickedagile is the handle, never a card. Absorbed packages get no card
-// (studio ships inside crew). Each card's headline + tagline are the canonical
-// copy for that product; crew is flagged `featured` and rendered as the flagship.
-const SITES = [
+const PLANES = [
   {
-    name: 'wicked-garden', role: 'Steer', motif: 'trellis',
-    href: 'https://wg.wickedagile.com',
-    repo: 'https://github.com/mikeparcewski/wicked-garden',
-    tagline: 'Steering before execution',
-    blurb: "Reads each prompt's work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can't do alone.",
-    tags: ['MIT', 'npm', 'Claude plugin'],
+    key: 'experience',
+    name: 'Experience',
+    role: 'Two front doors, one project model',
+    owns: 'Rendering and editing surfaces — nothing semantic lives here.',
+    products: [
+      {
+        name: 'wicked-interactive', kind: 'creator skin',
+        href: 'https://wi.wickedagile.com', repo: `${GH}/wicked-interactive`, hasSite: true,
+        blurb: 'Describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video.',
+      },
+      {
+        name: 'studio', kind: 'coder skin',
+        href: `${GH}/wicked-crew/tree/main/packages/studio`, repo: `${GH}/wicked-crew/tree/main/packages/studio`, hasSite: false,
+        blurb: 'The run board: submit intent, watch phases, answer gates. A pure client of crew’s API — ships inside wicked-crew.',
+      },
+    ],
+    contract: 'submit intent · watch the run · answer gates — one crew API, both skins are pure clients',
   },
   {
-    name: 'wicked-estate', role: 'Equip', motif: 'graph',
-    href: 'https://we.wickedagile.com',
-    repo: 'https://github.com/mikeparcewski/wicked-estate',
-    tagline: 'Your live technical environment, queryable',
-    blurb: 'Requirements↔implementation, blast-radius, infra + policy relationships, operational history.',
-    tags: ['crates.io', 'Rust', 'MCP'],
+    key: 'control',
+    name: 'Control',
+    role: 'Intent in, verified work out',
+    owns: 'Orchestration, governance, gates — runs the coding agents you already use as governed workers.',
+    products: [
+      {
+        name: 'wicked-crew', kind: 'the control plane',
+        href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
+        blurb: 'Evaluator ≠ creator — no agent grades its own homework. “Done” is re-derived from evidence, never asserted. Workflows are data.',
+      },
+    ],
+    contract: 'invokes skills as governed workers — deny dominates, every verdict lands in the record',
   },
   {
-    name: 'wicked-brain', role: 'Equip', motif: 'brain',
-    href: 'https://github.com/mikeparcewski/wicked-brain',
-    repo: 'https://github.com/mikeparcewski/wicked-brain',
-    tagline: 'The learning layer',
-    blurb: 'Domain, requirements, decisions and learnings the agent can search, challenge, correct, and trace to source — what learns into estate, distinct from its code graph.',
-    tags: ['MIT', 'npm', 'repo-only'],
+    key: 'capability',
+    name: 'Capability',
+    role: 'The catalog — what agents can do',
+    owns: 'Skills, tools, playbooks, councils; the QE specialist fleet. The only sanctioned way agents touch the record.',
+    products: [
+      {
+        name: 'wicked-garden', kind: 'the catalog',
+        href: 'https://wg.wickedagile.com', repo: `${GH}/wicked-garden`, hasSite: true,
+        blurb: 'Multi-model review councils, graph-aware refactors, repo playbooks — plus an open naming contract to ship your own pack.',
+      },
+    ],
+    contract: 'reads & writes the record through its contract — never around it',
   },
   {
-    name: 'wicked-testing', role: 'Verify', motif: 'bridge',
-    href: 'https://wt.wickedagile.com',
-    repo: 'https://github.com/mikeparcewski/wicked-testing',
-    tagline: 'No agent grades its own homework',
-    blurb: 'An enforced wall between the agent that runs the tests and the one that judges them.',
-    tags: ['MIT', 'npm'],
+    key: 'foundation',
+    name: 'Foundation',
+    role: 'The system of record',
+    owns: 'Code graph · memory · knowledge · evidence · events. Zero-infra and local-first today; a team profile is on the roadmap.',
+    products: [
+      {
+        name: 'wicked-estate', kind: 'the record',
+        href: 'https://we.wickedagile.com', repo: `${GH}/wicked-estate`, hasSite: true,
+        blurb: 'A 75-language code graph, memory, and knowledge in one binary (MCP) — including the injected edges grep never sees.',
+      },
+    ],
+    contract: null,
   },
-  {
-    name: 'wicked-crew', role: 'Control plane', motif: 'daemon', featured: true,
-    href: 'https://wc.wickedagile.com',
-    repo: 'https://github.com/mikeparcewski/wicked-crew',
-    tagline: 'The control room the whole loop runs inside',
-    blurb: 'The harness for your agent harnesses: it drives, gates, and audits the coding-agent CLIs you already run as governed workers. Evaluator ≠ creator, "done" re-derived from evidence, the human in command. (Engine: wicked-core, inside.)',
-    tags: ['MIT', 'npm', 'control plane'],
-  },
-  {
-    name: 'wicked-bus', role: 'Fabric', motif: 'bus',
-    href: 'https://github.com/mikeparcewski/wicked-bus',
-    repo: 'https://github.com/mikeparcewski/wicked-bus',
-    tagline: 'The durable nervous system beneath it all',
-    blurb: 'Local-first, at-least-once, replayable; how the loop coordinates around the harness.',
-    tags: ['npm', 'durable', 'repo-only'],
-  },
-  {
-    name: 'wicked-interactive', role: 'Surface', motif: 'storyboard',
-    href: 'https://wi.wickedagile.com',
-    repo: 'https://github.com/mikeparcewski/wicked-interactive',
-    tagline: 'A creative surface on the same substrate',
-    blurb: "Describe it, watch it build, ship HTML/PDF/deck. It composes the family's building blocks; it does not close the loop.",
-    tags: ['MIT', 'npm', 'Claude plugin'],
-  },
-];
-
-// Faint per-product family motifs (recolour via currentColor).
-const MOTIFS = {
-  graph: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <line x1="150" y1="86" x2="70" y2="36"/><line x1="150" y1="86" x2="44" y2="120"/><line x1="150" y1="86" x2="220" y2="40"/><line x1="150" y1="86" x2="258" y2="120"/><line x1="150" y1="86" x2="110" y2="150"/><line x1="220" y1="40" x2="284" y2="20"/><line x1="44" y1="120" x2="20" y2="150"/><line x1="70" y1="36" x2="86" y2="8"/>
-    <g fill="currentColor" stroke="none"><circle cx="150" cy="86" r="7"/><circle cx="70" cy="36" r="3.5"/><circle cx="44" cy="120" r="3.5"/><circle cx="220" cy="40" r="4.5"/><circle cx="258" cy="120" r="3.5"/><circle cx="110" cy="150" r="3"/><circle cx="284" cy="20" r="2.5"/><circle cx="20" cy="150" r="2.5"/><circle cx="86" cy="8" r="2.5"/></g>
-  </svg>`,
-  trellis: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g opacity="0.5"><path d="M50 0v170M120 0v170M190 0v170M260 0v170"/><path d="M0 55h300M0 115h300"/></g>
-    <path d="M62 170C40 130 82 108 60 70C46 42 70 30 58 0"/><path d="M232 170C254 130 212 108 234 70C248 42 224 30 236 0"/>
-    <path d="M58 56c-18-13-30-10-38-2c8 13 22 17 38 2z" fill="currentColor" stroke="none"/><path d="M236 98c18-13 30-10 38-2c-8 13-22 17-38 2z" fill="currentColor" stroke="none"/><path d="M60 112c-16-12-27-9-34-2c7 12 20 16 34 2z" fill="currentColor" stroke="none"/>
-  </svg>`,
-  storyboard: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <rect x="20" y="46" width="64" height="78" rx="6"/><path d="M32 70h40M32 86h28M32 102h44"/>
-    <rect x="118" y="46" width="64" height="78" rx="6"/><path d="M130 66l22-12v56M130 108h40"/>
-    <rect x="216" y="46" width="64" height="78" rx="6"/><circle cx="242" cy="74" r="11"/><path d="M228 110c12-26 24 8 32-6"/>
-    <path d="M88 85h18M92 78l9 7l-9 7"/><path d="M186 85h18M190 78l9 7l-9 7"/>
-  </svg>`,
-  bridge: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="150" cy="85" r="16"/>
-    <circle cx="52" cy="38" r="7"/><line x1="150" y1="85" x2="52" y2="38"/>
-    <circle cx="248" cy="38" r="7"/><line x1="150" y1="85" x2="248" y2="38"/>
-    <circle cx="40" cy="128" r="7"/><line x1="150" y1="85" x2="40" y2="128"/>
-    <circle cx="260" cy="128" r="7"/><line x1="150" y1="85" x2="260" y2="128"/>
-    <circle cx="150" cy="22" r="6"/><line x1="150" y1="85" x2="150" y2="22"/>
-    <g fill="currentColor" stroke="none"><circle cx="92" cy="62" r="2.5"/><circle cx="208" cy="62" r="2.5"/><circle cx="86" cy="110" r="2.5"/><circle cx="212" cy="110" r="2.5"/><circle cx="150" cy="54" r="2.5"/></g>
-  </svg>`,
-  // wicked-crew — the control room: one governed hub, a phase arc, and the
-  // worker-agent nodes it drives and gates along it.
-  daemon: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <path d="M46 128 A104 104 0 0 1 254 128" opacity="0.45"/>
-    <rect x="128" y="70" width="44" height="44" rx="10"/>
-    <path d="M138 92h24M138 100h16" stroke-width="1.2"/>
-    <line x1="150" y1="70" x2="150" y2="40"/><line x1="132" y1="78" x2="66" y2="52"/><line x1="168" y1="78" x2="234" y2="52"/><line x1="130" y1="106" x2="52" y2="128"/><line x1="170" y1="106" x2="248" y2="128"/>
-    <g fill="currentColor" stroke="none"><circle cx="150" cy="38" r="6"/><circle cx="64" cy="50" r="6"/><circle cx="236" cy="50" r="6"/><circle cx="50" cy="128" r="6"/><circle cx="250" cy="128" r="6"/></g>
-    <path d="M46 40l7 7l-7 7M247 40l7 7l-7 7" stroke-width="1.2" opacity="0.6"/>
-  </svg>`,
-  // wicked-brain — linked knowledge: documents joined by [[backlinks]].
-  brain: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <rect x="40" y="44" width="52" height="66" rx="6"/><path d="M52 62h28M52 74h20M52 86h30"/>
-    <rect x="208" y="60" width="52" height="66" rx="6"/><path d="M220 78h28M220 90h20M220 102h30"/>
-    <path d="M92 78c40 6 72 18 116 6" stroke-dasharray="4 5"/>
-    <g fill="currentColor" stroke="none"><circle cx="150" cy="86" r="4"/><circle cx="150" cy="130" r="2.5"/></g>
-    <path d="M132 128h36M138 122v12M162 122v12" opacity="0.7"/>
-  </svg>`,
-  // wicked-bus — the durable fabric: events flowing along tiered tracks.
-  bus: `<svg viewBox="0 0 300 170" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <path d="M20 58h260M20 86h260M20 114h260" opacity="0.4"/>
-    <g fill="currentColor" stroke="none"><circle cx="70" cy="58" r="5"/><circle cx="150" cy="58" r="5"/><circle cx="214" cy="58" r="5"/><circle cx="104" cy="86" r="5"/><circle cx="186" cy="86" r="5"/><circle cx="248" cy="86" r="5"/><circle cx="60" cy="114" r="5"/><circle cx="140" cy="114" r="5"/><circle cx="220" cy="114" r="5"/></g>
-    <path d="M280 58l-10-5v10zM280 86l-10-5v10zM280 114l-10-5v10z" fill="currentColor" stroke="none" opacity="0.7"/>
-  </svg>`,
-};
-
-const groups = GROUPS.map((role, pi) => {
-  const cards = SITES
-    .filter((s) => s.role === role && s.name !== current)
-    .map((s) => ({
-      ...s,
-      art: MOTIFS[s.motif] || MOTIFS.graph,
-      url: s.href.replace(/^https?:\/\//, ''),
-      hasSite: !/github\.com/.test(s.href),
-    }));
-  return { role, index: String(pi + 1).padStart(2, '0'), cards };
-}).filter((p) => p.cards.length > 0);
-
-// crew is the container the loop runs inside — pulled out of the bands and
-// rendered as the flagship above them. Excluded on its own site (current).
-const flag = SITES.find((s) => s.featured && s.name !== current);
-const flagship = flag && {
-  ...flag,
-  art: MOTIFS[flag.motif] || MOTIFS.graph,
-  url: flag.href.replace(/^https?:\/\//, ''),
-};
+].map((p) => ({
+  ...p,
+  products: p.products.map((s) => ({
+    ...s,
+    here: s.name === current,
+    // string ops, not a regex literal: the Astro 4 compiler mis-parses regex
+    // literals in shared-component frontmatter when imported via alias (see
+    // the README gotcha) — consumer sites still run Astro 4.
+    url: s.href.replace('https://', '').replace('http://', ''),
+  })),
+}));
 ---
 
 <section class="same-garden" aria-labelledby="sg-h">
   <div class="sg-inner">
     <div class="sg-head">
-      <span class="kicker sg-kicker">The wicked family</span>
-      <h2 class="sg-h2" id="sg-h">The harness, and the loop it runs.</h2>
-      <p class="sg-sub">wicked-crew is the container the whole loop runs inside — the control room, the harness for your agent harnesses (wicked-core is its engine, not a separate product). Around it the loop turns: intent → steer → equip → (your harness) → verify → record, under human authority, each run feeding the next. wicked-bus is the fabric beneath; wicked-interactive a surface beside. Five product sites are live; local-first — every card links to its site and its repo.</p>
+      <span class="kicker sg-kicker">The wicked platform</span>
+      <h2 class="sg-h2" id="sg-h">Two skins. One control plane.<br>One catalog. One record.</h2>
+      <p class="sg-sub">Four planes, four contracts. Hover or tab through a plane to see its role and what crosses its seams — every cross-plane interaction goes through the contract, never around it.</p>
     </div>
 
-    <div class="sg-family">
-      {flagship && (
-        <div class="sg-phase sg-phase--flagship">
-          <div class="sg-phase-rail">
-            <span class="sg-phase-node" aria-hidden="true"></span>
-            <span class="sg-phase-name">The harness</span>
-            <span class="sg-phase-tick" aria-hidden="true"></span>
-            <span class="sg-phase-note">the container the loop runs inside</span>
-          </div>
-          <div class="sg-phase-cards">
-            <div class="sg-card sg-card--flagship">
-              <span class="sg-flag-ribbon" aria-hidden="true">Flagship</span>
-              <span class="sg-card-art" set:html={flagship.art} />
-              <span class="sg-card-glow" aria-hidden="true"></span>
-              <span class="sg-scan" aria-hidden="true"></span>
-              <div class="sg-card-body">
-                <span class="sg-eyebrow"><span class="sg-dot" aria-hidden="true"></span>{flagship.name}</span>
-                <h3 class="sg-headline">{flagship.tagline}</h3>
-                <p class="sg-blurb">{flagship.blurb}</p>
-              </div>
-              <div class="sg-card-foot">
-                <span class="sg-tags">
-                  {flagship.tags.map((t) => <span class="sg-chip">{t}</span>)}
-                </span>
-                <span class="sg-links">
-                  <a class="sg-visit sg-primary" href={flagship.href} aria-label={`Visit ${flagship.name}: ${flagship.tagline}`}>{flagship.url}<span class="sg-arrow">↗</span></a>
-                  <a class="sg-repo" href={flagship.repo} aria-label={`${flagship.name} on GitHub`}>
-                    <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>repo</a>
-                </span>
-              </div>
+    <div class="sg-map">
+      {PLANES.map((p) => (
+        <>
+          <div class={`sg-plane sg-plane--${p.key}`} style={`--plane:var(--plane-${p.key})`}>
+            <div class="sg-plane-rail">
+              <span class="sg-plane-node" aria-hidden="true"></span>
+              <span class="sg-plane-name">{p.name}</span>
+              <span class="sg-plane-role">{p.role}</span>
+              <span class="sg-plane-owns">{p.owns}</span>
+            </div>
+            <div class="sg-plane-cards" data-count={p.products.length}>
+              {p.products.map((s) => (
+                <div class={`sg-card${s.here ? ' sg-card--here' : ''}`}>
+                  <span class="sg-card-glow" aria-hidden="true"></span>
+                  <div class="sg-card-body">
+                    <span class="sg-eyebrow"><span class="sg-dot" aria-hidden="true"></span>{s.name}<span class="sg-kind">{s.kind}</span></span>
+                    <p class="sg-blurb">{s.blurb}</p>
+                  </div>
+                  <div class="sg-card-foot">
+                    {s.here ? (
+                      <span class="sg-here-chip">you are here</span>
+                    ) : (
+                      <span class="sg-links">
+                        {s.hasSite && (
+                          <a class="sg-visit sg-primary" href={s.href} aria-label={`Visit ${s.name}`}>{s.url}<span class="sg-arrow">↗</span></a>
+                        )}
+                        <a class={`sg-repo${s.hasSite ? '' : ' sg-primary'}`} href={s.repo} target="_blank" rel="noopener" aria-label={`${s.name} on GitHub`}>
+                          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>{s.hasSite ? 'repo' : 'in wicked-crew ↗'}</a>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      )}
-      {groups.map((p) => (
-        <div class="sg-phase">
-          <div class="sg-phase-rail">
-            <span class="sg-phase-node" aria-hidden="true"></span>
-            <span class="sg-phase-name">{p.role}</span>
-            <span class="sg-phase-tick" aria-hidden="true"></span>
-          </div>
-          <div class="sg-phase-cards">
-            {p.cards.map((s) => (
-              <div class="sg-card">
-                <span class="sg-card-art" set:html={s.art} />
-                <span class="sg-card-glow" aria-hidden="true"></span>
-                <span class="sg-scan" aria-hidden="true"></span>
-                <div class="sg-card-body">
-                  <span class="sg-eyebrow"><span class="sg-dot" aria-hidden="true"></span>{s.name}</span>
-                  <h3 class="sg-headline">{s.tagline}</h3>
-                  <p class="sg-blurb">{s.blurb}</p>
-                </div>
-                <div class="sg-card-foot">
-                  <span class="sg-tags">
-                    {s.tags.map((t) => <span class="sg-chip">{t}</span>)}
-                  </span>
-                  <span class="sg-links">
-                    {s.hasSite && (
-                      <a class="sg-visit sg-primary" href={s.href} aria-label={`Visit ${s.name}: ${s.tagline}`}>{s.url}<span class="sg-arrow">↗</span></a>
-                    )}
-                    <a class={`sg-repo${s.hasSite ? '' : ' sg-primary'}`} href={s.repo} aria-label={`${s.name} on GitHub`}>
-                      <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>{s.hasSite ? 'repo' : 'github ↗'}</a>
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+          {p.contract && (
+            <div class="sg-contract">
+              <span class="sg-contract-line" aria-hidden="true"></span>
+              <span class="sg-contract-label">{p.contract}</span>
+            </div>
+          )}
+        </>
       ))}
-      <div class="sg-loopback">
-        <span class="sg-loopback-inner">
-          <span class="sg-loopback-mark" aria-hidden="true">↺</span>
-          <span class="sg-loopback-label">feeds the next run</span>
-        </span>
-      </div>
     </div>
   </div>
 </section>
 
 <style is:global>
-.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; min-height:100svh; display:flex; flex-direction:column; justify-content:center;
-  --sg-accent: var(--accent); }
-[data-theme="light"] .same-garden{ --sg-accent: color-mix(in oklab, var(--accent) 82%, #fff); }
-@media(max-width:768px){ .same-garden{ min-height:auto; justify-content:flex-start; padding:clamp(40px,6vh,64px) 0; } }
+.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 
 /* ── section head ───────────────────────────────────────────────────────── */
-.same-garden .sg-head{ text-align:center; margin-bottom:clamp(30px,4.5vh,52px); }
+.same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4.5vh,48px); }
 .same-garden .sg-kicker{ color:var(--accent); }
 .same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
-.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,3rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; }
-.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:70ch; line-height:1.6; }
+.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(1.9rem,3.8vw,2.9rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; line-height:1.04; }
+.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:72ch; line-height:1.6; }
 
-/* ── family: vertical stack of loop-role bands ──────────────────────────── */
-.same-garden .sg-family{ display:flex; flex-direction:column; gap:clamp(18px,3vh,30px); }
-.same-garden .sg-phase{ display:grid; grid-template-columns:168px minmax(0,1fr); gap:28px; align-items:start; position:relative; }
-/* the vertical thread is a PATH through the roles (dots, not a numbered rail); it
-   is closed by the loop-back cue below, so it reads as a cycle, not a ladder. */
-.same-garden .sg-phase::before{ content:''; position:absolute; left:11px; top:16px; bottom:calc(-1 * clamp(18px,3vh,30px) - 6px); width:1px; background:linear-gradient(var(--hairline-strong), color-mix(in oklab, var(--accent) 30%, transparent)); }
+/* ── the map: plane bands with contract seams between ───────────────────── */
+.same-garden .sg-map{ display:flex; flex-direction:column; max-width:980px; margin:0 auto; }
 
-.same-garden .sg-phase-rail{ position:relative; display:flex; flex-direction:column; gap:6px; padding-top:2px; }
-.same-garden .sg-phase-node{ width:12px; height:12px; margin-left:5px; border-radius:50%; border:2px solid var(--accent); background:var(--surface); position:relative; z-index:1; box-shadow:0 0 0 4px color-mix(in oklab, var(--accent) 12%, transparent); }
-.same-garden .sg-phase-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.28rem; letter-spacing:-.01em; color:var(--ink); line-height:1; margin-top:2px; }
-.same-garden .sg-phase-tick{ width:26px; height:3px; border-radius:2px; background:var(--accent); margin-top:4px; }
+/* one PLANE band — --plane is its hue (from the shared plane tokens) */
+.same-garden .sg-plane{
+  display:grid; grid-template-columns:minmax(196px,236px) minmax(0,1fr); gap:22px; align-items:start;
+  border:1px solid var(--hairline-strong); border-left:3px solid color-mix(in oklab, var(--plane) 55%, var(--hairline-strong));
+  border-radius:14px; padding:clamp(14px,2vh,20px) clamp(14px,2vw,22px);
+  background:color-mix(in oklab, var(--surface) 62%, transparent);
+  transition:border-color .28s var(--ease), background .28s var(--ease), box-shadow .28s var(--ease), opacity .28s var(--ease);
+}
+/* LIT: hover or keyboard focus anywhere inside the plane */
+.same-garden .sg-plane:hover,
+.same-garden .sg-plane:focus-within{
+  border-color:color-mix(in oklab, var(--plane) 60%, var(--hairline-strong));
+  border-left-color:var(--plane);
+  background:color-mix(in oklab, var(--surface) 82%, transparent);
+  box-shadow:0 0 0 1px color-mix(in oklab, var(--plane) 26%, transparent), 0 24px 56px -30px var(--plane);
+}
+/* sibling planes recede while one is lit (progressive — needs :has) */
+.same-garden .sg-map:has(.sg-plane:hover) .sg-plane:not(:hover):not(:focus-within),
+.same-garden .sg-map:has(.sg-plane:focus-within) .sg-plane:not(:focus-within):not(:hover){ opacity:.55; }
 
-/* ── close-the-loop cue: the path curls back and feeds the next run ──────── */
-.same-garden .sg-loopback{ display:grid; grid-template-columns:168px minmax(0,1fr); gap:28px; }
-.same-garden .sg-loopback-inner{ position:relative; display:inline-flex; align-items:center; gap:9px; padding:2px 0 0 30px; }
-.same-garden .sg-loopback-inner::before{ content:''; position:absolute; left:11px; top:-16px; width:20px; height:28px; border-left:1px solid color-mix(in oklab, var(--accent) 55%, transparent); border-bottom:1px solid color-mix(in oklab, var(--accent) 55%, transparent); border-bottom-left-radius:12px; }
-.same-garden .sg-loopback-mark{ font-size:1.05rem; line-height:1; color:var(--accent); }
-.same-garden .sg-loopback-label{ font-family:var(--font-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--sg-accent); }
+/* plane rail: node + name + role + owns */
+.same-garden .sg-plane-rail{ display:flex; flex-direction:column; gap:7px; min-width:0; }
+.same-garden .sg-plane-node{ width:12px; height:12px; border-radius:50%; border:2px solid var(--plane); background:var(--surface); box-shadow:0 0 0 4px color-mix(in oklab, var(--plane) 12%, transparent); transition:background .28s var(--ease); }
+.same-garden .sg-plane:hover .sg-plane-node,
+.same-garden .sg-plane:focus-within .sg-plane-node{ background:var(--plane); }
+.same-garden .sg-plane-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.32rem; letter-spacing:-.01em; color:var(--ink); line-height:1; }
+.same-garden .sg-plane-role{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); line-height:1.4; }
+.same-garden .sg-plane-owns{ font-size:.76rem; line-height:1.5; color:var(--muted); max-width:26ch; }
 
-.same-garden .sg-phase-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:16px; }
-
-/* ── product card (stretched primary link + independent repo link) ──────── */
-.same-garden .sg-card{ position:relative; display:flex; flex-direction:column; overflow:hidden; min-height:230px;
-  border:1px solid var(--hairline-strong); border-radius:14px;
-  background:color-mix(in oklab, var(--surface) 78%, transparent);
-  isolation:isolate;
-  transition:border-color .28s var(--ease), transform .28s var(--ease), box-shadow .28s var(--ease); }
-.same-garden .sg-card:hover{ border-color:color-mix(in oklab, var(--accent) 58%, var(--hairline-strong)); transform:translateY(-5px); box-shadow:0 30px 60px -30px rgba(0,0,0,.72); }
-.same-garden .sg-card:focus-within{ border-color:color-mix(in oklab, var(--accent) 58%, var(--hairline-strong)); }
-
-.same-garden .sg-card-art{ position:absolute; inset:0; z-index:-2; color:var(--ink); opacity:.06; transition:opacity .3s var(--ease), color .3s var(--ease); }
-.same-garden .sg-card-art svg{ position:absolute; inset:0; width:100%; height:100%; }
-.same-garden .sg-card:hover .sg-card-art{ opacity:.13; color:var(--accent); }
-.same-garden .sg-card-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background:radial-gradient(ellipse 62% 78% at 100% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%); }
-.same-garden .sg-scan{ position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent); box-shadow:0 0 12px var(--accent); opacity:0; z-index:0; }
-.same-garden .sg-card:hover .sg-scan{ animation:sg-scan 1.05s var(--ease); }
-@keyframes sg-scan{ 0%{ transform:translateY(0); opacity:0; } 12%{ opacity:.85; } 88%{ opacity:.85; } 100%{ transform:translateY(240px); opacity:0; } }
-
-.same-garden .sg-card-body{ position:relative; z-index:1; flex:1; padding:20px 20px 14px; }
-.same-garden .sg-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
-.same-garden .sg-dot{ width:6px; height:6px; border-radius:50%; background:var(--faint); transition:background .25s var(--ease); }
-.same-garden .sg-card:hover .sg-dot{ background:var(--sg-accent); }
-.same-garden .sg-headline{ font-family:var(--font-display); font-weight:900; font-stretch:112%; font-size:1.34rem; line-height:1.08; letter-spacing:-.015em; color:var(--ink); margin:12px 0 0; max-width:19ch; }
-.same-garden .sg-blurb{ font-size:.82rem; line-height:1.55; color:var(--muted); margin:10px 0 0; max-width:40ch; }
-
-.same-garden .sg-card-foot{ position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-top:1px solid var(--hairline); background:color-mix(in oklab, var(--canvas) 30%, transparent); }
-.same-garden .sg-tags{ display:flex; flex-wrap:wrap; gap:6px; min-width:0; }
-.same-garden .sg-chip{ font-family:var(--font-mono); font-size:.58rem; letter-spacing:.04em; color:var(--muted); border:1px solid var(--hairline-strong); border-radius:999px; padding:3px 8px; white-space:nowrap; transition:border-color .22s var(--ease), color .22s var(--ease); }
-.same-garden .sg-card:hover .sg-chip{ border-color:color-mix(in oklab, var(--accent) 34%, var(--hairline-strong)); color:var(--ink); }
-.same-garden .sg-links{ display:inline-flex; align-items:center; gap:12px; flex-shrink:0; }
-.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
+/* product cards inside a plane (two side-by-side for the skins) */
+.same-garden .sg-plane-cards{ display:grid; grid-template-columns:1fr; gap:12px; min-width:0; }
+.same-garden .sg-plane-cards[data-count="2"]{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+.same-garden .sg-card{
+  position:relative; display:flex; flex-direction:column; overflow:hidden; isolation:isolate;
+  border:1px solid var(--hairline-strong); border-radius:11px;
+  background:color-mix(in oklab, var(--canvas) 42%, transparent);
+  transition:border-color .28s var(--ease), transform .28s var(--ease);
+}
+.same-garden .sg-card:hover,
+.same-garden .sg-card:focus-within{ border-color:color-mix(in oklab, var(--plane) 52%, var(--hairline-strong)); transform:translateY(-3px); }
+.same-garden .sg-card--here{ border-style:dashed; }
+.same-garden .sg-card--here:hover{ transform:none; }
+.same-garden .sg-card-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:0; transition:opacity .28s var(--ease);
+  background:radial-gradient(ellipse 66% 82% at 100% 0%, color-mix(in oklab, var(--plane) 15%, transparent), transparent 62%); }
+.same-garden .sg-card:hover .sg-card-glow,
+.same-garden .sg-card:focus-within .sg-card-glow,
+.same-garden .sg-plane:focus-within .sg-card-glow{ opacity:1; }
+.same-garden .sg-card-body{ flex:1; padding:13px 14px 10px; }
+.same-garden .sg-eyebrow{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.7rem; font-weight:700; letter-spacing:.05em; color:var(--ink); }
+.same-garden .sg-dot{ width:6px; height:6px; border-radius:50%; background:var(--plane); box-shadow:0 0 8px -1px var(--plane); flex-shrink:0; }
+.same-garden .sg-kind{ font-weight:400; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 70%, var(--muted)); }
+.same-garden .sg-blurb{ font-size:.78rem; line-height:1.55; color:var(--muted); margin:8px 0 0; }
+.same-garden .sg-card-foot{ display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:9px 13px 11px; border-top:1px solid var(--hairline); }
+.same-garden .sg-links{ display:inline-flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
-.same-garden .sg-card:hover .sg-visit{ color:var(--sg-accent); }
-.same-garden .sg-card:hover .sg-arrow{ transform:translate(3px,-3px); }
+.same-garden .sg-visit:hover,
+.same-garden .sg-card:hover .sg-visit{ color:var(--plane); }
+.same-garden .sg-card:hover .sg-arrow{ transform:translate(2px,-2px); }
 .same-garden .sg-repo{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.62rem; letter-spacing:.03em; color:var(--muted); white-space:nowrap; text-decoration:none; position:relative; z-index:3; transition:color .22s var(--ease); }
 .same-garden .sg-repo:hover{ color:var(--ink); }
 /* stretched primary link — covers the whole card (site when present, else repo) */
 .same-garden .sg-primary::after{ content:''; position:absolute; inset:0; z-index:2; }
-/* when the repo link IS the stretched primary (repo-only cards), drop its own
-   positioning context so ::after resolves against .sg-card and covers it fully */
 .same-garden .sg-repo.sg-primary{ position:static; }
-.same-garden .sg-card a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+.same-garden .sg-card a:focus-visible{ outline:2px solid var(--plane); outline-offset:3px; border-radius:3px; }
+.same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
-/* ── flagship: crew, the container the loop runs inside ─────────────────────── */
-.same-garden .sg-phase-note{ font-family:var(--font-mono); font-size:.58rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); line-height:1.4; margin-top:8px; max-width:150px; }
-.same-garden .sg-card--flagship{ min-height:200px; border-color:color-mix(in oklab, var(--accent) 46%, var(--hairline-strong)); background:color-mix(in oklab, var(--surface) 90%, transparent); box-shadow:0 0 0 1px color-mix(in oklab, var(--accent) 22%, transparent); }
-.same-garden .sg-card--flagship:hover{ border-color:color-mix(in oklab, var(--accent) 66%, var(--hairline-strong)); box-shadow:0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent), 0 30px 60px -30px rgba(0,0,0,.72); }
-.same-garden .sg-card--flagship .sg-card-art{ opacity:.11; }
-.same-garden .sg-card--flagship .sg-headline{ font-size:1.62rem; max-width:24ch; }
-.same-garden .sg-card--flagship .sg-blurb{ max-width:60ch; }
-.same-garden .sg-card--flagship .sg-dot{ background:var(--sg-accent); }
-.same-garden .sg-flag-ribbon{ position:absolute; top:14px; right:14px; z-index:2; pointer-events:none; font-family:var(--font-mono); font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent); padding:3px 10px; border-radius:999px; }
+/* ── the CONTRACT seam between two planes ───────────────────────────────── */
+.same-garden .sg-contract{ display:flex; align-items:center; gap:10px; padding:7px 4px 7px 30px; position:relative; }
+.same-garden .sg-contract-line{ position:absolute; left:14px; top:-4px; bottom:-4px; width:2px; border-radius:2px;
+  background:linear-gradient(var(--hairline-strong), var(--hairline-strong)); transition:background .28s var(--ease); }
+.same-garden .sg-contract-label{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.06em; color:var(--faint); line-height:1.5; transition:color .28s var(--ease); }
+.same-garden .sg-contract::before{ content:'⇅'; font-size:.78rem; line-height:1; color:var(--faint); transition:color .28s var(--ease); }
+/* light the seam when EITHER adjacent plane is lit:
+   below a lit plane = adjacent-sibling; above a lit plane = :has(+) */
+.same-garden .sg-plane:hover + .sg-contract .sg-contract-label,
+.same-garden .sg-plane:focus-within + .sg-contract .sg-contract-label,
+.same-garden .sg-contract:has(+ .sg-plane:hover) .sg-contract-label,
+.same-garden .sg-contract:has(+ .sg-plane:focus-within) .sg-contract-label{ color:var(--ink); }
+.same-garden .sg-plane:hover + .sg-contract::before,
+.same-garden .sg-plane:focus-within + .sg-contract::before,
+.same-garden .sg-contract:has(+ .sg-plane:hover)::before,
+.same-garden .sg-contract:has(+ .sg-plane:focus-within)::before{ color:var(--accent); }
+.same-garden .sg-plane:hover + .sg-contract .sg-contract-line,
+.same-garden .sg-plane:focus-within + .sg-contract .sg-contract-line,
+.same-garden .sg-contract:has(+ .sg-plane:hover) .sg-contract-line,
+.same-garden .sg-contract:has(+ .sg-plane:focus-within) .sg-contract-line{ background:linear-gradient(color-mix(in oklab, var(--accent) 70%, transparent), color-mix(in oklab, var(--accent) 70%, transparent)); }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
-@media(max-width:768px){
-  .same-garden .sg-phase{ grid-template-columns:1fr; gap:14px; }
-  .same-garden .sg-phase::before{ display:none; }
-  .same-garden .sg-phase-rail{ flex-direction:row; align-items:center; gap:10px; }
-  .same-garden .sg-phase-node{ margin-left:0; }
-  .same-garden .sg-phase-name{ margin-top:0; }
-  .same-garden .sg-phase-tick{ margin-top:0; }
-  .same-garden .sg-loopback{ grid-template-columns:1fr; }
-  .same-garden .sg-loopback-inner{ padding-left:0; }
-  .same-garden .sg-loopback-inner::before{ display:none; }
+@media(max-width:860px){
+  .same-garden .sg-plane{ grid-template-columns:1fr; gap:12px; }
+  .same-garden .sg-plane-owns{ max-width:none; }
+  .same-garden .sg-plane-cards[data-count="2"]{ grid-template-columns:1fr; }
+  .same-garden .sg-contract{ padding-left:26px; }
 }
 
+/* ── reduced motion: keep every state, drop the animation ───────────────── */
 @media (prefers-reduced-motion:reduce){
-  .same-garden .sg-card:hover .sg-scan{ animation:none; }
-  .same-garden .sg-card{ transition:border-color .2s, box-shadow .2s; }
-  .same-garden .sg-card:hover{ transform:none; }
+  .same-garden .sg-plane,
+  .same-garden .sg-card,
+  .same-garden .sg-card-glow,
+  .same-garden .sg-visit, .same-garden .sg-arrow, .same-garden .sg-repo,
+  .same-garden .sg-plane-node,
+  .same-garden .sg-contract-line, .same-garden .sg-contract-label{ transition:none!important; }
+  .same-garden .sg-card:hover,
+  .same-garden .sg-card:focus-within{ transform:none; }
 }
 </style>

@@ -13,11 +13,32 @@
 @layer base {
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
+  /* ── DESIGN LANGUAGE (v2 — the four-plane evolution) ──────────────────
+     The family anchors are KEPT deliberately, not replaced: graphite-dark
+     canvas (#0d1117), the harbor-blue light theme, and signal yellow
+     (#ffda19) as THE brand accent. They are distinctive, already carry the
+     five product sites, and read as ours — a swap would trade identity for
+     novelty mid-migration.
+
+     What is NEW is a semantic color system for the architecture itself:
+     one hue per PLANE (experience · control · capability · foundation),
+     promoted from the ad-hoc product colors the sites already used, so
+     every family surface tells the same four-plane story in the same four
+     hues. Yellow stays the brand's voice and is never a plane:
+       experience  — amber   (the two front doors; human-facing warmth)
+       control     — violet  (governance: gates, verdicts, audit)
+       capability  — green   (the garden: the growing catalog)
+       foundation  — blue    (the record: graph, memory, knowledge)     */
   :root{
     --canvas:#0d1117;--canvas-2:#161c26;--surface:#1b222e;--surface-2:#0f1419;
     --ink:#e6edf3;--muted:rgba(230,237,243,.55);--faint:rgba(230,237,243,.24);
     --hairline:rgba(230,237,243,.07);--hairline-strong:rgba(230,237,243,.14);
     --accent:#ffda19;--accent-ink:#0d1117;--link:#79c0ff;
+    /* the four planes */
+    --plane-experience:#f0a868;
+    --plane-control:#d2a8ff;
+    --plane-capability:#56d364;
+    --plane-foundation:#79c0ff;
     --ease:cubic-bezier(.16,1,.3,1);--topbar-h:64px;
     --font-display:"Archivo",ui-sans-serif,sans-serif;
     --font-mono:"JetBrains Mono",ui-monospace,monospace;
@@ -27,6 +48,12 @@
     --ink:#eae5b6;--muted:rgba(234,229,182,.58);--faint:rgba(234,229,182,.28);
     --hairline:rgba(234,229,182,.12);--hairline-strong:rgba(234,229,182,.24);
     --accent:#ffda19;--accent-ink:#1c2c36;--link:#79c0ff;
+    /* plane hues hold in harbor-light — the light canvas is still deep,
+       so the same mid-luminance hues stay legible without a second scale */
+    --plane-experience:#f0a868;
+    --plane-control:#d2a8ff;
+    --plane-capability:#56d364;
+    --plane-foundation:#79c0ff;
   }
 
   /* `proximity`, NOT `mandatory`: mandatory force-snaps the page to a lower snap point on
