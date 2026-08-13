@@ -35,19 +35,18 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
       </span>
     )}
     <nav class="nav">
-      <div class="dropdown-wrap nav-inline" data-tip="ecosystem">
-        <button class="icon-btn" id="projectsBtn" aria-label="Browse projects" aria-expanded="false" aria-haspopup="true">
-          <!-- four-plane architecture mark: experience (two skins, split) + control + capability + foundation -->
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
-            <rect x="1"   y="1.5" width="5.5" height="2" rx=".8"/>
-            <rect x="7.5" y="1.5" width="5.5" height="2" rx=".8"/>
-            <rect x="1"   y="4.5" width="12"  height="2" rx=".8"/>
-            <rect x="1"   y="7.5" width="12"  height="2" rx=".8"/>
-            <rect x="1"   y="10.5" width="12" height="2" rx=".8"/>
+      <div class="dropdown-wrap nav-inline" data-tip="the experiment">
+        <button class="icon-btn" id="projectsBtn" aria-label="Browse the experiment" aria-expanded="false" aria-haspopup="true">
+          <!-- lab flask — the experiment icon -->
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 1.5h4"/>
+            <path d="M6 1.5V5.8L2.4 11.8A1 1 0 0 0 3.3 13.2h7.4A1 1 0 0 0 11.6 11.8L8 5.8V1.5"/>
+            <circle cx="6.2" cy="9.8" r=".5" fill="currentColor" stroke="none"/>
+            <circle cx="8.2" cy="11.4" r=".45" fill="currentColor" stroke="none"/>
           </svg>
         </button>
         <div class="dropdown-menu" id="projectsMenu" hidden>
-          <span class="dropdown-kicker">One platform · four planes</span>
+          <span class="dropdown-kicker">The Experiments</span>
           <div class="dropdown-plane" style="--plane:var(--plane-experience)">
             <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>Experience <span class="dp-note">two front doors</span></span>
             <a href="https://wi.wickedagile.com" class="dropdown-item"><span class="di-label">interactive <span class="di-loop">creator skin</span></span><span class="dropdown-tag">site ↗</span></a>
@@ -84,8 +83,8 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
   </div>
 
   <!-- MOBILE MENU — the expand version of the nav, phones only -->
-  <nav class="mobile-menu" id="mobileMenu" aria-label="the wicked platform" hidden>
-    <span class="dropdown-kicker">One platform · four planes</span>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="the wicked experiment" hidden>
+    <span class="dropdown-kicker">The Experiments</span>
     <span class="mm-plane" style="--plane:var(--plane-experience)"><span class="dp-dot" aria-hidden="true"></span>Experience</span>
     <a href="https://wi.wickedagile.com" class="mm-item"><span class="mm-label">interactive <span class="di-loop">creator skin</span></span><span class="dropdown-tag">site ↗</span></a>
     <a href="https://ws.wickedagile.com" class="mm-item"><span class="mm-label">studio <span class="di-loop">coder skin</span></span><span class="dropdown-tag">site ↗</span></a>
