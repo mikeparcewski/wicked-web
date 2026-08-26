@@ -3,19 +3,26 @@
  * SameGarden.astro — THE four-plane map. The one canonical framing of the
  * wicked platform, embeddable on every family site:
  *
- *   two skins, one control plane, one catalog, one record.
+ *   one surface, one control plane, one catalog, one record.
  *
- *     studio ◄─────► interactive    EXPERIENCE   two front doors, one project model
+ *           studio                  EXPERIENCE   where product work happens
  *            crew                   CONTROL      intent in → verified work out
  *           garden                  CAPABILITY   the catalog agents act through
- *           estate                  FOUNDATION   the system of record
+ *   estate + interactive            FOUNDATION   the system of record, and the
+ *                                                engine behind the doc surface
  *
  * Planes stack top-to-bottom with the CONTRACT between each pair named on the
  * seam. Retired/absorbed packages get no card: testing's skills live in garden
  * (the qe fleet) and its gate lives in crew; bus/vault/ledger are internal to
- * the foundation; wicked-core is the engine inside crew. Both experience-plane
- * skins are first-class products with their own repos and sites — studio was
- * carved out of crew (crew still bundles its built dist for one-command serve).
+ * the foundation; wicked-core is the engine inside crew.
+ *
+ * wicked-interactive MOVED PLANES rather than being retired. Its standalone
+ * builder UI is gone — the service tells a direct visitor "it serves the API,
+ * not the UI" — so it is no longer a front door and gets no experience-plane
+ * card and no nav entry. It is still the sole implementation of the document
+ * engine (storage, version lineage, data-wid anchoring, HTML/PDF/PPTX
+ * rendering, Playwright recording), which crew spawns and proxies, so it sits
+ * in the FOUNDATION with no site link: you depend on it, you do not visit it.
  *
  * INTERACTION MODEL (CSS-only — no JS, so it degrades and travels well):
  *   - hover OR keyboard-focus into a plane → the plane lights in its hue
@@ -40,21 +47,16 @@ const PLANES = [
   {
     key: 'experience',
     name: 'Experience',
-    role: 'Two front doors, one project model',
+    role: 'Where product work happens',
     owns: 'Rendering and editing surfaces — nothing semantic lives here.',
     products: [
       {
-        name: 'wicked-interactive', kind: 'creator skin',
-        href: 'https://wi.wickedagile.com', repo: `${GH}/wicked-interactive`, hasSite: true,
-        blurb: 'Describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video.',
-      },
-      {
-        name: 'wicked-studio', kind: 'coder skin',
+        name: 'wicked-studio', kind: 'the surface',
         href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
-        blurb: 'The run board: launch runs, watch phases stream, answer gates. A pure client of crew’s /api/v1 — its own product; crew still bundles it.',
+        blurb: 'Brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. A pure client of crew’s /api/v1 — its own product; crew still bundles it.',
       },
     ],
-    contract: 'submit intent · watch the run · answer gates — one crew API, both skins are pure clients',
+    contract: 'submit intent · watch the run · answer gates — one crew API, the surface is a pure client',
   },
   {
     key: 'control',
@@ -94,6 +96,11 @@ const PLANES = [
         name: 'wicked-estate', kind: 'the record',
         href: 'https://we.wickedagile.com', repo: `${GH}/wicked-estate`, hasSite: true,
         blurb: 'A 102-language code graph, memory, and knowledge in one binary (MCP) — including the injected edges grep never sees.',
+      },
+      {
+        name: 'wicked-interactive', kind: 'the document engine',
+        href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
+        blurb: 'Doc storage and version lineage, data-wid anchoring, HTML/PDF/PPTX rendering, Playwright demo recording. crew spawns it as a local bridge and proxies it — you depend on it, you do not visit it.',
       },
     ],
     contract: null,
