@@ -75,7 +75,7 @@ const PLANES = [
   {
     key: 'capability',
     name: 'Capability',
-    role: 'The catalog — what agents can do',
+    role: 'What agents can do',   // short enough not to orphan a word in the narrow rail
     owns: 'Skills, tools, playbooks, councils, the QE fleet — how agents touch the record.',
     products: [
       {
@@ -259,12 +259,33 @@ const PLANES = [
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--plane); outline-offset:3px; border-radius:3px; }
 .same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
+/* SHORT VIEWPORTS (13" laptops and anything scaled): the full band is ~686px, which still does
+   not fit a ~660px window. Rather than let it overflow, drop the two supplementary layers and
+   tighten the rest -- the sub paragraph (the seams below already state the contracts) and the
+   per-plane `owns` line. The product name, role, blurb and links all stay, so nothing that
+   identifies or links a product is lost; only the commentary is. */
+@media (max-height: 730px) {
+  .same-garden{ padding:14px 0; }
+  .same-garden .sg-sub{ display:none; }
+  .same-garden .sg-plane-owns{ display:none; }
+  .same-garden .sg-h2{ font-size:1.4rem; }
+  .same-garden .sg-head{ margin-bottom:12px; }
+  .same-garden .sg-blurb{ font-size:.7rem; line-height:1.4; margin-top:4px; }
+  .same-garden .sg-card-body{ padding:7px 10px 5px; }
+  .same-garden .sg-card-foot{ padding:5px 10px 6px; }
+  .same-garden .sg-plane{ padding:7px 12px; }
+  .same-garden .sg-contract{ padding:1px 4px 1px 28px; }
+}
+
 /* Below the height the band can actually fit in, stop being a snap target. A snap point you
    cannot come to rest inside is worse than no snap point at all: under `scroll-snap-type: y
    mandatory` -- which wicked-crew, wicked-garden and wicked-estate all set -- the browser pulls
-   the viewport to the top of this band and the bottom plane becomes unreachable. The band is
-   686px, so 690px is the last viewport height where snapping here is safe. */
-@media (max-height: 690px) {
+   the viewport to the top of this band and the bottom plane becomes unreachable.
+
+   The threshold tracks the COMPACT height, not the full one: under 730px the block above strips
+   the band to ~574px, so it still fits — and should still snap — well below 690px, which is
+   where this cut used to sit. 580px is the last height the compact band fits in. */
+@media (max-height: 580px) {
   .same-garden{ scroll-snap-align:none; }
 }
 
