@@ -259,12 +259,15 @@ const PLANES = [
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--plane); outline-offset:3px; border-radius:3px; }
 .same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
-/* SHORT VIEWPORTS (13" laptops and anything scaled): the full band is ~686px, which still does
-   not fit a ~660px window. Rather than let it overflow, drop the two supplementary layers and
+/* SHORT VIEWPORTS (13" laptops and anything scaled): the full band is ~700px, which does not fit
+   a ~660px window -- nor, it turns out, a 760px one. The topbar is position:fixed and `html` sets
+   scroll-padding-top: var(--topbar-h), so a snapped section gets viewport MINUS the 64px bar:
+   at 1440x760 that is 696px of usable height against a 700px band. The cut-off is therefore 800px,
+   not the viewport height the band nominally fits. Rather than let it overflow, drop the two supplementary layers and
    tighten the rest -- the sub paragraph (the seams below already state the contracts) and the
    per-plane `owns` line. The product name, role, blurb and links all stay, so nothing that
    identifies or links a product is lost; only the commentary is. */
-@media (max-height: 730px) {
+@media (max-height: 800px) {
   .same-garden{ padding:14px 0; }
   .same-garden .sg-sub{ display:none; }
   .same-garden .sg-plane-owns{ display:none; }
@@ -282,10 +285,11 @@ const PLANES = [
    mandatory` -- which wicked-crew, wicked-garden and wicked-estate all set -- the browser pulls
    the viewport to the top of this band and the bottom plane becomes unreachable.
 
-   The threshold tracks the COMPACT height, not the full one: under 730px the block above strips
-   the band to ~574px, so it still fits — and should still snap — well below 690px, which is
-   where this cut used to sit. 580px is the last height the compact band fits in. */
-@media (max-height: 580px) {
+   The threshold tracks the COMPACT height PLUS the topbar. The block above strips the band to
+   ~574px, and a snapped section gets viewport minus the 64px fixed bar, so the band needs a
+   638px window to fit — not 574. Rounded to 640. (This was 580px, which let the band keep
+   snapping at 1152x600, where it overflows the usable area by 38px.) */
+@media (max-height: 640px) {
   .same-garden{ scroll-snap-align:none; }
 }
 
