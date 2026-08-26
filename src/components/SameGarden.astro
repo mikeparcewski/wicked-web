@@ -259,6 +259,15 @@ const PLANES = [
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--plane); outline-offset:3px; border-radius:3px; }
 .same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
+/* Below the height the band can actually fit in, stop being a snap target. A snap point you
+   cannot come to rest inside is worse than no snap point at all: under `scroll-snap-type: y
+   mandatory` -- which wicked-crew, wicked-garden and wicked-estate all set -- the browser pulls
+   the viewport to the top of this band and the bottom plane becomes unreachable. The band is
+   686px, so 690px is the last viewport height where snapping here is safe. */
+@media (max-height: 690px) {
+  .same-garden{ scroll-snap-align:none; }
+}
+
 /* ── the CONTRACT seam between two planes ───────────────────────────────── */
 .same-garden .sg-contract{ display:flex; align-items:center; gap:9px; padding:2px 4px 2px 28px; position:relative; }
 .same-garden .sg-contract-line{ position:absolute; left:14px; top:-4px; bottom:-4px; width:2px; border-radius:2px;
