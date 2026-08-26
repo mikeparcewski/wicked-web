@@ -53,7 +53,7 @@ const PLANES = [
       {
         name: 'wicked-studio', kind: 'the surface',
         href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
-        blurb: 'Brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. A pure client of crew’s /api/v1 — its own product; crew still bundles it.',
+        blurb: 'Brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo.',
       },
     ],
     contract: 'submit intent · watch the run · answer gates — one crew API, the surface is a pure client',
@@ -62,12 +62,12 @@ const PLANES = [
     key: 'control',
     name: 'Control',
     role: 'Intent in, verified work out',
-    owns: 'Orchestration, governance, gates — runs the coding agents you already use as governed workers.',
+    owns: 'Orchestration, governance, gates — your coding agents as governed workers.',
     products: [
       {
         name: 'wicked-crew', kind: 'the control plane',
         href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
-        blurb: 'Evaluator ≠ creator — no agent grades its own homework. “Done” is re-derived from evidence, never asserted. Workflows are data.',
+        blurb: 'Evaluator ≠ creator — no agent grades its own homework. “Done” is re-derived from evidence, never asserted.',
       },
     ],
     contract: 'invokes skills as governed workers — deny dominates, every verdict lands in the record',
@@ -76,7 +76,7 @@ const PLANES = [
     key: 'capability',
     name: 'Capability',
     role: 'The catalog — what agents can do',
-    owns: 'Skills, tools, playbooks, councils; the QE specialist fleet. The only sanctioned way agents touch the record.',
+    owns: 'Skills, tools, playbooks, councils, the QE fleet — how agents touch the record.',
     products: [
       {
         name: 'wicked-garden', kind: 'the catalog',
@@ -90,7 +90,7 @@ const PLANES = [
     key: 'foundation',
     name: 'Foundation',
     role: 'The system of record',
-    owns: 'Code graph · memory · knowledge · evidence · events. Zero-infra and local-first today; a team profile is on the roadmap.',
+    owns: 'Code graph · memory · knowledge · evidence · events. Zero-infra, local-first.',
     products: [
       {
         name: 'wicked-estate', kind: 'the record',
@@ -100,7 +100,7 @@ const PLANES = [
       {
         name: 'wicked-interactive', kind: 'the document engine',
         href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
-        blurb: 'Doc storage and version lineage, data-wid anchoring, HTML/PDF/PPTX rendering, Playwright demo recording. crew spawns it as a local bridge and proxies it — you depend on it, you do not visit it.',
+        blurb: 'Doc storage and lineage, HTML/PDF/PPTX rendering, demo recording. crew proxies it — you depend on it, you don’t visit it.',
       },
     ],
     contract: null,
@@ -174,25 +174,29 @@ const PLANES = [
 </section>
 
 <style is:global>
-.same-garden{ border-top:1px solid var(--hairline); padding:clamp(48px,8vh,96px) 0; scroll-snap-align:start; }
+/* Sized to FIT a laptop viewport. This band is a snap target on every site that renders it,
+   and it was 1115-1142px tall against a 1440x700 window -- 415px past the fold, so the bottom
+   plane and the last contract seam were simply unreachable by snapping. Everything below is
+   tuned to keep the whole map on one screen; check it at 1440x700 before loosening any of it. */
+.same-garden{ border-top:1px solid var(--hairline); padding:clamp(20px,2.8vh,34px) 0; scroll-snap-align:start; }
 .same-garden .sg-inner{ max-width:1240px; margin:0 auto; padding:0 28px; width:100%; }
 
 /* ── section head ───────────────────────────────────────────────────────── */
-.same-garden .sg-head{ text-align:center; margin-bottom:clamp(28px,4.5vh,48px); }
+.same-garden .sg-head{ text-align:center; margin-bottom:clamp(16px,2.4vh,26px); }
 .same-garden .sg-kicker{ color:var(--accent); }
 .same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
-.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(1.9rem,3.8vw,2.9rem); color:var(--ink); margin:12px 0 0; letter-spacing:-.02em; line-height:1.04; }
-.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:14px auto 0; max-width:72ch; line-height:1.6; }
+.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(1.35rem,2.2vw,1.7rem); color:var(--ink); margin:7px 0 0; letter-spacing:-.02em; line-height:1.06; }
+.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.66rem; color:var(--muted); margin:7px auto 0; max-width:112ch; line-height:1.45; }
 
 /* ── the map: plane bands with contract seams between ───────────────────── */
 .same-garden .sg-map{ display:flex; flex-direction:column; max-width:980px; margin:0 auto; }
 
 /* one PLANE band — --plane is its hue (from the shared plane tokens) */
 .same-garden .sg-plane{
-  display:grid; grid-template-columns:minmax(196px,236px) minmax(0,1fr); gap:22px; align-items:start;
+  display:grid; grid-template-columns:minmax(180px,215px) minmax(0,1fr); gap:18px; align-items:start;
   border:1px solid var(--hairline-strong); border-left:3px solid color-mix(in oklab, var(--plane) 55%, var(--hairline-strong));
-  border-radius:14px; padding:clamp(14px,2vh,20px) clamp(14px,2vw,22px);
+  border-radius:13px; padding:clamp(7px,1vh,11px) clamp(11px,1.5vw,16px);
   background:color-mix(in oklab, var(--surface) 62%, transparent);
   transition:border-color .28s var(--ease), background .28s var(--ease), box-shadow .28s var(--ease), opacity .28s var(--ease);
 }
@@ -209,16 +213,16 @@ const PLANES = [
 .same-garden .sg-map:has(.sg-plane:focus-within) .sg-plane:not(:focus-within):not(:hover){ opacity:.55; }
 
 /* plane rail: node + name + role + owns */
-.same-garden .sg-plane-rail{ display:flex; flex-direction:column; gap:7px; min-width:0; }
+.same-garden .sg-plane-rail{ display:flex; flex-direction:column; gap:3px; min-width:0; }
 .same-garden .sg-plane-node{ width:12px; height:12px; border-radius:50%; border:2px solid var(--plane); background:var(--surface); box-shadow:0 0 0 4px color-mix(in oklab, var(--plane) 12%, transparent); transition:background .28s var(--ease); }
 .same-garden .sg-plane:hover .sg-plane-node,
 .same-garden .sg-plane:focus-within .sg-plane-node{ background:var(--plane); }
-.same-garden .sg-plane-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.32rem; letter-spacing:-.01em; color:var(--ink); line-height:1; }
+.same-garden .sg-plane-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.1rem; letter-spacing:-.01em; color:var(--ink); line-height:1.05; }
 .same-garden .sg-plane-role{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); line-height:1.4; }
-.same-garden .sg-plane-owns{ font-size:.76rem; line-height:1.5; color:var(--muted); max-width:26ch; }
+.same-garden .sg-plane-owns{ font-size:.7rem; line-height:1.4; color:var(--muted); max-width:34ch; }
 
 /* product cards inside a plane (two side-by-side for the skins) */
-.same-garden .sg-plane-cards{ display:grid; grid-template-columns:1fr; gap:12px; min-width:0; }
+.same-garden .sg-plane-cards{ display:grid; grid-template-columns:1fr; gap:9px; min-width:0; }
 .same-garden .sg-plane-cards[data-count="2"]{ grid-template-columns:repeat(2,minmax(0,1fr)); }
 .same-garden .sg-card{
   position:relative; display:flex; flex-direction:column; overflow:hidden; isolation:isolate;
@@ -235,12 +239,12 @@ const PLANES = [
 .same-garden .sg-card:hover .sg-card-glow,
 .same-garden .sg-card:focus-within .sg-card-glow,
 .same-garden .sg-plane:focus-within .sg-card-glow{ opacity:1; }
-.same-garden .sg-card-body{ flex:1; padding:13px 14px 10px; }
+.same-garden .sg-card-body{ flex:1; padding:9px 12px 7px; }
 .same-garden .sg-eyebrow{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.7rem; font-weight:700; letter-spacing:.05em; color:var(--ink); }
 .same-garden .sg-dot{ width:6px; height:6px; border-radius:50%; background:var(--plane); box-shadow:0 0 8px -1px var(--plane); flex-shrink:0; }
 .same-garden .sg-kind{ font-weight:400; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 70%, var(--muted)); }
-.same-garden .sg-blurb{ font-size:.78rem; line-height:1.55; color:var(--muted); margin:8px 0 0; }
-.same-garden .sg-card-foot{ display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:9px 13px 11px; border-top:1px solid var(--hairline); }
+.same-garden .sg-blurb{ font-size:.735rem; line-height:1.46; color:var(--muted); margin:5px 0 0; }
+.same-garden .sg-card-foot{ display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:6px 12px 7px; border-top:1px solid var(--hairline); }
 .same-garden .sg-links{ display:inline-flex; align-items:center; gap:12px; flex-wrap:wrap; }
 .same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
@@ -256,7 +260,7 @@ const PLANES = [
 .same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
 /* ── the CONTRACT seam between two planes ───────────────────────────────── */
-.same-garden .sg-contract{ display:flex; align-items:center; gap:10px; padding:7px 4px 7px 30px; position:relative; }
+.same-garden .sg-contract{ display:flex; align-items:center; gap:9px; padding:2px 4px 2px 28px; position:relative; }
 .same-garden .sg-contract-line{ position:absolute; left:14px; top:-4px; bottom:-4px; width:2px; border-radius:2px;
   background:linear-gradient(var(--hairline-strong), var(--hairline-strong)); transition:background .28s var(--ease); }
 .same-garden .sg-contract-label{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.06em; color:var(--faint); line-height:1.5; transition:color .28s var(--ease); }
