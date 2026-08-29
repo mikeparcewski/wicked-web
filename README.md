@@ -10,19 +10,22 @@ __      _(_) ___| | _____  __| |    __      _____| |__
 
 Shared chrome for the **wicked-\*** family sites — one place to update the look so every site stays consistent.
 
-The family story the chrome tells is the **four-plane platform** — *two skins, one
-control plane, one catalog, one record*:
+The family story the chrome tells is the **four-plane platform** — *one surface, one
+control plane, one catalog, one record* (the `PLANES` data in `SameGarden.astro` is the
+source of truth):
 
 | Plane | Products | Hue token |
 |---|---|---|
-| **Experience** | wicked-interactive (creator skin) · studio (coder skin, ships inside crew) | `--plane-experience` |
-| **Control** | wicked-crew | `--plane-control` |
-| **Capability** | wicked-garden | `--plane-capability` |
-| **Foundation** | wicked-estate | `--plane-foundation` |
+| **Experience** | wicked-studio (the surface — own repo + site, ws.wickedagile.com) | `--plane-experience` |
+| **Control** | wicked-crew (the control plane) | `--plane-control` |
+| **Capability** | wicked-garden (the catalog) | `--plane-capability` |
+| **Foundation** | wicked-estate (the record) · wicked-interactive (the document engine — crew spawns & proxies it; card links to GitHub, no site) | `--plane-foundation` |
 
 Retired/absorbed packages get no chrome entry: testing dissolved into garden (skills)
-+ crew (the gate), brain is retiring into estate, bus/vault/ledger are internal to the
-foundation, wicked-core is the engine inside crew.
++ crew (the gate), brain retired into estate (2026-08), bus/vault/ledger are internal to
+the foundation, wicked-core is the engine inside crew. wicked-interactive MOVED planes
+rather than retiring: its standalone builder UI is gone, so it gets no front-door card
+and no nav entry — it sits on the foundation band as the document engine.
 
 Exports (raw Astro/CSS source; the consuming site compiles them):
 
