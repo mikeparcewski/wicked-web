@@ -63,6 +63,11 @@
   html{-webkit-font-smoothing:antialiased;scroll-snap-type:y proximity;overflow-x:clip;background:var(--canvas)}
   /* Phones: scroll-snap locks feel janky (viewport yanking, URL-bar deadlocks). Free scroll on mobile. */
   @media(max-width:768px){html{scroll-snap-type:none}}
+  /* Reduced motion: snapping moves the viewport for you — exactly the motion the preference asks us
+     to suppress (`proximity` still yanks the page near a boundary). Free scroll, like scroll-wheel.js
+     already does for its streamliner. A site that re-declares `scroll-snap-type` on `html` at equal
+     specificity LATER in the cascade overrides this — such a site must carry the same guard (#31). */
+  @media(prefers-reduced-motion:reduce){html{scroll-snap-type:none}}
   body{background:transparent;color:var(--ink);font-family:var(--font-display);line-height:1.5;overflow-x:clip}
   /* GLOBAL BACKGROUND — line grid + accent color-pop, fixed behind ALL content. */
   body::before{
