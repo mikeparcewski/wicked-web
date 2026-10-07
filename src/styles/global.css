@@ -8,5 +8,7 @@
 
 /* SNAP */
 @layer base {
+  /* Snap points only; whether the page snaps at all is `scroll-snap-type` on html in tokens.css,
+     which is off on phones and under prefers-reduced-motion (#31). */
   .snap-section{scroll-snap-align:start;min-height:100vh}
 }
