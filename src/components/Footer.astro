@@ -7,8 +7,10 @@
  * Props (per-site):
  *   repo — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
  */
+import { GH, PLANES, TAGLINE } from '../data/family.js';
+
 const {
-  repo = 'https://github.com/mikeparcewski',
+  repo = GH,
 } = Astro.props;
 ---
 
@@ -25,34 +27,20 @@ const {
         </div>
       </div>
       <div class="footer-cols">
-        <div style="--plane:var(--plane-experience)">
-          <span class="kicker footer-col-head">Experience</span>
-          <ul class="footer-links">
-            <li><a href="https://ws.wickedagile.com">studio <span class="ext">↗</span></a></li>
-          </ul>
-        </div>
-        <div style="--plane:var(--plane-control)">
-          <span class="kicker footer-col-head">Control</span>
-          <ul class="footer-links">
-            <li><a href="https://wc.wickedagile.com">crew <span class="ext">↗</span></a></li>
-          </ul>
-        </div>
-        <div style="--plane:var(--plane-capability)">
-          <span class="kicker footer-col-head">Capability</span>
-          <ul class="footer-links">
-            <li><a href="https://wg.wickedagile.com">garden <span class="ext">↗</span></a></li>
-          </ul>
-        </div>
-        <div style="--plane:var(--plane-foundation)">
-          <span class="kicker footer-col-head">Foundation</span>
-          <ul class="footer-links">
-            <li><a href="https://we.wickedagile.com">estate <span class="ext">↗</span></a></li>
-          </ul>
-        </div>
+        {PLANES.map((p) => (
+          <div style={`--plane:var(--plane-${p.key})`}>
+            <span class="kicker footer-col-head">{p.name}</span>
+            <ul class="footer-links">
+              {p.products.filter((s) => s.hasSite).map((s) => (
+                <li><a href={s.href}>{s.short} <span class="ext">↗</span></a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
     <div class="footer-strip">
-      <span>One surface · one control plane · one catalog · one record</span>
+      <span>{TAGLINE}</span>
       <span>Made by Mike</span>
     </div>
   </div>
