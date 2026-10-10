@@ -6,7 +6,7 @@
  *   one surface, one control plane, one catalog, one record.
  *
  *           studio                  EXPERIENCE   where product work happens
- *            crew                   CONTROL      intent in → verified work out
+ *            crew                   CONTROL      intent in → gated work out
  *           garden                  CAPABILITY   the catalog agents act through
  *   estate + interactive            FOUNDATION   the system of record, and the
  *                                                engine behind the doc surface
@@ -39,73 +39,13 @@
  *             card renders as a non-link "you are here" marker so a site never
  *             promotes itself, while the map stays complete.
  */
+import { PLANES as FAMILY_PLANES } from '../data/family.js';
+
 const { current = '' } = Astro.props;
 
-const GH = 'https://github.com/mikeparcewski';
-
-const PLANES = [
-  {
-    key: 'experience',
-    name: 'Experience',
-    role: 'Where product work happens',
-    owns: 'Rendering and editing surfaces — nothing semantic lives here.',
-    products: [
-      {
-        name: 'wicked-studio', kind: 'the surface',
-        href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
-        blurb: 'Brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo.',
-      },
-    ],
-    contract: 'submit intent · watch the run · answer gates — one crew API, the surface is a pure client',
-  },
-  {
-    key: 'control',
-    name: 'Control',
-    role: 'Intent in, verified work out',
-    owns: 'Orchestration, governance, gates — your coding agents as governed workers.',
-    products: [
-      {
-        name: 'wicked-crew', kind: 'the control plane',
-        href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
-        blurb: 'Evaluator ≠ creator — no agent grades its own homework. “Done” is re-derived from evidence, never asserted.',
-      },
-    ],
-    contract: 'invokes skills as governed workers — deny dominates, every verdict lands in the record',
-  },
-  {
-    key: 'capability',
-    name: 'Capability',
-    role: 'What agents can do',   // short enough not to orphan a word in the narrow rail
-    owns: 'Skills, tools, playbooks, councils, the QE fleet — how agents touch the record.',
-    products: [
-      {
-        name: 'wicked-garden', kind: 'the catalog',
-        href: 'https://wg.wickedagile.com', repo: `${GH}/wicked-garden`, hasSite: true,
-        blurb: 'Multi-model review councils, graph-aware refactors, repo playbooks — plus an open naming contract to ship your own pack.',
-      },
-    ],
-    contract: 'reads & writes the record through its contract — never around it',
-  },
-  {
-    key: 'foundation',
-    name: 'Foundation',
-    role: 'The system of record',
-    owns: 'Code graph · memory · knowledge · evidence · events. Zero-infra, local-first.',
-    products: [
-      {
-        name: 'wicked-estate', kind: 'the record',
-        href: 'https://we.wickedagile.com', repo: `${GH}/wicked-estate`, hasSite: true,
-        blurb: 'A 102-language code graph, memory, and knowledge in one binary (MCP) — including the injected edges grep never sees.',
-      },
-      {
-        name: 'wicked-interactive', kind: 'the document engine',
-        href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
-        blurb: 'Doc storage and lineage, HTML/PDF/PPTX rendering, demo recording. crew proxies it — you depend on it, you don’t visit it.',
-      },
-    ],
-    contract: null,
-  },
-].map((p) => ({
+// The planes and products come from the ONE family manifest (../data/family.js);
+// this component only adds the per-site `here` marker and the display url.
+const PLANES = FAMILY_PLANES.map((p) => ({
   ...p,
   products: p.products.map((s) => ({
     ...s,
@@ -123,7 +63,7 @@ const PLANES = [
     <div class="sg-head">
       <span class="kicker sg-kicker">The wicked platform</span>
       <h2 class="sg-h2" id="sg-h">One surface. One control plane.<br>One catalog. One record.</h2>
-      <p class="sg-sub">Four planes, four contracts. Hover or tab through a plane to see its role and what crosses its seams — every cross-plane interaction goes through the contract, never around it.</p>
+      <p class="sg-sub">Four planes, three seams. Hover or tab through a plane to see its role and what crosses its seams — cross-plane traffic is built to go through the contract, not around it.</p>
     </div>
 
     <div class="sg-map">

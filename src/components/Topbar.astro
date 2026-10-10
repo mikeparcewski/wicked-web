@@ -9,9 +9,11 @@
  *          (e.g. "wicked-garden"). Omit on the umbrella site.
  *   repo — GitHub URL the header's GitHub icon points at (this page's repo).
  */
+import { GH, PLANES } from '../data/family.js';
+
 const {
   pkg = '',
-  repo = 'https://github.com/mikeparcewski',
+  repo = GH,
 } = Astro.props;
 
 /* Single source for the Medium wordmark glyph — referenced by both the desktop
@@ -47,22 +49,14 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
         </button>
         <div class="dropdown-menu" id="projectsMenu" hidden>
           <span class="dropdown-kicker">The Experiments</span>
-          <div class="dropdown-plane" style="--plane:var(--plane-experience)">
-            <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>Experience <span class="dp-note">where product work happens</span></span>
-            <a href="https://ws.wickedagile.com" class="dropdown-item"><span class="di-label">studio <span class="di-loop">the surface</span></span><span class="dropdown-tag">site ↗</span></a>
-          </div>
-          <div class="dropdown-plane" style="--plane:var(--plane-control)">
-            <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>Control <span class="dp-note">verified work</span></span>
-            <a href="https://wc.wickedagile.com" class="dropdown-item"><span class="di-label">crew <span class="di-loop">governed runs</span></span><span class="dropdown-tag">site ↗</span></a>
-          </div>
-          <div class="dropdown-plane" style="--plane:var(--plane-capability)">
-            <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>Capability <span class="dp-note">the catalog</span></span>
-            <a href="https://wg.wickedagile.com" class="dropdown-item"><span class="di-label">garden <span class="di-loop">skills + tools</span></span><span class="dropdown-tag">site ↗</span></a>
-          </div>
-          <div class="dropdown-plane" style="--plane:var(--plane-foundation)">
-            <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>Foundation <span class="dp-note">the record</span></span>
-            <a href="https://we.wickedagile.com" class="dropdown-item"><span class="di-label">estate <span class="di-loop">graph · memory</span></span><span class="dropdown-tag">site ↗</span></a>
-          </div>
+          {PLANES.map((p) => (
+            <div class="dropdown-plane" style={`--plane:var(--plane-${p.key})`}>
+              <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>{p.name} <span class="dp-note">{p.note}</span></span>
+              {p.products.filter((s) => s.hasSite).map((s) => (
+                <a href={s.href} class="dropdown-item"><span class="di-label">{s.short} <span class="di-loop">{s.loop}</span></span><span class="dropdown-tag">site ↗</span></a>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
       <a href="https://medium.com/@mike.parcewski" class="icon-btn nav-inline" target="_blank" rel="noopener" aria-label="Medium" data-tip="writing">
@@ -84,14 +78,14 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
   <!-- MOBILE MENU — the expand version of the nav, phones only -->
   <nav class="mobile-menu" id="mobileMenu" aria-label="the wicked experiment" hidden>
     <span class="dropdown-kicker">The Experiments</span>
-    <span class="mm-plane" style="--plane:var(--plane-experience)"><span class="dp-dot" aria-hidden="true"></span>Experience</span>
-    <a href="https://ws.wickedagile.com" class="mm-item"><span class="mm-label">studio <span class="di-loop">the surface</span></span><span class="dropdown-tag">site ↗</span></a>
-    <span class="mm-plane" style="--plane:var(--plane-control)"><span class="dp-dot" aria-hidden="true"></span>Control</span>
-    <a href="https://wc.wickedagile.com" class="mm-item"><span class="mm-label">crew <span class="di-loop">governed runs</span></span><span class="dropdown-tag">site ↗</span></a>
-    <span class="mm-plane" style="--plane:var(--plane-capability)"><span class="dp-dot" aria-hidden="true"></span>Capability</span>
-    <a href="https://wg.wickedagile.com" class="mm-item"><span class="mm-label">garden <span class="di-loop">skills + tools</span></span><span class="dropdown-tag">site ↗</span></a>
-    <span class="mm-plane" style="--plane:var(--plane-foundation)"><span class="dp-dot" aria-hidden="true"></span>Foundation</span>
-    <a href="https://we.wickedagile.com" class="mm-item"><span class="mm-label">estate <span class="di-loop">graph · memory</span></span><span class="dropdown-tag">site ↗</span></a>
+    {PLANES.map((p) => (
+      <>
+        <span class="mm-plane" style={`--plane:var(--plane-${p.key})`}><span class="dp-dot" aria-hidden="true"></span>{p.name}</span>
+        {p.products.filter((s) => s.hasSite).map((s) => (
+          <a href={s.href} class="mm-item"><span class="mm-label">{s.short} <span class="di-loop">{s.loop}</span></span><span class="dropdown-tag">site ↗</span></a>
+        ))}
+      </>
+    ))}
     <div class="dropdown-divider"></div>
     <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={MEDIUM_GLYPH_PATH}/></svg>Medium</span> <span class="dropdown-tag">writing ↗</span></a>
     <a href={repo} target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d={GITHUB_GLYPH_PATH}/></svg>GitHub</span> <span class="dropdown-tag">this repo ↗</span></a>

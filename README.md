@@ -11,8 +11,8 @@ __      _(_) ___| | _____  __| |    __      _____| |__
 Shared chrome for the **wicked-\*** family sites — one place to update the look so every site stays consistent.
 
 The family story the chrome tells is the **four-plane platform** — *one surface, one
-control plane, one catalog, one record* (the `PLANES` data in `SameGarden.astro` is the
-source of truth):
+control plane, one catalog, one record* (the family manifest `src/data/family.js` is the
+source of truth — see below):
 
 | Plane | Products | Hue token |
 |---|---|---|
@@ -28,6 +28,14 @@ rather than retiring: its standalone builder UI is gone, so it gets no front-doo
 and no nav entry — it sits on the foundation band as the document engine.
 
 Exports (raw Astro/CSS source; the consuming site compiles them):
+
+- `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
+  the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
+  site), `product(name)` and `TAGLINE`. Topbar, Footer and SameGarden render from it, and the apex
+  site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
+  one-line claim change in one place. Copy rule: a claim there says what ships today, in the mode
+  where it holds — match the engine's own honesty labels ("evaluator ≠ creator not held", "floor
+  only", "approved by default, not verified") rather than an unconditional promise.
 
 - `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, favicon, global stylesheet, no-flash theme init, `<slot/>`.
 - `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + theme toggle.
