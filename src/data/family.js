@@ -17,13 +17,20 @@
  * apex imports this file from a client script as well as from frontmatter.
  *
  * COPY RULE: a claim here describes what ships today, in the mode where it
- * holds. The engine's own honesty states are the yardstick: a review that could
- * not leave the creator seat is labelled "evaluator ≠ creator not held", a gate
- * with no distinct judge is "floor only", and an ungated phase is "approved by
- * default, not verified". Don't write a sentence those labels would contradict.
+ * holds, in plain words a buyer reads (no internal jargon: "agent", not
+ * "seat"; "job", not "run"; "sandbox", not "floor"; "rules", not "steering").
+ * The engine's own honesty labels are the yardstick: a job whose only reviewer
+ * would be its builder stops unless launched as "reduced assurance", and
+ * an ungated phase is "approved by default, not verified". Don't write a
+ * sentence those labels would contradict. Numbers here (languages) are
+ * measured from the source: 114 = the rows in wicked-estate's
+ * crates/wicked-estate-extract/languages.toml.
  */
 
 export const GH = 'https://github.com/mikeparcewski';
+
+/** The family one-liner: what the whole platform does, in three sentences. */
+export const FAMILY_LINE = 'Your coding agents do the work. A different agent checks it against your rules. You get the evidence.';
 
 /** The planes, TOP → BOTTOM. `contract` names the seam BELOW the plane (long
  *  form on the map, `seam` for tight layouts); the bottom plane has none. */
@@ -32,18 +39,18 @@ export const PLANES = [
     key: 'experience',
     name: 'Experience',
     color: '#f0a868', tint: '#f6bd8a',          // mirrors --plane-experience
-    role: 'Where product work happens',
-    note: 'where product work happens',
-    owns: 'Rendering and editing surfaces — nothing semantic lives here.',
-    contract: 'submit intent · watch the run · answer gates — one crew API, the surface is a pure client',
-    seam: 'submit intent · watch the run · answer gates',
+    role: 'Where you direct your agents',
+    note: 'where you direct agents',
+    owns: 'The screens you use: start a job, watch it, answer the decisions that need you.',
+    contract: 'start a job · watch it · answer its questions — through one API',
+    seam: 'start a job · watch it · answer its questions',
     products: [
       {
-        name: 'wicked-studio', short: 'studio', kind: 'the surface', loop: 'the surface', lang: 'TS',
+        name: 'wicked-studio', short: 'studio', kind: 'the surface', tag: 'where you direct agents', lang: 'TS',
         href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
         screenshot: '/screenshots/wicked-studio.png',
-        blurb: 'Brainstorm it, build it behind gates that show their checks, then produce the doc, deck or demo.',
-        desc: 'Where product work happens — brainstorm it, build it behind gates that say what they checked, then produce the doc, deck or demo. A pure client of crew’s API; crew bundles it.',
+        blurb: 'Start a job with a chat, confirm the plan, then watch your agents work in sandboxes and answer the decisions that need you.',
+        desc: 'Where you direct your coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents tab; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away.',
       },
     ],
   },
@@ -52,17 +59,17 @@ export const PLANES = [
     name: 'Control',
     color: '#d2a8ff', tint: '#e2c5ff',          // mirrors --plane-control
     role: 'Intent in, gated work out',
-    note: 'gated work',
-    owns: 'Orchestration, governance, gates — your coding agents as governed workers.',
-    contract: 'invokes skills as governed workers — deny dominates, every verdict lands in the record',
-    seam: 'invokes skills as governed workers — deny dominates',
+    note: 'checked jobs',
+    owns: 'Runs the jobs, checks every step, keeps the evidence: your coding agents as sandboxed workers.',
+    contract: 'calls skills from sandboxed agents — one failed check stops the job; every verdict lands in the record',
+    seam: 'calls skills from sandboxed agents — one failed check stops the job',
     products: [
       {
-        name: 'wicked-crew', short: 'crew', kind: 'the control plane', loop: 'governed runs', lang: 'JS',
+        name: 'wicked-crew', short: 'crew', kind: 'the control plane', tag: 'runs and checks jobs', lang: 'JS',
         href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
         screenshot: '/screenshots/wicked-crew.png',
-        blurb: 'Distinct review — or a refusal, or a labelled fallback. “Done” is re-derived from evidence, not asserted.',
-        desc: 'The control plane — the harness for your agent harnesses. Runs the coding agents you already use as governed workers behind deny-dominates gates. Review goes to a distinct seat when the roster has an eligible one (team runs require it); every verdict names what ran, so a floor-only or same-seat pass is labelled, not dressed up as independent.',
+        blurb: 'Runs your agents in sandboxes. A different agent reviews the work, and app changes pass acceptance testing before delivery.',
+        desc: 'Runs the jobs studio starts, with your coding agents in sandboxes that never hold your real keys. A different agent reviews the work against your rules; when only the builder could review it, the job stops unless you launch it as “reduced assurance”, which is labelled everywhere. Jobs that change your app pass acceptance testing before delivery, and “done” is re-checked from evidence, never asserted.',
       },
     ],
   },
@@ -72,16 +79,16 @@ export const PLANES = [
     color: '#56d364', tint: '#7ee787',          // mirrors --plane-capability
     role: 'What agents can do',   // short enough not to orphan a word in the narrow rail
     note: 'the catalog',
-    owns: 'Skills, tools, playbooks, councils, the QE fleet — how agents touch the record.',
+    owns: 'Skills, tools, playbooks and the QE specialists: how agents touch the record.',
     contract: 'reads & writes the record through its contract — never around it',
     seam: 'reads & writes the record — never around it',
     products: [
       {
-        name: 'wicked-garden', short: 'garden', kind: 'the catalog', loop: 'skills + tools', lang: 'JS',
+        name: 'wicked-garden', short: 'garden', kind: 'the catalog', tag: 'skills and tools', lang: 'JS',
         href: 'https://wg.wickedagile.com', repo: `${GH}/wicked-garden`, hasSite: true,
         screenshot: '/screenshots/wicked-garden.png',
-        blurb: 'Councils that label same-family seats, graph-aware refactors, repo playbooks — plus an open naming contract for packs.',
-        desc: 'The catalog your agents act through — review councils (external model CLIs where usable, labelled same-family seats where not), graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.',
+        blurb: 'The skills your coding agent can’t build alone: proof from evidence, graph-aware refactors, 40 QE specialists.',
+        desc: 'The skills your coding agent can’t build alone. “Done” is re-checked from evidence, in your agent, in CI or in a crew job. Graph-aware search and refactors see links grep can’t, 40 QE specialists test the work, and review panels from other models weigh in when a decision is disputed. Open to your own skill packs.',
       },
     ],
   },
@@ -91,22 +98,22 @@ export const PLANES = [
     color: '#79c0ff', tint: '#a5d6ff',          // mirrors --plane-foundation
     role: 'The system of record',
     note: 'the record',
-    owns: 'Code graph · memory · knowledge · evidence · events. Zero-infra, local-first.',
+    owns: 'Code graph · memory · knowledge · evidence · events. Local, with no servers to run.',
     contract: null,
     seam: null,
     products: [
       {
-        name: 'wicked-estate', short: 'estate', kind: 'the record', loop: 'graph · memory', lang: 'RS',
+        name: 'wicked-estate', short: 'estate', kind: 'the record', tag: 'what agents know', lang: 'RS',
         href: 'https://we.wickedagile.com', repo: `${GH}/wicked-estate`, hasSite: true,
         screenshot: '/screenshots/wicked-estate.png',
-        blurb: 'A 114-language code graph, memory, and knowledge in one binary (MCP) — including the injected edges grep never sees.',
-        desc: 'The center of gravity — everything else queries it. A code graph over 114 languages (extraction depth varies by tier), memory, and knowledge in one MCP binary, including the injected edges grep never sees. Zero-infra, local-first.',
+        blurb: 'What your agents know about your system: a 114-language code graph, memory and knowledge in one local binary.',
+        desc: 'What your agents know about your system. A code graph over 114 languages (depth varies by language) shows what breaks if you change something, including the event and command links grep never sees. Memory (what happened, what you told it) and knowledge (what it learned from your code and docs) stay separate and cited. One local binary over MCP.',
       },
       {
-        name: 'wicked-interactive', short: 'interactive', kind: 'the document engine', loop: 'documents', lang: 'TS',
+        name: 'wicked-interactive', short: 'interactive', kind: 'the document engine', tag: 'documents', lang: 'TS',
         href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
-        blurb: 'Doc storage and lineage, HTML/PDF/PPTX rendering, demo recording. crew proxies it — you depend on it, you don’t visit it.',
-        desc: 'The document engine — doc storage and version lineage, HTML/PDF/PPTX rendering, demo recording. crew spawns it as a local bridge and proxies it: you depend on it, you do not visit it.',
+        blurb: 'The engine behind the docs, decks and captioned demo recordings studio produces. You use it through studio.',
+        desc: 'The document engine: docs with version history, HTML/PDF/PPTX export, and captioned screen recordings of your app (no voice-over). crew runs it for you and studio is where you use it, so you never visit it directly.',
       },
     ],
   },

@@ -53,7 +53,7 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
             <div class="dropdown-plane" style={`--plane:var(--plane-${p.key})`}>
               <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>{p.name} <span class="dp-note">{p.note}</span></span>
               {p.products.filter((s) => s.hasSite).map((s) => (
-                <a href={s.href} class="dropdown-item"><span class="di-label">{s.short} <span class="di-loop">{s.loop}</span></span><span class="dropdown-tag">site ↗</span></a>
+                <a href={s.href} class="dropdown-item"><span class="di-label">{s.short} <span class="di-tag">{s.tag}</span></span><span class="dropdown-tag">site ↗</span></a>
               ))}
             </div>
           ))}
@@ -82,7 +82,7 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
       <>
         <span class="mm-plane" style={`--plane:var(--plane-${p.key})`}><span class="dp-dot" aria-hidden="true"></span>{p.name}</span>
         {p.products.filter((s) => s.hasSite).map((s) => (
-          <a href={s.href} class="mm-item"><span class="mm-label">{s.short} <span class="di-loop">{s.loop}</span></span><span class="dropdown-tag">site ↗</span></a>
+          <a href={s.href} class="mm-item"><span class="mm-label">{s.short} <span class="di-tag">{s.tag}</span></span><span class="dropdown-tag">site ↗</span></a>
         ))}
       </>
     ))}
@@ -131,7 +131,7 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 .dropdown-item:hover{background:color-mix(in oklab,var(--plane,var(--accent)) 14%,transparent);color:var(--ink)}
 .dropdown-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--faint);letter-spacing:.1em;flex-shrink:0}
 .di-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.di-loop{color:var(--muted);font-family:var(--font-mono);font-weight:400;font-size:.82em;letter-spacing:.01em}
+.di-tag{color:var(--muted);font-family:var(--font-mono);font-weight:400;font-size:.82em;letter-spacing:.01em}
 .dropdown-divider{height:1px;background:var(--hairline);margin:4px 0}
 
 /* ── MOBILE EXPAND NAV (hamburger) ─────────────────────────────────────────
