@@ -31,11 +31,13 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)` and `TAGLINE`. Topbar, Footer and SameGarden render from it, and the apex
+  site), `product(name)`, `FAMILY_LINE` and `TAGLINE`. Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
-  one-line claim change in one place. Copy rule: a claim there says what ships today, in the mode
-  where it holds — match the engine's own honesty labels ("evaluator ≠ creator not held", "floor
-  only", "approved by default, not verified") rather than an unconditional promise.
+  one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
+  the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
+  claim there says what ships today, in the mode where it holds, in plain words (agent, job,
+  sandbox, rules; not seat, run, floor, steering), and never contradicts the engine's own honesty
+  labels ("reduced assurance", "approved by default, not verified").
 
 - `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, favicon, global stylesheet, no-flash theme init, `<slot/>`.
 - `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + theme toggle.

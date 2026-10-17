@@ -5,7 +5,7 @@
  *
  *   one surface, one control plane, one catalog, one record.
  *
- *           studio                  EXPERIENCE   where product work happens
+ *           studio                  EXPERIENCE   where you direct your agents
  *            crew                   CONTROL      intent in → gated work out
  *           garden                  CAPABILITY   the catalog agents act through
  *   estate + interactive            FOUNDATION   the system of record, and the
@@ -39,7 +39,7 @@
  *             card renders as a non-link "you are here" marker so a site never
  *             promotes itself, while the map stays complete.
  */
-import { PLANES as FAMILY_PLANES } from '../data/family.js';
+import { PLANES as FAMILY_PLANES, FAMILY_LINE } from '../data/family.js';
 
 const { current = '' } = Astro.props;
 
@@ -63,7 +63,7 @@ const PLANES = FAMILY_PLANES.map((p) => ({
     <div class="sg-head">
       <span class="kicker sg-kicker">The wicked platform</span>
       <h2 class="sg-h2" id="sg-h">One surface. One control plane.<br>One catalog. One record.</h2>
-      <p class="sg-sub">Four planes, three seams. Hover or tab through a plane to see its role and what crosses its seams — cross-plane traffic is built to go through the contract, not around it.</p>
+      <p class="sg-sub">{FAMILY_LINE} Four layers make that work. Hover or tab through one to see what it does and what passes between them.</p>
     </div>
 
     <div class="sg-map">
