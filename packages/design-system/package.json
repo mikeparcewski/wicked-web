@@ -20,7 +20,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/build.mjs --check",
-    "test": "node scripts/build.mjs --check && node --test test/",
+    "test": "node scripts/build.mjs --check && node --test test/tokens.test.mjs",
     "vendor": "node scripts/vendor.mjs"
   },
   "engines": { "node": ">=20" }
