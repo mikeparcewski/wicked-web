@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadSource, buildCss, buildJson, resolve, splitIcons, lockupFor, derivedIn, FOLLOWS_OS, LOCKUP_VIEWBOX, ROOT } from '../scripts/build.mjs';
+import { loadSource, buildCss, buildJson, buildSpecimen, resolve, splitIcons, lockupFor, derivedIn, FOLLOWS_OS, LOCKUP_VIEWBOX, ROOT } from '../scripts/build.mjs';
 import { audit } from '../scripts/contrast.mjs';
 
 const src = loadSource();
@@ -109,7 +109,8 @@ test('dark grounds are neutral near-black and charcoal: no navy or blue-tinted s
   // Operator, 2026-10-31: "Why not black, or a lighter shade of black? The blue makes it look unprofessional."
   const neutral = ['surface-base', 'surface-rail', 'surface-card', 'surface-raised', 'surface-overlay', 'surface-brand',
     'surface-brand-raised', 'accent-subtle', 'border-subtle', 'border', 'border-strong', 'border-input',
-    'ink-high', 'ink-body', 'ink-muted', 'ink-dim', 'accent', 'accent-fg'];
+    'ink-high', 'ink-body', 'ink-muted', 'ink-dim', 'ink-on-brand', 'ink-on-brand-muted',
+    'accent', 'accent-fg', 'accent-hover', 'accent-dim', 'brand-action', 'brand-action-fg'];
   for (const n of neutral) {
     const v = resolve(src, n, 'dark');
     const m = v.match(/^#([0-9a-f]{6})$/i);
@@ -122,7 +123,13 @@ test('dark grounds are neutral near-black and charcoal: no navy or blue-tinted s
 test('light follows the guide palette exactly where the guide names a role', () => {
   const L = (n) => resolve(src, n, 'light');
   assert.equal(L('surface-base'), '#f5fafc');   // derived canvas in the guide's mockup
+  assert.equal(L('surface-card'), '#ffffff');   // cards
   assert.equal(L('ink-high'), '#064273');       // main text
+  assert.equal(L('ink-body'), '#064273');       // main text (prose)
+  assert.equal(L('link'), '#064273');
+  assert.equal(L('surface-brand'), '#064273');  // the spec's sidebar (variant A)
+  assert.equal(L('brand-action'), '#7fcdff');   // sky with dark-blue text on the panel
+  assert.equal(L('brand-action-fg'), '#064273');
   assert.equal(L('accent'), '#064273');         // primary actions
   assert.equal(L('accent-fg'), '#def3f6');      // on-primary: pale
   assert.equal(L('accent-subtle'), '#def3f6');  // tinted panels, bubbles
@@ -130,5 +137,37 @@ test('light follows the guide palette exactly where the guide names a role', () 
   assert.equal(L('focus'), '#1da2d8');          // focus
   assert.equal(L('border'), '#bad5df');         // line
   assert.equal(L('ink-muted'), '#3d6076');      // readable secondary text
-  assert.notEqual(L('accent-fg'), '#ffffff');
+});
+
+test('the light focus ring paints the cyan, then the dark-blue edge outermost; dark paints the cyan', () => {
+  const layers = (th) => resolve(src, 'focus-ring', th).split(/,\s*(?=0 0 0)/).map((l) => l.trim());
+  const L = layers('light');
+  assert.equal(L.length, 3);
+  assert.equal(L[1], `0 0 0 4px ${resolve(src, 'focus', 'light')}`);
+  assert.equal(L[2], `0 0 0 5px ${resolve(src, 'focus-edge', 'light')}`, 'the 3:1 edge is the outermost layer');
+  assert.ok(audit(src).filter((r) => r.theme === 'light' && r.fg === 'focus-edge').every((r) => r.ok && r.min === 3));
+  const D = layers('dark');
+  assert.equal(D[D.length - 1], `0 0 0 4px ${resolve(src, 'focus', 'dark')}`);
+  assert.ok(audit(src).filter((r) => r.theme === 'dark' && r.fg === 'focus').every((r) => r.ok && r.min === 3));
+});
+
+test('links are audited, and an unreadable link fails the audit', () => {
+  assert.ok(audit(src).some((r) => r.fg === 'link'));
+  const bad = structuredClone(src);
+  bad.tokens.link.light = '#ffffff';
+  assert.ok(audit(bad).some((r) => r.fg === 'link' && !r.ok));
+});
+
+test('plugins receive every token the focus ring references', () => {
+  for (const n of ['focus', 'focus-edge', 'focus-ring', 'surface-base']) assert.ok(src.pluginTokens.includes(n), n);
+});
+
+test('the specimen shows the paired cues the light cyan relies on, and no serif UI heading', () => {
+  const spec = buildSpecimen(src, readFileSync(join(ROOT, 'brand/wicked-agile-lockup.svg'), 'utf8'), {});
+  assert.match(spec, /data-fixture="selection"><span class="chk"[^>]*>✓<\/span>/, 'a selection shows its check');
+  assert.match(spec, /data-fixture="progress"><span class="bar">.*<span class="pct">58%<\/span>/, 'progress shows its value as text');
+  assert.match(spec, /data-fixture="not-chosen"/);
+  assert.match(spec, /\.choice\.off\{[^}]*color:var\(--ink-muted\)/);
+  assert.doesNotMatch(spec, /text-decoration:\s*line-through/);
+  assert.doesNotMatch(spec, /<h[1-3] class="serif"/);
 });

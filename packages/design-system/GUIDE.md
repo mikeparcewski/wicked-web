@@ -116,16 +116,28 @@ uppercase at `--text-2xs`, `--weight-bold`, `--tracking-eyebrow` (0.12em).
   the composer) · `full` (pills, dots).
 - Elevation: shadows encode height, not decoration, and stay quiet: on light a hairline and a
   whisper of dark-blue-tinted shadow; on dark a lighter neutral step and a hairline.
-- Focus: `--focus-ring` is a gap in the page colour, then the focus colour.
+- Focus: `--focus-ring` is a gap in the page colour, then the cyan focus colour; on light a 1 px
+  `--focus-edge` (dark blue) sits outside it and carries the 3:1. Plugins receive `focus-ring` and
+  `focus-edge` in the theme handoff. On the brand panel use `--focus-ring-on-brand`.
 - Motion: `--ease-out` for most transitions, `--dur-fast` (120 ms) to `--dur-slow` (300 ms).
   Respect `prefers-reduced-motion`.
 
 ## Accessibility
 
 Every pair the system promises is measured in CI (`scripts/contrast.mjs`, run by `npm test`):
-all ink on every surface ≥ 4.5:1, text on every fill ≥ 4.5:1, focus ring, selection edge and
-input edge ≥ 3:1 (WCAG 1.4.11), in both themes. A new token that is meant to carry text gets a
+all ink and links on every surface ≥ 4.5:1, text on every fill ≥ 4.5:1, input edges ≥ 3:1 and
+focus rings ≥ 3:1 (WCAG 1.4.11), in both themes. A new token that is meant to carry text gets a
 pair there.
+
+**The guide's cyan on light is 2.7–2.9:1, below the 3:1 a non-text cue needs on its own.** It is
+kept exact (the spec), so on light it is never the only cue:
+- **Focus:** the light ring adds the 1 px dark-blue `--focus-edge` outside the cyan.
+- **Selection:** a chosen item also shows its check in `--accent` (≥ 3:1). A border-only selection
+  does not meet WCAG on light.
+- **Progress:** a bar also shows its value as text.
+
+`dist/specimen.html` carries one of each (`data-fixture="selection"`, `"not-chosen"`, `"progress"`).
+On dark the cyan clears 3:1 alone.
 
 ## Personal themes (appearance.md)
 

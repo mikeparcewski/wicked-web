@@ -39,13 +39,17 @@ export const PAIRS = [
   { fg: 'ink-on-brand-muted', bg: ['surface-brand', 'surface-brand-raised'], min: 4.5, why: 'secondary text on the brand panel' },
   { fg: 'brand-action', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'action fill on the brand panel (non-text)' },
   { fg: 'brand-action-fg', bg: ['brand-action'], min: 4.5, why: 'text on a brand-panel action' },
-  // The focus ring is the cyan plus (on light) a 1px --focus-edge outside it: the ring passes when
-  // either line clears 3:1 against the surface (the guide's exact cyan is 2.7-2.9:1 on light grounds).
-  { fg: ['focus', 'focus-edge'], bg: TEXT_SURFACES, min: 3, why: 'focus ring (WCAG 1.4.11)' },
+  // The focus ring is the guide's exact cyan (2.7-2.9:1 on light grounds) plus, on light only, a 1px
+  // --focus-edge outside it that carries the 3:1. Each line has its own floor; that the light ring
+  // actually paints the edge outermost is pinned by test/tokens.test.mjs (focus-ring composition).
+  { fg: 'focus', bg: TEXT_SURFACES, min: { light: 2.5, dark: 3 }, why: 'focus ring colour (paired with the edge on light)' },
+  { fg: 'focus-edge', bg: TEXT_SURFACES, min: { light: 3, dark: 1 }, why: 'focus ring edge (WCAG 1.4.11; transparent on dark)' },
+  { fg: 'link', bg: [...TEXT_SURFACES, ...TINTS], min: 4.5, why: 'link text' },
   { fg: 'focus-on-brand', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'focus ring on the brand panel' },
   { fg: 'border-input', bg: TEXT_SURFACES, min: 3, why: 'an input field edge (WCAG 1.4.11)' },
-  // The guide's exact cyan, kept exact on light (operator, 2026-10-31). It is never the only cue: a
-  // selection also shows the dark-blue check (`accent`, held to 3:1 below) and progress shows its text.
+  // The guide's exact cyan, kept exact on light (operator, 2026-10-31). On light it does NOT meet 3:1
+  // alone, so it is never the only cue: a selection also shows its check (`accent`, held to 3:1 below)
+  // and progress shows its value as text. dist/specimen.html carries both fixtures; a test pins them.
   { fg: 'highlight', bg: TEXT_SURFACES, min: { light: 2.5, dark: 3 }, why: 'selection edge, progress fill (paired cue)' },
   { fg: 'accent', bg: TEXT_SURFACES, min: 3, why: 'the check that carries a selection (WCAG 1.4.11)' },
   ...['gate', 'fail', 'run', 'warn'].map((s) => ({ fg: `status-${s}`, bg: [...TEXT_SURFACES, `status-${s}-dim`], min: 4.5, why: 'status text' })),

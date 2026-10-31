@@ -253,7 +253,8 @@
       "dark": "transparent",
       "from": "derived",
       "derivedIn": [
-        "light"
+        "light",
+        "dark"
       ],
       "note": "a 1px dark-blue line outside the light focus ring: the guide cyan is 2.8:1 on the canvas"
     },
@@ -799,6 +800,8 @@
     "font-sans",
     "font-serif",
     "font-mono",
-    "link"
+    "link",
+    "focus-edge",
+    "focus-ring"
   ]
 }
