@@ -1,16 +1,27 @@
 {
   "name": "wicked-web",
   "version": "0.1.0",
-  "description": "Shared chrome for the wicked-* family sites — Base layout, Topbar, Footer, theme tokens, and the scroll/theme scripts. Update here once; every site picks it up.",
+  "description": "Shared chrome for the wicked-* family sites — Base layout, Topbar, Footer, theme tokens, and the scroll/theme scripts. Update here once; every site picks it up. Also carries the wicked design system (packages/design-system, exported as wicked-web/design/*).",
   "type": "module",
   "exports": {
+    "./design/*": "./packages/design-system/*",
     "./*": "./src/*"
   },
   "files": [
-    "src"
+    "src",
+    "packages/design-system/package.json",
+    "packages/design-system/index.css",
+    "packages/design-system/fonts.css",
+    "packages/design-system/dist",
+    "packages/design-system/fonts",
+    "packages/design-system/brand",
+    "packages/design-system/licenses",
+    "packages/design-system/GUIDE.md",
+    "packages/design-system/README.md",
+    "packages/design-system/LICENSE"
   ],
   "peerDependencies": {
     "astro": ">=4.0.0"
   },
-  "license": "MIT"
+  "license": "MIT AND OFL-1.1 AND LicenseRef-wicked-brand-marks"
 }
