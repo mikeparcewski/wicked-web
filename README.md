@@ -45,6 +45,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
 - `wicked-web/styles/tokens.css`, `wicked-web/styles/global.css` — theme tokens (including the four `--plane-*` hues) + global background grid.
 - `wicked-web/scripts/scroll-wheel.js` — wheel-to-snap streamliner.
+- `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand lockup and icons, and the self-hosted faces with their OFL licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide.
 
 Design language (v2): the family anchors are deliberately KEPT — graphite dark
 `#0d1117`, the harbor-blue light theme, signal yellow `#ffda19` as the brand accent.

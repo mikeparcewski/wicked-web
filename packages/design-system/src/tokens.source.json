@@ -1,0 +1,677 @@
+{
+  "$comment": "THE single source of the wicked design tokens. scripts/build.mjs generates dist/tokens.css (light and dark) and dist/tokens.json from it; never edit dist/ by hand. `from` says where each value came from: guide = the operator's accepted default palette (docs/GUIDE.md section 'Sources': ui-mockups README palette table and the derived values in ui-mockups/index.html; appearance.md); brand = a name the brand SVGs reference; studio = wicked-studio's current tokens at 23866dc, used where the guide is silent; web = wicked-web src/styles/tokens.css; derived = chosen by this package where the guide is silent, the reason in `note`. The guide specifies a light ground only, so every dark value is derived.",
+  "name": "wicked-design",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "groups": {
+    "surface": "Page, rail, card, raised and overlay grounds, from deepest to highest.",
+    "ink": "Text colours, from quietest to strongest.",
+    "border": "Hairlines and the edge of an input field.",
+    "accent": "The action colour, its states and the text on it.",
+    "brand": "The names the brand lockup and icons reference.",
+    "status": "Waiting on you (gate), failed, running, warning, ok, done.",
+    "plane": "The four platform planes of the family sites.",
+    "elevation": "Shadows, the focus ring and the modal scrim.",
+    "space": "The spacing scale.",
+    "type": "Families, sizes, weights and line heights.",
+    "radius": "Corner radii.",
+    "motion": "Easing curves and durations.",
+    "control": "Control heights and the touch-target floor."
+  },
+  "tokens": {
+    "surface-base": {
+      "group": "surface",
+      "light": "#f5fafc",
+      "dark": "#06182a",
+      "from": "guide",
+      "note": "page background: the guide's near-white canvas; dark = derived, a deep navy on the dark-blue hue"
+    },
+    "surface-rail": {
+      "group": "surface",
+      "light": "#eaf3f7",
+      "dark": "#04131f",
+      "from": "derived",
+      "note": "rail and chrome: one step under the canvas (light); one step deeper (dark)"
+    },
+    "surface-card": {
+      "group": "surface",
+      "light": "#ffffff",
+      "dark": "#0b2236",
+      "from": "guide",
+      "note": "cards; dark = derived, each step lifts lightness so layers read before borders do"
+    },
+    "surface-raised": {
+      "group": "surface",
+      "light": "#f0f7fa",
+      "dark": "#102b43",
+      "from": "derived",
+      "note": "dropdowns, popups"
+    },
+    "surface-overlay": {
+      "group": "surface",
+      "light": "#ffffff",
+      "dark": "#143250",
+      "from": "derived",
+      "note": "modals, tooltips: white on light, carried by the overlay shadow"
+    },
+    "surface-brand": {
+      "group": "surface",
+      "light": "#064273",
+      "dark": "#0a3358",
+      "from": "guide",
+      "note": "the dark-blue panel (sidebar, hero): guide dark blue; dark = derived, lifted off the navy base"
+    },
+    "surface-brand-raised": {
+      "group": "surface",
+      "light": "#0b4d82",
+      "dark": "#0e3d68",
+      "from": "derived",
+      "note": "a lifted area on the brand panel"
+    },
+    "ink-dim": {
+      "group": "ink",
+      "light": "#4b6a7e",
+      "dark": "#8aa9bb",
+      "from": "derived",
+      "note": "timestamps, secondary labels: >= 4.5:1 on every surface"
+    },
+    "ink-muted": {
+      "group": "ink",
+      "light": "#3d6076",
+      "dark": "#a8c5d3",
+      "from": "guide",
+      "note": "secondary copy: guide muted; dark = derived"
+    },
+    "ink-body": {
+      "group": "ink",
+      "light": "#1d425c",
+      "dark": "#d3e8ef",
+      "from": "derived",
+      "note": "default prose: between the guide's muted and main text"
+    },
+    "ink-high": {
+      "group": "ink",
+      "light": "#064273",
+      "dark": "#f2f9fb",
+      "from": "guide",
+      "note": "headings and main text: guide dark blue; dark = derived from the guide's pale"
+    },
+    "ink-on-brand": {
+      "group": "ink",
+      "light": "#def3f6",
+      "dark": "#def3f6",
+      "from": "guide",
+      "note": "text on the dark-blue panel: guide pale"
+    },
+    "ink-on-brand-muted": {
+      "group": "ink",
+      "light": "#a9d9ec",
+      "dark": "#a9d9ec",
+      "from": "derived",
+      "note": "secondary text on the dark-blue panel: the guide's sky, softened to read as secondary"
+    },
+    "border-subtle": {
+      "group": "border",
+      "light": "#dcebf0",
+      "dark": "rgba(118, 182, 196, 0.12)",
+      "from": "derived",
+      "note": "light: a lighter step of the guide line; dark: the guide's muted blue (dark-surface separators), faint"
+    },
+    "border": {
+      "group": "border",
+      "light": "#bad5df",
+      "dark": "rgba(118, 182, 196, 0.22)",
+      "from": "guide",
+      "note": "the guide line; dark = derived from the guide's muted blue"
+    },
+    "border-strong": {
+      "group": "border",
+      "light": "#8fb2c2",
+      "dark": "rgba(118, 182, 196, 0.36)",
+      "from": "derived"
+    },
+    "border-input": {
+      "group": "border",
+      "light": "#6a90a3",
+      "dark": "rgba(127, 205, 255, 0.52)",
+      "from": "derived",
+      "note": "the edge that says 'type here': 3:1 on every surface (WCAG 1.4.11)"
+    },
+    "accent": {
+      "group": "accent",
+      "light": "#064273",
+      "dark": "#7fcdff",
+      "from": "guide",
+      "note": "the action colour: guide dark blue (primary actions); dark = the guide's sky, carrying dark text"
+    },
+    "accent-hover": {
+      "group": "accent",
+      "light": "#05365e",
+      "dark": "#9fdaff",
+      "from": "guide",
+      "note": "guide primary-hover; dark = derived"
+    },
+    "accent-dim": {
+      "group": "accent",
+      "light": "#1d5b8c",
+      "dark": "#5bb9f0",
+      "from": "derived"
+    },
+    "accent-subtle": {
+      "group": "accent",
+      "light": "#def3f6",
+      "dark": "#0f3354",
+      "from": "guide",
+      "note": "tinted panels and chat bubbles: guide pale; dark = derived"
+    },
+    "accent-wash": {
+      "group": "accent",
+      "light": "rgba(29, 162, 216, 0.10)",
+      "dark": "rgba(127, 205, 255, 0.12)",
+      "from": "derived",
+      "note": "selected / tinted fills"
+    },
+    "accent-fg": {
+      "group": "accent",
+      "light": "#ffffff",
+      "dark": "#04223b",
+      "from": "derived",
+      "note": "text on a filled action. The guide pairs dark blue with pale; white is crisper and clears more contrast"
+    },
+    "highlight": {
+      "group": "accent",
+      "light": "#1693c6",
+      "dark": "#1da2d8",
+      "from": "guide",
+      "note": "guide cyan: selection edges, progress fills. Light = the guide's #1da2d8 deepened a step so a selection edge clears 3:1 (WCAG 1.4.11); the exact guide cyan stays on the brand wave (accent-primary). Never a white-text button background"
+    },
+    "focus": {
+      "group": "accent",
+      "light": "#127fae",
+      "dark": "#3fb8e8",
+      "from": "derived",
+      "note": "the focus ring: the guide cyan, deepened (light) / lifted (dark) to clear 3:1 on every surface"
+    },
+    "focus-on-brand": {
+      "group": "accent",
+      "light": "#7fcdff",
+      "dark": "#7fcdff",
+      "from": "guide",
+      "note": "the focus ring inside the dark-blue panel: guide sky"
+    },
+    "brand-action": {
+      "group": "accent",
+      "light": "#7fcdff",
+      "dark": "#7fcdff",
+      "from": "guide",
+      "note": "an action on the dark-blue panel: guide sky with dark-blue text (the mockup's hero buttons)"
+    },
+    "brand-action-fg": {
+      "group": "accent",
+      "light": "#064273",
+      "dark": "#04223b",
+      "from": "guide"
+    },
+    "ink-primary": {
+      "group": "brand",
+      "alias": "ink-high",
+      "from": "brand",
+      "note": "the lockup's mast, cables and 'WICKED'"
+    },
+    "accent-primary": {
+      "group": "brand",
+      "light": "#1da2d8",
+      "dark": "#7fcdff",
+      "from": "brand",
+      "note": "the lockup's wave horizon and 'agile' script: guide cyan on light, guide sky on dark"
+    },
+    "accent-wicked": {
+      "group": "brand",
+      "light": "#ffda19",
+      "dark": "#ffda19",
+      "from": "web",
+      "note": "signal yellow: the lockup's spark triangles. A small mark, never text or a fill behind text"
+    },
+    "accent-wicked-ink": {
+      "group": "brand",
+      "light": "#0d1117",
+      "dark": "#0d1117",
+      "from": "web",
+      "note": "ink on signal yellow"
+    },
+    "status-gate": {
+      "group": "status",
+      "light": "#6a3fb5",
+      "dark": "#c9abf7",
+      "from": "derived",
+      "note": "waiting on you: studio's violet, tuned to the blue palette"
+    },
+    "status-gate-dim": {
+      "group": "status",
+      "light": "#f2edfb",
+      "dark": "#271f45",
+      "from": "derived"
+    },
+    "status-fail": {
+      "group": "status",
+      "light": "#9b4637",
+      "dark": "#f29a8b",
+      "from": "guide",
+      "note": "guide error red; dark = derived"
+    },
+    "status-fail-dim": {
+      "group": "status",
+      "light": "#f8e9e5",
+      "dark": "#3b1f22",
+      "from": "guide",
+      "note": "guide error tint; dark = derived"
+    },
+    "status-fail-fg": {
+      "group": "status",
+      "light": "#ffffff",
+      "dark": "#1a0b08",
+      "from": "derived",
+      "note": "text on a filled fail"
+    },
+    "status-run": {
+      "group": "status",
+      "light": "#226b56",
+      "dark": "#6fd3ac",
+      "from": "derived",
+      "note": "running / ok: the guide's green (#398770) deepened to clear 4.5:1 as text"
+    },
+    "status-run-dim": {
+      "group": "status",
+      "light": "#e3f3ed",
+      "dark": "#0e3329",
+      "from": "derived"
+    },
+    "status-warn": {
+      "group": "status",
+      "light": "#89502d",
+      "dark": "#f0b468",
+      "from": "guide",
+      "note": "guide amber-brown; dark = derived"
+    },
+    "status-warn-dim": {
+      "group": "status",
+      "light": "#fff0d9",
+      "dark": "#3a2a14",
+      "from": "guide",
+      "note": "guide warning tint; dark = derived"
+    },
+    "status-ok": {
+      "group": "status",
+      "alias": "status-run",
+      "from": "studio"
+    },
+    "status-ok-dim": {
+      "group": "status",
+      "alias": "status-run-dim",
+      "from": "studio"
+    },
+    "status-done": {
+      "group": "status",
+      "alias": "ink-dim",
+      "from": "studio"
+    },
+    "status-done-dim": {
+      "group": "status",
+      "light": "transparent",
+      "dark": "transparent",
+      "from": "studio"
+    },
+    "plane-experience": {
+      "group": "plane",
+      "light": "#99500f",
+      "dark": "#f0a868",
+      "from": "web",
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+    },
+    "plane-control": {
+      "group": "plane",
+      "light": "#6f42c1",
+      "dark": "#d2a8ff",
+      "from": "web",
+      "note": "light = derived: studio's light gate violet"
+    },
+    "plane-capability": {
+      "group": "plane",
+      "light": "#1e7227",
+      "dark": "#56d364",
+      "from": "web",
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+    },
+    "plane-foundation": {
+      "group": "plane",
+      "light": "#0063bb",
+      "dark": "#79c0ff",
+      "from": "web",
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+    },
+    "shadow-card": {
+      "group": "elevation",
+      "light": "0 1px 2px rgba(6, 66, 115, 0.06), 0 4px 12px -6px rgba(6, 66, 115, 0.10), 0 0 0 1px var(--border-subtle)",
+      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.04), 0 1px 2px rgba(0, 6, 14, 0.40), 0 0 0 1px var(--border-subtle)",
+      "from": "derived",
+      "note": "blue-tinted, never grey (light); a faint top rim light plus a drop (dark)"
+    },
+    "shadow-raised": {
+      "group": "elevation",
+      "light": "0 10px 24px -10px rgba(6, 66, 115, 0.20), 0 0 0 1px var(--border)",
+      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.06), 0 12px 28px -10px rgba(0, 6, 14, 0.60), 0 0 0 1px var(--border)",
+      "from": "derived"
+    },
+    "shadow-overlay": {
+      "group": "elevation",
+      "light": "0 24px 48px -16px rgba(6, 66, 115, 0.28), 0 0 0 1px var(--border)",
+      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.07), 0 24px 56px -16px rgba(0, 6, 14, 0.72), 0 0 0 1px var(--border-strong)",
+      "from": "derived"
+    },
+    "shadow-button": {
+      "group": "elevation",
+      "light": "inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(6, 66, 115, 0.20)",
+      "dark": "inset 0 1px 0 rgba(255, 255, 255, 0.30), 0 1px 2px rgba(0, 6, 14, 0.40)",
+      "from": "derived"
+    },
+    "focus-ring": {
+      "group": "elevation",
+      "light": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
+      "dark": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
+      "from": "studio",
+      "note": "a gap in the page colour, then the focus colour"
+    },
+    "scrim": {
+      "group": "elevation",
+      "light": "rgba(4, 34, 59, 0.40)",
+      "dark": "rgba(1, 8, 16, 0.66)",
+      "from": "derived"
+    },
+    "space-1": {
+      "group": "space",
+      "value": "4px",
+      "from": "studio"
+    },
+    "space-2": {
+      "group": "space",
+      "value": "8px",
+      "from": "studio"
+    },
+    "space-3": {
+      "group": "space",
+      "value": "12px",
+      "from": "studio"
+    },
+    "space-4": {
+      "group": "space",
+      "value": "16px",
+      "from": "studio"
+    },
+    "space-5": {
+      "group": "space",
+      "value": "20px",
+      "from": "studio"
+    },
+    "space-6": {
+      "group": "space",
+      "value": "24px",
+      "from": "studio"
+    },
+    "space-8": {
+      "group": "space",
+      "value": "32px",
+      "from": "studio"
+    },
+    "space-10": {
+      "group": "space",
+      "value": "40px",
+      "from": "studio"
+    },
+    "space-12": {
+      "group": "space",
+      "value": "48px",
+      "from": "studio"
+    },
+    "space-16": {
+      "group": "space",
+      "value": "64px",
+      "from": "studio"
+    },
+    "ease-out": {
+      "group": "motion",
+      "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "from": "studio"
+    },
+    "ease-spring": {
+      "group": "motion",
+      "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "from": "studio"
+    },
+    "ease-in-out": {
+      "group": "motion",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": "studio"
+    },
+    "dur-instant": {
+      "group": "motion",
+      "value": "80ms",
+      "from": "studio"
+    },
+    "dur-fast": {
+      "group": "motion",
+      "value": "120ms",
+      "from": "studio"
+    },
+    "dur-base": {
+      "group": "motion",
+      "value": "220ms",
+      "from": "studio"
+    },
+    "dur-slow": {
+      "group": "motion",
+      "value": "300ms",
+      "from": "studio"
+    },
+    "dur-slower": {
+      "group": "motion",
+      "value": "380ms",
+      "from": "studio"
+    },
+    "control-h": {
+      "group": "control",
+      "value": "30px",
+      "from": "studio"
+    },
+    "control-h-sm": {
+      "group": "control",
+      "value": "24px",
+      "from": "studio",
+      "note": "the WCAG 2.5.8 floor: no target is smaller"
+    },
+    "control-px": {
+      "group": "control",
+      "value": "12px",
+      "from": "studio"
+    },
+    "tap-min": {
+      "group": "control",
+      "value": "44px",
+      "from": "studio"
+    },
+    "font-sans": {
+      "group": "type",
+      "value": "'Wicked Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "from": "guide",
+      "note": "slot for Wicked Sans (no file yet); Inter until it ships: the accepted mockup sets every word in Inter"
+    },
+    "font-serif": {
+      "group": "type",
+      "value": "'Wicked Serif', 'Marcellus', ui-serif, Georgia, serif",
+      "from": "derived",
+      "note": "slot for Wicked Serif (the lockup's 'WICKED' face, no file yet); Marcellus until it ships: the nearest OFL face to the lockup's flared capitals. Display sizes only (>= 18px)"
+    },
+    "font-script": {
+      "group": "type",
+      "value": "'Wicked Script', 'Dancing Script', cursive",
+      "from": "derived",
+      "note": "slot for Wicked Script (the lockup's 'agile' face, no file yet); Dancing Script until it ships. Brand moments only, never UI text"
+    },
+    "font-mono": {
+      "group": "type",
+      "value": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+      "from": "studio"
+    },
+    "text-2xs": {
+      "group": "type",
+      "value": "11px",
+      "from": "studio",
+      "note": "the floor: nothing on a decision surface is smaller (the guide's 10px eyebrows round up to it)"
+    },
+    "text-xs": {
+      "group": "type",
+      "value": "12px",
+      "from": "guide"
+    },
+    "text-sm": {
+      "group": "type",
+      "value": "13px",
+      "from": "studio"
+    },
+    "text-md": {
+      "group": "type",
+      "value": "15px",
+      "from": "studio"
+    },
+    "text-lg": {
+      "group": "type",
+      "value": "18px",
+      "from": "studio"
+    },
+    "text-xl": {
+      "group": "type",
+      "value": "22px",
+      "from": "studio"
+    },
+    "text-2xl": {
+      "group": "type",
+      "value": "28px",
+      "from": "studio"
+    },
+    "text-3xl": {
+      "group": "type",
+      "value": "34px",
+      "from": "guide",
+      "note": "the guide's page title"
+    },
+    "weight-normal": {
+      "group": "type",
+      "value": "400",
+      "from": "studio"
+    },
+    "weight-medium": {
+      "group": "type",
+      "value": "500",
+      "from": "studio"
+    },
+    "weight-semi": {
+      "group": "type",
+      "value": "600",
+      "from": "studio"
+    },
+    "weight-bold": {
+      "group": "type",
+      "value": "700",
+      "from": "studio"
+    },
+    "leading-tight": {
+      "group": "type",
+      "value": "1.2",
+      "from": "studio"
+    },
+    "leading-body": {
+      "group": "type",
+      "value": "1.5",
+      "from": "studio"
+    },
+    "leading-loose": {
+      "group": "type",
+      "value": "1.75",
+      "from": "studio"
+    },
+    "weight-heading": {
+      "group": "type",
+      "value": "650",
+      "from": "guide",
+      "note": "the guide's heading weight (Inter is variable)"
+    },
+    "tracking-display": {
+      "group": "type",
+      "value": "-0.025em",
+      "from": "guide",
+      "note": "the guide's h1 letter-spacing (-0.8px at 34px)"
+    },
+    "tracking-eyebrow": {
+      "group": "type",
+      "value": "0.12em",
+      "from": "guide",
+      "note": "uppercase eyebrows (1.4px at 11px)"
+    },
+    "radius-sm": {
+      "group": "radius",
+      "value": "6px",
+      "from": "guide"
+    },
+    "radius-md": {
+      "group": "radius",
+      "value": "8px",
+      "from": "studio"
+    },
+    "radius-lg": {
+      "group": "radius",
+      "value": "10px",
+      "from": "guide",
+      "note": "cards"
+    },
+    "radius-xl": {
+      "group": "radius",
+      "value": "18px",
+      "from": "guide",
+      "note": "hero panels, the chat composer"
+    },
+    "radius-full": {
+      "group": "radius",
+      "value": "9999px",
+      "from": "studio",
+      "note": "pills, dots"
+    }
+  },
+  "pluginTokens": [
+    "surface-base",
+    "surface-card",
+    "surface-raised",
+    "ink-high",
+    "ink-body",
+    "ink-muted",
+    "ink-dim",
+    "border-subtle",
+    "border",
+    "accent",
+    "accent-fg",
+    "highlight",
+    "focus",
+    "accent-primary",
+    "ink-primary",
+    "accent-wicked",
+    "status-gate",
+    "status-fail",
+    "status-run",
+    "status-warn",
+    "status-ok",
+    "radius-md",
+    "font-sans",
+    "font-serif",
+    "font-mono"
+  ]
+}

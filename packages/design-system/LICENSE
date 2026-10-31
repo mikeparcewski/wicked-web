@@ -1,0 +1,36 @@
+wicked-design is licensed in three parts.
+
+1. Code, tokens and documentation (everything except fonts/ and brand/): the MIT
+   License below.
+2. The type faces in fonts/*.woff2: the SIL Open Font License 1.1. Each face's full
+   licence text and copyright line is in licenses/ (Archivo: The Archivo Project
+   Authors; JetBrains Mono: The JetBrains Mono Project Authors). They are the
+   @fontsource-variable 5.3.0 latin and latin-ext subsets that wicked-studio already
+   self-hosts.
+3. The brand lockup and icons in brand/: created by the project owner for the wicked
+   agile brand. The source folder they were copied from carries no licence or
+   ownership note; no licence beyond this repository's is stated for them yet.
+
+---
+
+MIT License
+
+Copyright (c) 2026 Michael Parcewski
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
