@@ -104,3 +104,31 @@ test('focus inside the brand panel has its own ring that clears 3:1 there', () =
   for (const th of src.themes) assert.match(resolve(src, 'focus-ring-on-brand', th), /var\(--surface-brand\)|#[0-9a-f]{6}/);
   assert.equal(resolve(src, 'focus-ring-on-brand', 'light'), `0 0 0 2px ${src.tokens['surface-brand'].light}, 0 0 0 4px ${src.tokens['focus-on-brand'].light}`);
 });
+
+test('dark grounds are neutral near-black and charcoal: no navy or blue-tinted surface, rail, panel or hairline', () => {
+  // Operator, 2026-10-31: "Why not black, or a lighter shade of black? The blue makes it look unprofessional."
+  const neutral = ['surface-base', 'surface-rail', 'surface-card', 'surface-raised', 'surface-overlay', 'surface-brand',
+    'surface-brand-raised', 'accent-subtle', 'border-subtle', 'border', 'border-strong', 'border-input',
+    'ink-high', 'ink-body', 'ink-muted', 'ink-dim', 'accent', 'accent-fg'];
+  for (const n of neutral) {
+    const v = resolve(src, n, 'dark');
+    const m = v.match(/^#([0-9a-f]{6})$/i);
+    assert.ok(m, `${n} is an opaque hex in dark`);
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16));
+    assert.ok(Math.max(r, g, b) - Math.min(r, g, b) <= 12, `${n} ${v} is tinted (channel spread > 12)`);
+  }
+});
+
+test('light follows the guide palette exactly where the guide names a role', () => {
+  const L = (n) => resolve(src, n, 'light');
+  assert.equal(L('surface-base'), '#f5fafc');   // derived canvas in the guide's mockup
+  assert.equal(L('ink-high'), '#064273');       // main text
+  assert.equal(L('accent'), '#064273');         // primary actions
+  assert.equal(L('accent-fg'), '#def3f6');      // on-primary: pale
+  assert.equal(L('accent-subtle'), '#def3f6');  // tinted panels, bubbles
+  assert.equal(L('highlight'), '#1da2d8');      // selection
+  assert.equal(L('focus'), '#1da2d8');          // focus
+  assert.equal(L('border'), '#bad5df');         // line
+  assert.equal(L('ink-muted'), '#3d6076');      // readable secondary text
+  assert.notEqual(L('accent-fg'), '#ffffff');
+});

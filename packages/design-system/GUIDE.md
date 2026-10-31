@@ -28,7 +28,7 @@ The lockup is a cable-stayed mast over a wave horizon, then `WICKED` in a flared
 
 | Part | Token | Light | Dark |
 |---|---|---|---|
-| Mast, cables, `WICKED` | `--ink-primary` (= `--ink-high`) | dark blue `#064273` | near-white `#f2f9fb` |
+| Mast, cables, `WICKED` | `--ink-primary` (= `--ink-high`) | dark blue `#064273` | near-white `#e8e9eb` |
 | Wave horizon, `agile` | `--accent-primary` | cyan `#1da2d8` | sky `#7fcdff` |
 | The two spark triangles | `--accent-wicked` | signal yellow `#ffda19` | signal yellow `#ffda19` |
 
@@ -68,33 +68,39 @@ amber and red hues.
 ### Roles (tokens)
 
 - **Surfaces**, deepest to highest: `base` (the page), `rail`, `card`, `raised`, `overlay`. On
-  light, the canvas is a near-white tinted blue and cards are white. On dark, each step lifts
-  lightness, so the layers read before any border does.
-- **The brand panel** (`--surface-brand`, `--surface-brand-raised`) is the dark-blue ground of
-  the sidebar and the hero card, with `--ink-on-brand`, `--brand-action` (sky, dark text) and
-  `--focus-on-brand` (and `--focus-ring-on-brand` for controls on that panel).
+  light, the canvas is the guide's near-white and cards are white. On dark, the grounds are
+  neutral near-black and charcoal; each step lifts lightness a little, and hairlines do the rest.
+- **The brand panel** (`--surface-brand`, `--surface-brand-raised`) is the guide's dark-blue
+  ground on light (a dark-blue sidebar, a hero card), with `--ink-on-brand`, `--brand-action`
+  (sky, dark-blue text) and `--focus-on-brand` (and `--focus-ring-on-brand` for controls on it).
+  On dark it is neutral charcoal: dark never has large blue fields.
 - **Ink**, quietest to strongest: `dim` (timestamps), `muted` (secondary), `body` (prose),
   `high` (headings, names, primary labels).
 - **Action**: `--accent` is the fill of a primary button, with `--accent-fg` on it. On light it
-  is the guide's dark blue; on dark it is sky with dark text, so the primary action is the
-  brightest thing on a dark page.
-- **Highlight and focus**: `--highlight` (cyan) marks a selection or a progress fill;
-  `--focus` draws the focus ring. Both clear 3:1 against every surface.
+  is the guide's dark blue with pale text; on dark it is neutral near-white with near-black text.
+- **Links**: `--link`, the guide's dark blue on light and the guide's sky on dark, used sparingly.
+- **Highlight and focus**: `--highlight` (the guide's cyan, exact) marks a selection edge or a
+  progress fill and is never the only cue: a selection also shows its dark-blue check, progress
+  its text. `--focus` (cyan) draws the focus ring; on light a 1px `--focus-edge` (dark blue)
+  outside it carries the 3:1 the cyan cannot reach on near-white.
+- **Not chosen**: an unchecked option is muted (`--ink-muted`), never struck through and never faded below 4.5:1.
 - **Status**: `gate` (waiting on you, violet), `fail` (red), `run`/`ok` (green), `warn` (amber),
   `done` (dim ink). Each has a `-dim` tint for its pill background.
 
-### Dark is a counterpart, not an inversion
+### Dark is restrained, not blue
 
-The dark theme keeps the same hues, the same roles and the same order of emphasis. Only the
-lightness moves: navy grounds on the dark-blue hue, pale ink, sky for the action. A component
-reads the same in both themes because it names roles, never colours.
+Dark keeps the roles and the order of emphasis, on neutral grounds: near-black page, charcoal
+panels, a neutral grey text ramp. Blue appears only as a sparing accent: cyan for focus,
+selection edges and progress, sky for links and the brand mark. Status keeps its own hues. A
+component reads the same in both themes because it names roles, never colours. Users who want
+more colour make their own theme in Settings → Appearance; the default stays restrained.
 
 ## Type
 
 | Slot | Token | Face today | Use |
 |---|---|---|---|
 | Sans | `--font-sans` | Inter (Wicked Sans when it ships) | Every UI word |
-| Serif | `--font-serif` | Marcellus (Wicked Serif when it ships) | Display only: page titles and section heads, 18 px and up |
+| Serif | `--font-serif` | Marcellus (Wicked Serif when it ships) | Brand moments only. UI titles are Inter |
 | Script | `--font-script` | Dancing Script (Wicked Script when it ships) | Brand moments only, never UI text |
 | Mono | `--font-mono` | JetBrains Mono | Code, ids, paths, data |
 
@@ -108,8 +114,8 @@ uppercase at `--text-2xs`, `--weight-bold`, `--tracking-eyebrow` (0.12em).
 - Space: a 4 px grid (`--space-1` … `--space-16`).
 - Radius: `sm` 6 (chips) · `md` 8 (buttons, inputs) · `lg` 10 (cards) · `xl` 18 (hero panels,
   the composer) · `full` (pills, dots).
-- Elevation: shadows encode height, not decoration. Light shadows are tinted with the dark
-  blue, never grey. Dark elevation is a lighter surface plus a faint top rim light.
+- Elevation: shadows encode height, not decoration, and stay quiet: on light a hairline and a
+  whisper of dark-blue-tinted shadow; on dark a lighter neutral step and a hairline.
 - Focus: `--focus-ring` is a gap in the page colour, then the focus colour.
 - Motion: `--ease-out` for most transitions, `--dur-fast` (120 ms) to `--dur-slow` (300 ms).
   Respect `prefers-reduced-motion`.

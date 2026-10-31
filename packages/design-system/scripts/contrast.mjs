@@ -39,10 +39,15 @@ export const PAIRS = [
   { fg: 'ink-on-brand-muted', bg: ['surface-brand', 'surface-brand-raised'], min: 4.5, why: 'secondary text on the brand panel' },
   { fg: 'brand-action', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'action fill on the brand panel (non-text)' },
   { fg: 'brand-action-fg', bg: ['brand-action'], min: 4.5, why: 'text on a brand-panel action' },
-  { fg: 'focus', bg: TEXT_SURFACES, min: 3, why: 'focus ring (WCAG 1.4.11)' },
+  // The focus ring is the cyan plus (on light) a 1px --focus-edge outside it: the ring passes when
+  // either line clears 3:1 against the surface (the guide's exact cyan is 2.7-2.9:1 on light grounds).
+  { fg: ['focus', 'focus-edge'], bg: TEXT_SURFACES, min: 3, why: 'focus ring (WCAG 1.4.11)' },
   { fg: 'focus-on-brand', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'focus ring on the brand panel' },
   { fg: 'border-input', bg: TEXT_SURFACES, min: 3, why: 'an input field edge (WCAG 1.4.11)' },
-  { fg: 'highlight', bg: TEXT_SURFACES, min: 3, why: 'selection edge, progress fill (WCAG 1.4.11)' },
+  // The guide's exact cyan, kept exact on light (operator, 2026-10-31). It is never the only cue: a
+  // selection also shows the dark-blue check (`accent`, held to 3:1 below) and progress shows its text.
+  { fg: 'highlight', bg: TEXT_SURFACES, min: { light: 2.5, dark: 3 }, why: 'selection edge, progress fill (paired cue)' },
+  { fg: 'accent', bg: TEXT_SURFACES, min: 3, why: 'the check that carries a selection (WCAG 1.4.11)' },
   ...['gate', 'fail', 'run', 'warn'].map((s) => ({ fg: `status-${s}`, bg: [...TEXT_SURFACES, `status-${s}-dim`], min: 4.5, why: 'status text' })),
   { fg: 'status-fail-fg', bg: ['status-fail'], min: 4.5, why: 'text on a filled fail' },
   ...['experience', 'control', 'capability', 'foundation'].map((p) => ({ fg: `plane-${p}`, bg: TEXT_SURFACES, min: 4.5, why: 'plane label' })),
@@ -57,8 +62,10 @@ export function audit(src) {
     const page = over(col('surface-base'), [255, 255, 255, 1]);
     for (const p of PAIRS) for (const bgName of p.bg) {
       const bg = over(col(bgName), page);
-      const r = ratio(over(col(p.fg), bg), bg);
-      rows.push({ theme, fg: p.fg, bg: bgName, ratio: Math.floor(r * 1000) / 1000, min: p.min, ok: r >= p.min, why: p.why });
+      const fgs = Array.isArray(p.fg) ? p.fg : [p.fg];
+      const r = Math.max(...fgs.map((f) => ratio(over(col(f), bg), bg)));
+      const min = typeof p.min === 'object' ? p.min[theme] : p.min;
+      rows.push({ theme, fg: fgs.join('|'), bg: bgName, ratio: Math.floor(r * 1000) / 1000, min, ok: r >= min, why: p.why });
     }
   }
   return rows;

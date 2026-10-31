@@ -1,5 +1,5 @@
 {
-  "$comment": "THE single source of the wicked design tokens. scripts/build.mjs generates dist/tokens.css (light and dark) and dist/tokens.json from it; never edit dist/ by hand. `from` says where each value came from: guide = the operator's accepted default palette (docs/GUIDE.md section 'Sources': ui-mockups README palette table and the derived values in ui-mockups/index.html; appearance.md); brand = a name the brand SVGs reference; studio = wicked-studio's current tokens at 23866dc, used where the guide is silent; web = wicked-web src/styles/tokens.css; derived = chosen by this package where the guide is silent, the reason in `note`. The guide specifies a light ground only, so every dark value is derived.",
+  "$comment": "THE single source of the wicked design tokens. scripts/build.mjs generates dist/tokens.css (light and dark) and dist/tokens.json from it; never edit dist/ by hand. `from` says where each value came from: guide = the operator's accepted default palette (docs/GUIDE.md section 'Sources': ui-mockups README palette table and the derived values in ui-mockups/index.html; appearance.md); brand = a name the brand SVGs reference; studio = wicked-studio's current tokens at 23866dc, used where the guide is silent; web = wicked-web src/styles/tokens.css; derived = chosen by this package where the guide is silent, the reason in `note`. The guide specifies a light ground only, so every dark value is derived; per the operator (2026-10-31) dark is neutral near-black and charcoal, with blue only as a sparing accent.",
   "name": "wicked-design",
   "themes": [
     "light",
@@ -24,197 +24,257 @@
     "surface-base": {
       "group": "surface",
       "light": "#f5fafc",
-      "dark": "#06182a",
+      "dark": "#0f1012",
       "from": "guide",
-      "note": "page background: the guide's near-white canvas; dark = derived, a deep navy on the dark-blue hue"
+      "note": "page: the guide's near-white canvas; dark = neutral near-black"
     },
     "surface-rail": {
       "group": "surface",
-      "light": "#eaf3f7",
-      "dark": "#04131f",
+      "light": "#fbfdfe",
+      "dark": "#0c0d0f",
       "from": "derived",
-      "note": "rail and chrome: one step under the canvas (light); one step deeper (dark)"
+      "note": "rail: light = a white-neutral panel for the neutral-sidebar variant (variant A puts the rail on --surface-brand); dark = one step deeper than the page",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "surface-card": {
       "group": "surface",
       "light": "#ffffff",
-      "dark": "#0b2236",
+      "dark": "#16181b",
       "from": "guide",
-      "note": "cards; dark = derived, each step lifts lightness so layers read before borders do"
+      "note": "cards; dark = charcoal, one step up",
+      "derivedIn": [
+        "dark"
+      ]
     },
     "surface-raised": {
       "group": "surface",
-      "light": "#f0f7fa",
-      "dark": "#102b43",
+      "light": "#f0f6f9",
+      "dark": "#1c1e22",
       "from": "derived",
-      "note": "dropdowns, popups"
+      "note": "dropdowns, popups",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "surface-overlay": {
       "group": "surface",
       "light": "#ffffff",
-      "dark": "#143250",
+      "dark": "#212428",
       "from": "derived",
-      "note": "modals, tooltips: white on light, carried by the overlay shadow"
+      "note": "modals, tooltips",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "surface-brand": {
       "group": "surface",
       "light": "#064273",
-      "dark": "#0a3358",
+      "dark": "#16181b",
       "from": "guide",
-      "note": "the dark-blue panel (sidebar, hero): guide dark blue; dark = derived, lifted off the navy base"
+      "note": "the guide's dark-blue panel (sidebar variant A, hero cards); dark = neutral charcoal, never a blue field"
     },
     "surface-brand-raised": {
       "group": "surface",
       "light": "#0b4d82",
-      "dark": "#0e3d68",
+      "dark": "#1c1e22",
       "from": "derived",
-      "note": "a lifted area on the brand panel"
+      "note": "a lifted area on the brand panel",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "ink-dim": {
       "group": "ink",
-      "light": "#4b6a7e",
-      "dark": "#8aa9bb",
+      "light": "#4f6a7b",
+      "dark": "#8b9097",
       "from": "derived",
-      "note": "timestamps, secondary labels: >= 4.5:1 on every surface"
+      "note": "timestamps, quiet labels: >= 4.5:1 on every surface",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "ink-muted": {
       "group": "ink",
       "light": "#3d6076",
-      "dark": "#a8c5d3",
+      "dark": "#a3a7ad",
       "from": "guide",
-      "note": "secondary copy: guide muted; dark = derived"
+      "note": "secondary text: guide #3d6076; dark = neutral grey"
     },
     "ink-body": {
       "group": "ink",
-      "light": "#1d425c",
-      "dark": "#d3e8ef",
-      "from": "derived",
-      "note": "default prose: between the guide's muted and main text"
+      "light": "#064273",
+      "dark": "#c9ccd1",
+      "from": "guide",
+      "note": "main text: the guide's dark blue; dark = neutral grey"
     },
     "ink-high": {
       "group": "ink",
       "light": "#064273",
-      "dark": "#f2f9fb",
+      "dark": "#e8e9eb",
       "from": "guide",
-      "note": "headings and main text: guide dark blue; dark = derived from the guide's pale"
+      "note": "headings and main text: the guide's dark blue; dark = neutral near-white"
     },
     "ink-on-brand": {
       "group": "ink",
       "light": "#def3f6",
-      "dark": "#def3f6",
+      "dark": "#e8e9eb",
       "from": "guide",
-      "note": "text on the dark-blue panel: guide pale"
+      "note": "text on the brand panel: guide pale"
     },
     "ink-on-brand-muted": {
       "group": "ink",
       "light": "#a9d9ec",
-      "dark": "#a9d9ec",
+      "dark": "#a3a7ad",
       "from": "derived",
-      "note": "secondary text on the dark-blue panel: the guide's sky, softened to read as secondary"
+      "note": "secondary text on the brand panel",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "border-subtle": {
       "group": "border",
       "light": "#dcebf0",
-      "dark": "rgba(118, 182, 196, 0.12)",
+      "dark": "#202327",
       "from": "derived",
-      "note": "light: a lighter step of the guide line; dark: the guide's muted blue (dark-surface separators), faint"
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "border": {
       "group": "border",
       "light": "#bad5df",
-      "dark": "rgba(118, 182, 196, 0.22)",
+      "dark": "#2a2d32",
       "from": "guide",
-      "note": "the guide line; dark = derived from the guide's muted blue"
+      "note": "the guide line; dark = a neutral hairline"
     },
     "border-strong": {
       "group": "border",
       "light": "#8fb2c2",
-      "dark": "rgba(118, 182, 196, 0.36)",
-      "from": "derived"
+      "dark": "#3a3e44",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "border-input": {
       "group": "border",
       "light": "#6a90a3",
-      "dark": "rgba(127, 205, 255, 0.52)",
+      "dark": "#71767d",
       "from": "derived",
-      "note": "the edge that says 'type here': 3:1 on every surface (WCAG 1.4.11)"
+      "note": "the edge that says 'type here': 3:1 on every surface (WCAG 1.4.11)",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "accent": {
       "group": "accent",
       "light": "#064273",
-      "dark": "#7fcdff",
+      "dark": "#e8e9eb",
       "from": "guide",
-      "note": "the action colour: guide dark blue (primary actions); dark = the guide's sky, carrying dark text"
+      "note": "the primary action: guide dark blue; dark = neutral-light with dark text (no large blue fields)"
     },
     "accent-hover": {
       "group": "accent",
       "light": "#05365e",
-      "dark": "#9fdaff",
+      "dark": "#ffffff",
       "from": "guide",
-      "note": "guide primary-hover; dark = derived"
+      "note": "guide primary-hover; dark = white"
     },
     "accent-dim": {
       "group": "accent",
       "light": "#1d5b8c",
-      "dark": "#5bb9f0",
-      "from": "derived"
+      "dark": "#c9ccd1",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "accent-subtle": {
       "group": "accent",
       "light": "#def3f6",
-      "dark": "#0f3354",
+      "dark": "#1d2024",
       "from": "guide",
-      "note": "tinted panels and chat bubbles: guide pale; dark = derived"
+      "note": "tinted panels and chat bubbles: guide pale; dark = a neutral lift"
     },
     "accent-wash": {
       "group": "accent",
-      "light": "rgba(29, 162, 216, 0.10)",
-      "dark": "rgba(127, 205, 255, 0.12)",
+      "light": "rgba(6, 66, 115, 0.06)",
+      "dark": "rgba(255, 255, 255, 0.06)",
       "from": "derived",
-      "note": "selected / tinted fills"
+      "note": "hover and current-item fills",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "accent-fg": {
       "group": "accent",
-      "light": "#ffffff",
-      "dark": "#04223b",
-      "from": "derived",
-      "note": "text on a filled action. The guide pairs dark blue with pale; white is crisper and clears more contrast"
+      "light": "#def3f6",
+      "dark": "#111214",
+      "from": "guide",
+      "note": "text on the primary action: guide on-primary pale; dark = near-black"
+    },
+    "link": {
+      "group": "accent",
+      "light": "#064273",
+      "dark": "#7fcdff",
+      "from": "guide",
+      "note": "links: guide dark blue (underlined); dark = guide sky, used sparingly"
     },
     "highlight": {
       "group": "accent",
-      "light": "#1693c6",
+      "light": "#1da2d8",
       "dark": "#1da2d8",
       "from": "guide",
-      "note": "guide cyan: selection edges, progress fills. Light = the guide's #1da2d8 deepened a step so a selection edge clears 3:1 (WCAG 1.4.11); the exact guide cyan stays on the brand wave (accent-primary). Never a white-text button background",
-      "derivedIn": [
-        "light"
-      ]
+      "note": "guide cyan: selection edges and progress fills only. Never the only cue (a selection also shows its check) and never a white-text background"
     },
     "focus": {
       "group": "accent",
-      "light": "#127fae",
-      "dark": "#3fb8e8",
+      "light": "#1da2d8",
+      "dark": "#1da2d8",
+      "from": "guide",
+      "note": "guide cyan: the focus ring. On light it carries a 1px --focus-edge outside it so the ring clears 3:1"
+    },
+    "focus-edge": {
+      "group": "accent",
+      "light": "#064273",
+      "dark": "transparent",
       "from": "derived",
-      "note": "the focus ring: the guide cyan, deepened (light) / lifted (dark) to clear 3:1 on every surface"
+      "derivedIn": [
+        "light"
+      ],
+      "note": "a 1px dark-blue line outside the light focus ring: the guide cyan is 2.8:1 on the canvas"
     },
     "focus-on-brand": {
       "group": "accent",
       "light": "#7fcdff",
-      "dark": "#7fcdff",
+      "dark": "#1da2d8",
       "from": "guide",
-      "note": "the focus ring inside the dark-blue panel: guide sky"
+      "note": "the focus ring on the brand panel: guide sky (light)"
     },
     "brand-action": {
       "group": "accent",
       "light": "#7fcdff",
-      "dark": "#7fcdff",
+      "dark": "#e8e9eb",
       "from": "guide",
-      "note": "an action on the dark-blue panel: guide sky with dark-blue text (the mockup's hero buttons)"
+      "note": "an action on the brand panel: guide sky with dark-blue text; dark = neutral-light"
     },
     "brand-action-fg": {
       "group": "accent",
       "light": "#064273",
-      "dark": "#04223b",
+      "dark": "#111214",
       "from": "guide"
     },
     "ink-primary": {
@@ -228,7 +288,7 @@
       "light": "#1da2d8",
       "dark": "#7fcdff",
       "from": "brand",
-      "note": "the lockup's wave horizon and 'agile' script: guide cyan on light, guide sky on dark"
+      "note": "the lockup's wave horizon and 'agile' script: guide cyan on light, guide sky on dark (a small mark)"
     },
     "accent-wicked": {
       "group": "brand",
@@ -247,61 +307,81 @@
     "status-gate": {
       "group": "status",
       "light": "#6a3fb5",
-      "dark": "#c9abf7",
+      "dark": "#b9a2ec",
       "from": "derived",
-      "note": "waiting on you: studio's violet, tuned to the blue palette"
+      "note": "waiting on you: violet, restrained",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "status-gate-dim": {
       "group": "status",
       "light": "#f2edfb",
-      "dark": "#271f45",
-      "from": "derived"
+      "dark": "#221f2a",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "status-fail": {
       "group": "status",
       "light": "#9b4637",
-      "dark": "#f29a8b",
+      "dark": "#ef8a7c",
       "from": "guide",
       "note": "guide error red; dark = derived"
     },
     "status-fail-dim": {
       "group": "status",
       "light": "#f8e9e5",
-      "dark": "#3b1f22",
+      "dark": "#2a1b1a",
       "from": "guide",
       "note": "guide error tint; dark = derived"
     },
     "status-fail-fg": {
       "group": "status",
       "light": "#ffffff",
-      "dark": "#1a0b08",
+      "dark": "#111214",
       "from": "derived",
-      "note": "text on a filled fail"
+      "note": "text on a filled fail",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "status-run": {
       "group": "status",
       "light": "#226b56",
-      "dark": "#6fd3ac",
+      "dark": "#6cc79f",
       "from": "derived",
-      "note": "running / ok: the guide's green (#398770) deepened to clear 4.5:1 as text"
+      "note": "running / ok: the guide's green (#398770) deepened to clear 4.5:1 as text",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "status-run-dim": {
       "group": "status",
       "light": "#e3f3ed",
-      "dark": "#0e3329",
-      "from": "derived"
+      "dark": "#15231e",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "status-warn": {
       "group": "status",
       "light": "#89502d",
-      "dark": "#f0b468",
+      "dark": "#e3a857",
       "from": "guide",
-      "note": "guide amber-brown; dark = derived"
+      "note": "guide amber; dark = derived"
     },
     "status-warn-dim": {
       "group": "status",
       "light": "#fff0d9",
-      "dark": "#3a2a14",
+      "dark": "#2a2215",
       "from": "guide",
       "note": "guide warning tint; dark = derived"
     },
@@ -368,48 +448,72 @@
     },
     "shadow-card": {
       "group": "elevation",
-      "light": "0 1px 2px rgba(6, 66, 115, 0.06), 0 4px 12px -6px rgba(6, 66, 115, 0.10), 0 0 0 1px var(--border-subtle)",
-      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.04), 0 1px 2px rgba(0, 6, 14, 0.40), 0 0 0 1px var(--border-subtle)",
+      "light": "0 1px 2px rgba(6, 66, 115, 0.05), 0 0 0 1px var(--border-subtle)",
+      "dark": "0 0 0 1px var(--border-subtle)",
       "from": "derived",
-      "note": "blue-tinted, never grey (light); a faint top rim light plus a drop (dark)"
+      "note": "light: a hairline and a whisper of shadow; dark: a hairline only",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "shadow-raised": {
       "group": "elevation",
-      "light": "0 10px 24px -10px rgba(6, 66, 115, 0.20), 0 0 0 1px var(--border)",
-      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.06), 0 12px 28px -10px rgba(0, 6, 14, 0.60), 0 0 0 1px var(--border)",
-      "from": "derived"
+      "light": "0 8px 24px -12px rgba(6, 66, 115, 0.18), 0 0 0 1px var(--border)",
+      "dark": "0 10px 28px -12px rgba(0, 0, 0, 0.70), 0 0 0 1px var(--border)",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "shadow-overlay": {
       "group": "elevation",
-      "light": "0 24px 48px -16px rgba(6, 66, 115, 0.28), 0 0 0 1px var(--border)",
-      "dark": "inset 0 1px 0 rgba(222, 243, 246, 0.07), 0 24px 56px -16px rgba(0, 6, 14, 0.72), 0 0 0 1px var(--border-strong)",
-      "from": "derived"
+      "light": "0 20px 48px -20px rgba(6, 66, 115, 0.26), 0 0 0 1px var(--border)",
+      "dark": "0 24px 56px -20px rgba(0, 0, 0, 0.80), 0 0 0 1px var(--border-strong)",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "shadow-button": {
       "group": "elevation",
-      "light": "inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(6, 66, 115, 0.20)",
-      "dark": "inset 0 1px 0 rgba(255, 255, 255, 0.30), 0 1px 2px rgba(0, 6, 14, 0.40)",
-      "from": "derived"
+      "light": "0 1px 2px rgba(6, 66, 115, 0.16)",
+      "dark": "0 1px 2px rgba(0, 0, 0, 0.50)",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "focus-ring": {
       "group": "elevation",
-      "light": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
+      "light": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus), 0 0 0 5px var(--focus-edge)",
       "dark": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
       "from": "studio",
-      "note": "a gap in the page colour, then the focus colour"
+      "note": "a gap in the page colour, then the guide cyan; on light a 1px dark-blue edge outside it carries the 3:1 the cyan alone cannot (2.8:1 on the canvas)"
     },
     "focus-ring-on-brand": {
       "group": "elevation",
       "light": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
       "dark": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
       "from": "derived",
-      "note": "the focus ring for controls on the dark-blue panel: --focus-ring would draw the page focus colour there (2.3:1)"
+      "note": "the focus ring for controls on the brand panel",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "scrim": {
       "group": "elevation",
       "light": "rgba(4, 34, 59, 0.40)",
-      "dark": "rgba(1, 8, 16, 0.66)",
-      "from": "derived"
+      "dark": "rgba(0, 0, 0, 0.62)",
+      "from": "derived",
+      "derivedIn": [
+        "light",
+        "dark"
+      ]
     },
     "space-1": {
       "group": "space",
@@ -532,7 +636,7 @@
       "group": "type",
       "value": "'Wicked Serif', 'Marcellus', ui-serif, Georgia, serif",
       "from": "derived",
-      "note": "slot for Wicked Serif (the lockup's 'WICKED' face, no file yet); Marcellus until it ships: the nearest OFL face to the lockup's flared capitals. Display sizes only (>= 18px)"
+      "note": "slot for Wicked Serif (the lockup's 'WICKED' face, no file yet); Marcellus until it ships. Not used for UI titles (operator, 2026-10-31: titles are Inter); brand moments only"
     },
     "font-script": {
       "group": "type",
@@ -694,6 +798,7 @@
     "radius-md",
     "font-sans",
     "font-serif",
-    "font-mono"
+    "font-mono",
+    "link"
   ]
 }
