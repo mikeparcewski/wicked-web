@@ -23,5 +23,5 @@
   "peerDependencies": {
     "astro": ">=4.0.0"
   },
-  "license": "MIT AND OFL-1.1"
+  "license": "MIT AND OFL-1.1 AND LicenseRef-wicked-brand-marks"
 }

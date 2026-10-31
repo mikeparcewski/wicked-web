@@ -5,7 +5,8 @@ machine-readable form of this guide; `dist/specimen.html` shows both themes side
 
 ## Sources
 
-This guide is assembled from the operator's design source, kept unchanged in `source/`:
+This guide is assembled from the operator's design source, kept unchanged in `source/` (in the
+wicked-web repository at `packages/design-system/source/`; it is not part of the shipped files):
 
 | File | What it decides |
 |---|---|
@@ -71,7 +72,7 @@ amber and red hues.
   lightness, so the layers read before any border does.
 - **The brand panel** (`--surface-brand`, `--surface-brand-raised`) is the dark-blue ground of
   the sidebar and the hero card, with `--ink-on-brand`, `--brand-action` (sky, dark text) and
-  `--focus-on-brand`.
+  `--focus-on-brand` (and `--focus-ring-on-brand` for controls on that panel).
 - **Ink**, quietest to strongest: `dim` (timestamps), `muted` (secondary), `body` (prose),
   `high` (headings, names, primary labels).
 - **Action**: `--accent` is the fill of a primary button, with `--accent-fg` on it. On light it
@@ -127,4 +128,4 @@ theme; the default stays this palette. A personal theme overrides the semantic t
 never the component CSS. It applies to that user alone and never publishes into an
 organisation. Custom CSS is presentation data: validated against an allowlist, contained to
 themeable surfaces, and it can never remove navigation, reset, focus indicators, status
-semantics or readable contrast. `source/appearance.md` is the full policy.
+semantics or readable contrast. `source/appearance.md` (in the repository) is the full policy.

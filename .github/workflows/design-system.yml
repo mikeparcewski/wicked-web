@@ -2,10 +2,10 @@ name: design-system
 
 on:
   pull_request:
-    paths: ['packages/design-system/**', '.github/workflows/design-system.yml']
+    paths: ['packages/design-system/**', 'package.json', '.github/workflows/design-system.yml']
   push:
     branches: [main]
-    paths: ['packages/design-system/**', '.github/workflows/design-system.yml']
+    paths: ['packages/design-system/**', 'package.json', '.github/workflows/design-system.yml']
 
 permissions:
   contents: read

@@ -185,7 +185,10 @@
       "light": "#1693c6",
       "dark": "#1da2d8",
       "from": "guide",
-      "note": "guide cyan: selection edges, progress fills. Light = the guide's #1da2d8 deepened a step so a selection edge clears 3:1 (WCAG 1.4.11); the exact guide cyan stays on the brand wave (accent-primary). Never a white-text button background"
+      "note": "guide cyan: selection edges, progress fills. Light = the guide's #1da2d8 deepened a step so a selection edge clears 3:1 (WCAG 1.4.11); the exact guide cyan stays on the brand wave (accent-primary). Never a white-text button background",
+      "derivedIn": [
+        "light"
+      ]
     },
     "focus": {
       "group": "accent",
@@ -328,28 +331,40 @@
       "light": "#99500f",
       "dark": "#f0a868",
       "from": "web",
-      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail",
+      "derivedIn": [
+        "light"
+      ]
     },
     "plane-control": {
       "group": "plane",
       "light": "#6f42c1",
       "dark": "#d2a8ff",
       "from": "web",
-      "note": "light = derived: studio's light gate violet"
+      "note": "light = derived: studio's light gate violet",
+      "derivedIn": [
+        "light"
+      ]
     },
     "plane-capability": {
       "group": "plane",
       "light": "#1e7227",
       "dark": "#56d364",
       "from": "web",
-      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail",
+      "derivedIn": [
+        "light"
+      ]
     },
     "plane-foundation": {
       "group": "plane",
       "light": "#0063bb",
       "dark": "#79c0ff",
       "from": "web",
-      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail"
+      "note": "light = derived: the web hue darkened to clear 4.5:1 on the rail",
+      "derivedIn": [
+        "light"
+      ]
     },
     "shadow-card": {
       "group": "elevation",
@@ -382,6 +397,13 @@
       "dark": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
       "from": "studio",
       "note": "a gap in the page colour, then the focus colour"
+    },
+    "focus-ring-on-brand": {
+      "group": "elevation",
+      "light": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
+      "dark": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
+      "from": "derived",
+      "note": "the focus ring for controls on the dark-blue panel: --focus-ring would draw the page focus colour there (2.3:1)"
     },
     "scrim": {
       "group": "elevation",

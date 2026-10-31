@@ -14,12 +14,12 @@ approved, consumers take it by git reference or as a vendored copy (below).
 | `src/tokens.source.json` | **The single source.** Every token, its light and dark value, and `from`: where the value came from (`guide`, `brand`, `studio`, `web` or `derived`, with a note). |
 | `dist/tokens.css` | Generated. CSS custom properties: the scale on `:root`; colours for dark (default), light (`prefers-color-scheme: light` when no theme is set), and `[data-theme="light"\|"dark"]` (or studio's `wicked-light`/`wicked-dark`) on the root or on any subtree. All inside `@layer wicked-design`, so a consumer's unlayered rules win. |
 | `dist/tokens.json` | Generated. The same tokens with concrete values (no `var()`), per theme, plus the scale, aliases, provenance and `pluginTokens`. For non-CSS consumers. |
-| `fonts.css`, `fonts/`, `licenses/` | Self-hosted woff2 faces with their SIL OFL 1.1 licences: Inter, Marcellus, Dancing Script, JetBrains Mono. Slots for Wicked Sans, Serif and Script (see `fonts/wicked/README.md`). |
+| `fonts.css`, `fonts/`, `licenses/` | Self-hosted woff2 faces with their SIL OFL 1.1 licences (`licenses/LICENSE-<face>.txt`): Inter, Marcellus, Dancing Script, JetBrains Mono. Slots for Wicked Sans, Serif and Script (see `fonts/wicked/README.md`). |
 | `index.css` | `fonts.css` + `dist/tokens.css`. Import this once. |
 | `brand/` | The lockup and icon sheet, byte-identical to `source/`. |
 | `dist/brand/wicked-agile-lockup.{light,dark}.svg` | Generated. The lockup with resolved colours, for `<img>`, favicons, email. |
 | `dist/icons/*.svg` | Generated. One file per icon, drawn in `currentColor`. |
-| `source/` | The operator's design source, unchanged (guide, mockups, marks, the font placeholder). In the repo, not in the shipped file set. |
+| `source/` | The operator's design source, unchanged (guide, mockups, marks, the font placeholder). Only in the wicked-web repository (`packages/design-system/source/`): not in the shipped or vendored file set. |
 
 ## Commands
 
@@ -29,6 +29,7 @@ No dependencies; Node 20 or later.
 npm run build    # regenerate dist/ from src/tokens.source.json and brand/
 npm test         # dist/ is current, every contrast pair meets WCAG AA, fonts and licences exist
 npm run vendor -- <dest-dir>   # copy the shipped files into another repo, pinned to this commit
+                               # (refuses a repo root, this package, or a non-empty non-vendored dir)
 node scripts/contrast.mjs      # print every promised colour pair and its ratio
 ```
 
@@ -48,8 +49,9 @@ studio's tree.
    It writes `VENDORED.json` (version and commit) next to the files.
 2. At the top of `src/index.css` (the one stylesheet `main.tsx` imports), add
    `@import './vendor/wicked-design/index.css';` before studio's own chain. Vite fingerprints the
-   fonts. Point the licence emitter in `vite.config.ts` (today it reads `src/assets/fonts/`) at
-   `src/vendor/wicked-design/licenses/`, so the OFL texts still ship in `dist/fonts/`.
+   fonts. Point the licence emitter in `vite.config.ts` (today it reads `src/assets/fonts/` and keeps
+   files named `LICENSE-*`) at `src/vendor/wicked-design/licenses/`; the package's licence files use
+   the same `LICENSE-<face>.txt` names, so the OFL texts still ship in `dist/fonts/`.
 3. Studio's `tokens.css` and `themes/wicked-{light,dark}.css` then keep only what is
    studio-specific (Nerve Center, agent and section hues, the accent-picker primitives) and
    map onto the package's names. Studio already uses the same semantic names (`--surface-*`,
@@ -57,8 +59,10 @@ studio's tree.
    no change.
 4. Updating = re-run the vendor script at a newer commit; the diff shows exactly what moved.
 
-When the operator approves an npm release, step 1 becomes `npm i wicked-design` and the
-import becomes `wicked-design`; nothing else changes.
+When the operator approves an npm release, step 1 becomes `npm i wicked-design` and the import
+becomes `wicked-design/index.css` (or `wicked-design`). The package exports the same paths as the
+vendored copy (`index.css`, `fonts.css`, `dist/*`, `fonts/*`, `brand/*`, `licenses/*`), so nothing
+else changes.
 
 ### The product sites: through their existing wicked-web dependency
 
@@ -67,7 +71,7 @@ the sha and import from the new export path:
 
 ```js
 import 'wicked-web/design/index.css';               // faces + tokens
-import tokens from 'wicked-web/design/dist/tokens.json';
+import tokens from 'wicked-web/design/dist/tokens.json' with { type: 'json' };   // plain import in Vite/Astro
 ```
 
 ```html
@@ -95,8 +99,10 @@ already sends resolved token values: `host.hello.theme` on connect, and `host.th
 `setTheme` (`src/editors/host.ts`), read from the names in `THEME_TOKENS` (`src/editors/theme.ts`).
 The plan:
 
-- the host's token list becomes `pluginTokens` from `dist/tokens.json` (surfaces, ink,
-  borders, accent, highlight, focus, the brand names, status, radius, fonts);
+- the host's token list (`THEME_TOKENS`, custom-property names such as `--surface-base`) becomes
+  `pluginProperties` from `dist/tokens.json`: the same names as `pluginTokens`, with the `--` prefix
+  that `getComputedStyle().getPropertyValue()` needs (surfaces, ink, borders, accent, highlight,
+  focus, the brand names, status, radius, fonts);
 - a plugin sets each received `--name: value` on its own `:root` and styles with the same
   names, so a plugin follows the user's light, dark or personal theme with no code of its own;
 - fonts reach a plugin as family names only. A plugin that wants the faces bundles its own
@@ -120,4 +126,5 @@ design exists yet (the lockup draws six serif capitals and one script word as ou
 slot comes first in its stack, so the real faces drop in without a token change.
 
 **Brand marks**: the lockup and icons were created by the project owner. The source folder
-carries no licence or ownership note for them. See `LICENSE`.
+carries no licence or ownership note for them, and `LICENSE` grants none yet; they are for the
+wicked products until the owner says otherwise.
