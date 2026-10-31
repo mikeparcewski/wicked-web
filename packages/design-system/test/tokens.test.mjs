@@ -50,7 +50,7 @@ test('the brand SVGs only reference tokens the package defines', () => {
 test('JSON values are concrete: no var() survives resolution', () => {
   const json = JSON.parse(buildJson(src, '0.0.0'));
   for (const th of src.themes) for (const [n, v] of Object.entries(json.themes[th])) assert.doesNotMatch(v, /var\(/, `${th} ${n}`);
-  assert.equal(json.themes.light['ink-primary'], resolve(src, 'ink-high', 'light'));
+  assert.equal(json.themes.light['status-ok'], resolve(src, 'status-run', 'light'));
 });
 
 test('per-theme lockups carry resolved colours; icons are split and drawn in currentColor', () => {
@@ -81,7 +81,7 @@ test('every font file fonts.css names exists, and every face ships its licence',
 });
 
 test('every token records where its value came from', () => {
-  const allowed = new Set(['guide', 'brand', 'studio', 'web', 'derived']);
+  const allowed = new Set(['council', 'guide', 'brand', 'studio', 'web', 'derived']);
   for (const [n, t] of Object.entries(src.tokens)) assert.ok(allowed.has(t.from), `${n}: ${t.from}`);
 });
 
@@ -94,61 +94,107 @@ test('the shipped brand SVGs are byte-identical to the operator source', () => {
 test('JSON: plugin properties carry the -- prefix studio reads, and provenance is per theme', () => {
   const json = JSON.parse(buildJson(src, '0.0.0'));
   assert.deepEqual(json.pluginProperties, src.pluginTokens.map((n) => `--${n}`));
-  assert.deepEqual(json.tokens['surface-base'].derivedIn, ['dark']);      // guide gives light only
+  assert.equal(json.tokens['surface-base'].derivedIn, undefined);         // the synthesis gives both themes
   assert.deepEqual(json.tokens['plane-foundation'].derivedIn, ['light']); // web gives dark only
   assert.equal(json.tokens['space-4'].derivedIn, undefined);
   assert.deepEqual(derivedIn({ from: 'guide', light: '#fff', dark: '#fff' }), []);
 });
 
-test('focus inside the brand panel has its own ring that clears 3:1 there', () => {
+test('focus on the (now neutral) brand panel resolves to a full ring', () => {
   for (const th of src.themes) assert.match(resolve(src, 'focus-ring-on-brand', th), /var\(--surface-brand\)|#[0-9a-f]{6}/);
-  assert.equal(resolve(src, 'focus-ring-on-brand', 'light'), `0 0 0 2px ${src.tokens['surface-brand'].light}, 0 0 0 4px ${src.tokens['focus-on-brand'].light}`);
+  for (const th of src.themes) assert.equal(resolve(src, 'focus-ring-on-brand', th), `0 0 0 2px ${resolve(src, 'surface-brand', th)}, 0 0 0 4px ${resolve(src, 'focus-on-brand', th)}`);
 });
 
-test('dark grounds are neutral near-black and charcoal: no navy or blue-tinted surface, rail, panel or hairline', () => {
-  // Operator, 2026-10-31: "Why not black, or a lighter shade of black? The blue makes it look unprofessional."
+test('both themes are neutral: no tinted ground, rail, panel, hairline, ink or action (the synthesis is monochrome)', () => {
+  // Operator, 2026-10-31: "The blue makes it look unprofessional" (dark), "Light mode is the blues" (light).
   const neutral = ['surface-base', 'surface-rail', 'surface-card', 'surface-raised', 'surface-overlay', 'surface-brand',
     'surface-brand-raised', 'accent-subtle', 'border-subtle', 'border', 'border-strong', 'border-input',
-    'ink-high', 'ink-body', 'ink-muted', 'ink-dim', 'ink-on-brand', 'ink-on-brand-muted',
+    'ink-high', 'ink-body', 'ink-muted', 'ink-dim', 'ink-on-brand', 'ink-on-brand-muted', 'link', 'highlight', 'focus',
     'accent', 'accent-fg', 'accent-hover', 'accent-dim', 'brand-action', 'brand-action-fg'];
-  for (const n of neutral) {
-    const v = resolve(src, n, 'dark');
+  for (const th of src.themes) for (const n of neutral) {
+    const v = resolve(src, n, th);
     const m = v.match(/^#([0-9a-f]{6})$/i);
-    assert.ok(m, `${n} is an opaque hex in dark`);
+    assert.ok(m, `${th} ${n} is an opaque hex`);
     const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16));
-    assert.ok(Math.max(r, g, b) - Math.min(r, g, b) <= 12, `${n} ${v} is tinted (channel spread > 12)`);
+    assert.ok(Math.max(r, g, b) - Math.min(r, g, b) <= 12, `${th} ${n} ${v} is tinted (channel spread > 12)`);
   }
 });
 
-test('light follows the guide palette exactly where the guide names a role', () => {
-  const L = (n) => resolve(src, n, 'light');
-  assert.equal(L('surface-base'), '#f5fafc');   // derived canvas in the guide's mockup
-  assert.equal(L('surface-card'), '#ffffff');   // cards
-  assert.equal(L('ink-high'), '#064273');       // main text
-  assert.equal(L('ink-body'), '#064273');       // main text (prose)
-  assert.equal(L('link'), '#064273');
-  assert.equal(L('surface-brand'), '#064273');  // the spec's sidebar (variant A)
-  assert.equal(L('brand-action'), '#7fcdff');   // sky with dark-blue text on the panel
-  assert.equal(L('brand-action-fg'), '#064273');
-  assert.equal(L('accent'), '#064273');         // primary actions
-  assert.equal(L('accent-fg'), '#def3f6');      // on-primary: pale
-  assert.equal(L('accent-subtle'), '#def3f6');  // tinted panels, bubbles
-  assert.equal(L('highlight'), '#1da2d8');      // selection
-  assert.equal(L('focus'), '#1da2d8');          // focus
-  assert.equal(L('border'), '#bad5df');         // line
-  assert.equal(L('ink-muted'), '#3d6076');      // readable secondary text
+test('the brand mark keeps its own colours', () => {
+  assert.equal(resolve(src, 'accent-primary', 'light'), '#1da2d8');
+  assert.equal(resolve(src, 'accent-primary', 'dark'), '#7fcdff');
+  assert.equal(resolve(src, 'accent-wicked', 'light'), '#ffda19');
+  assert.equal(resolve(src, 'ink-primary', 'light'), '#064273');
+  assert.equal(resolve(src, 'ink-primary', 'dark'), '#def3f6');
 });
 
-test('the light focus ring paints the cyan, then the dark-blue edge outermost; dark paints the cyan', () => {
-  const layers = (th) => resolve(src, 'focus-ring', th).split(/,\s*(?=0 0 0)/).map((l) => l.trim());
-  const L = layers('light');
-  assert.equal(L.length, 3);
-  assert.equal(L[1], `0 0 0 4px ${resolve(src, 'focus', 'light')}`);
-  assert.equal(L[2], `0 0 0 5px ${resolve(src, 'focus-edge', 'light')}`, 'the 3:1 edge is the outermost layer');
-  assert.ok(audit(src).filter((r) => r.theme === 'light' && r.fg === 'focus-edge').every((r) => r.ok && r.min === 3));
-  const D = layers('dark');
-  assert.equal(D[D.length - 1], `0 0 0 4px ${resolve(src, 'focus', 'dark')}`);
-  assert.ok(audit(src).filter((r) => r.theme === 'dark' && r.fg === 'focus').every((r) => r.ok && r.min === 3));
+test('both themes equal the synthesis the operator picked (design/council/tokens-synth.json, 2026-10-31)', () => {
+  const SYNTHESIS = {
+    "light": {
+      "surface-base": "#f5f5f4",
+      "surface-rail": "#efefed",
+      "surface-card": "#ffffff",
+      "surface-raised": "#ffffff",
+      "surface-overlay": "#ffffff",
+      "ink-high": "#18181a",
+      "ink-body": "#3c3c38",
+      "ink-muted": "#55554f",
+      "ink-dim": "#66665f",
+      "border-subtle": "#e6e6e2",
+      "border": "#d6d6d1",
+      "border-strong": "#a8a8a1",
+      "border-input": "#7e7e77",
+      "accent": "#18181a",
+      "accent-hover": "#323230",
+      "accent-fg": "#fafaf9",
+      "accent-subtle": "#ecece9",
+      "accent-wash": "rgba(24, 24, 26, 0.045)",
+      "highlight": "#18181a",
+      "focus": "#18181a",
+      "link": "#18181a",
+      "status-gate": "#6d3e9d",
+      "status-fail": "#b3261e",
+      "status-run": "#176548",
+      "status-warn": "#875300"
+    },
+    "dark": {
+      "surface-base": "#121212",
+      "surface-rail": "#0e0e0e",
+      "surface-card": "#1a1a1a",
+      "surface-raised": "#212121",
+      "surface-overlay": "#282828",
+      "ink-high": "#ededea",
+      "ink-body": "#cfcfca",
+      "ink-muted": "#a9a9a3",
+      "ink-dim": "#8f8f89",
+      "border-subtle": "#232323",
+      "border": "#2e2e2e",
+      "border-strong": "#4a4a48",
+      "border-input": "#77776f",
+      "accent": "#ededea",
+      "accent-hover": "#ffffff",
+      "accent-fg": "#141414",
+      "accent-subtle": "#262625",
+      "accent-wash": "rgba(237, 237, 234, 0.05)",
+      "highlight": "#ededea",
+      "focus": "#ededea",
+      "link": "#ededea",
+      "status-gate": "#c8a5f0",
+      "status-fail": "#ffaaa1",
+      "status-run": "#83c8a4",
+      "status-warn": "#ebc06b"
+    }
+  };
+  for (const th of src.themes) for (const [n, v] of Object.entries(SYNTHESIS[th])) assert.equal(resolve(src, n, th), v, `${th} ${n}`);
+});
+
+test('the focus ring is a page-coloured gap, then the 2px focus line, which clears 3:1 alone in both themes', () => {
+  for (const th of src.themes) {
+    const layers = resolve(src, 'focus-ring', th).split(/,\s*(?=0 0 0)/).map((l) => l.trim());
+    assert.deepEqual(layers, [`0 0 0 2px ${resolve(src, 'surface-base', th)}`, `0 0 0 4px ${resolve(src, 'focus', th)}`]);
+    const rows = audit(src).filter((r) => r.theme === th && r.fg === 'focus');
+    assert.ok(rows.length >= 5 && rows.every((r) => r.ok && r.min === 3));
+  }
 });
 
 test('links are audited, and an unreadable link fails the audit', () => {
@@ -162,7 +208,7 @@ test('plugins receive every token the focus ring references', () => {
   for (const n of ['focus', 'focus-edge', 'focus-ring', 'surface-base']) assert.ok(src.pluginTokens.includes(n), n);
 });
 
-test('the specimen shows the paired cues the light cyan relies on, and no serif UI heading', () => {
+test('the specimen shows a selection with its check, progress with its value, a muted not-chosen row, and no serif UI heading', () => {
   const spec = buildSpecimen(src, readFileSync(join(ROOT, 'brand/wicked-agile-lockup.svg'), 'utf8'), {});
   assert.match(spec, /data-fixture="selection"><span class="chk"[^>]*>✓<\/span>/, 'a selection shows its check');
   assert.match(spec, /data-fixture="progress"><span class="bar">.*<span class="pct">58%<\/span>/, 'progress shows its value as text');

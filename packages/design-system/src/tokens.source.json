@@ -1,5 +1,5 @@
 {
-  "$comment": "THE single source of the wicked design tokens. scripts/build.mjs generates dist/tokens.css (light and dark) and dist/tokens.json from it; never edit dist/ by hand. `from` says where each value came from: guide = the operator's accepted default palette (docs/GUIDE.md section 'Sources': ui-mockups README palette table and the derived values in ui-mockups/index.html; appearance.md); brand = a name the brand SVGs reference; studio = wicked-studio's current tokens at 23866dc, used where the guide is silent; web = wicked-web src/styles/tokens.css; derived = chosen by this package where the guide is silent, the reason in `note`. The guide specifies a light ground only, so every dark value is derived; per the operator (2026-10-31) dark is neutral near-black and charcoal, with blue only as a sparing accent.",
+  "$comment": "THE single source of the wicked design tokens. scripts/build.mjs generates dist/tokens.css (light and dark) and dist/tokens.json from it; never edit dist/ by hand. `from` says where each value came from: council = the operator's pick, the synthesis of the design council (design/DES-THEMES.md revision 3, option 3, 2026-10-31); brand = a name the brand SVGs reference (the brand mark keeps its own colours); studio = wicked-studio's tokens at 23866dc, where the synthesis is silent; web = wicked-web src/styles/tokens.css; guide / derived = earlier sources still used by a few tokens, the reason in `note`.",
   "name": "wicked-design",
   "themes": [
     "light",
@@ -23,266 +23,213 @@
   "tokens": {
     "surface-base": {
       "group": "surface",
-      "light": "#f5fafc",
-      "dark": "#0f1012",
-      "from": "guide",
-      "note": "page: the guide's near-white canvas; dark = neutral near-black"
+      "light": "#f5f5f4",
+      "dark": "#121212",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "surface-rail": {
       "group": "surface",
-      "light": "#fbfdfe",
-      "dark": "#0c0d0f",
-      "from": "derived",
-      "note": "rail: light = a white-neutral panel for the neutral-sidebar variant (variant A puts the rail on --surface-brand); dark = one step deeper than the page",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#efefed",
+      "dark": "#0e0e0e",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "surface-card": {
       "group": "surface",
       "light": "#ffffff",
-      "dark": "#16181b",
-      "from": "guide",
-      "note": "cards; dark = charcoal, one step up",
-      "derivedIn": [
-        "dark"
-      ]
+      "dark": "#1a1a1a",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "surface-raised": {
       "group": "surface",
-      "light": "#f0f6f9",
-      "dark": "#1c1e22",
-      "from": "derived",
-      "note": "dropdowns, popups",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#ffffff",
+      "dark": "#212121",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "surface-overlay": {
       "group": "surface",
       "light": "#ffffff",
-      "dark": "#212428",
-      "from": "derived",
-      "note": "modals, tooltips",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "dark": "#282828",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "surface-brand": {
       "group": "surface",
-      "light": "#064273",
-      "dark": "#16181b",
-      "from": "guide",
-      "note": "the guide's dark-blue panel (sidebar variant A, hero cards); dark = neutral charcoal, never a blue field"
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "surface-card"
     },
     "surface-brand-raised": {
       "group": "surface",
-      "light": "#0b4d82",
-      "dark": "#1c1e22",
-      "from": "derived",
-      "note": "a lifted area on the brand panel",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "surface-raised"
     },
     "ink-dim": {
       "group": "ink",
-      "light": "#4f6a7b",
-      "dark": "#8b9097",
-      "from": "derived",
-      "note": "timestamps, quiet labels: >= 4.5:1 on every surface",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#66665f",
+      "dark": "#8f8f89",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "ink-muted": {
       "group": "ink",
-      "light": "#3d6076",
-      "dark": "#a3a7ad",
-      "from": "guide",
-      "note": "secondary text: guide #3d6076; dark = neutral grey"
+      "light": "#55554f",
+      "dark": "#a9a9a3",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "ink-body": {
       "group": "ink",
-      "light": "#064273",
-      "dark": "#c9ccd1",
-      "from": "guide",
-      "note": "main text: the guide's dark blue; dark = neutral grey"
+      "light": "#3c3c38",
+      "dark": "#cfcfca",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "ink-high": {
       "group": "ink",
-      "light": "#064273",
-      "dark": "#e8e9eb",
-      "from": "guide",
-      "note": "headings and main text: the guide's dark blue; dark = neutral near-white"
+      "light": "#18181a",
+      "dark": "#ededea",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "ink-on-brand": {
       "group": "ink",
-      "light": "#def3f6",
-      "dark": "#e8e9eb",
-      "from": "guide",
-      "note": "text on the brand panel: guide pale"
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "ink-high"
     },
     "ink-on-brand-muted": {
       "group": "ink",
-      "light": "#a9d9ec",
-      "dark": "#a3a7ad",
-      "from": "derived",
-      "note": "secondary text on the brand panel",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "ink-muted"
     },
     "border-subtle": {
       "group": "border",
-      "light": "#dcebf0",
-      "dark": "#202327",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#e6e6e2",
+      "dark": "#232323",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "border": {
       "group": "border",
-      "light": "#bad5df",
-      "dark": "#2a2d32",
-      "from": "guide",
-      "note": "the guide line; dark = a neutral hairline"
+      "light": "#d6d6d1",
+      "dark": "#2e2e2e",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "border-strong": {
       "group": "border",
-      "light": "#8fb2c2",
-      "dark": "#3a3e44",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#a8a8a1",
+      "dark": "#4a4a48",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "border-input": {
       "group": "border",
-      "light": "#6a90a3",
-      "dark": "#71767d",
-      "from": "derived",
-      "note": "the edge that says 'type here': 3:1 on every surface (WCAG 1.4.11)",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#7e7e77",
+      "dark": "#77776f",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "accent": {
       "group": "accent",
-      "light": "#064273",
-      "dark": "#e8e9eb",
-      "from": "guide",
-      "note": "the primary action: guide dark blue; dark = neutral-light with dark text (no large blue fields)"
+      "light": "#18181a",
+      "dark": "#ededea",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "accent-hover": {
       "group": "accent",
-      "light": "#05365e",
+      "light": "#323230",
       "dark": "#ffffff",
-      "from": "guide",
-      "note": "guide primary-hover; dark = white"
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "accent-dim": {
       "group": "accent",
-      "light": "#1d5b8c",
-      "dark": "#c9ccd1",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#3c3c38",
+      "dark": "#cfcfca",
+      "from": "council",
+      "note": "a quieter action ink"
     },
     "accent-subtle": {
       "group": "accent",
-      "light": "#def3f6",
-      "dark": "#1d2024",
-      "from": "guide",
-      "note": "tinted panels and chat bubbles: guide pale; dark = a neutral lift"
+      "light": "#ecece9",
+      "dark": "#262625",
+      "from": "council",
+      "note": "selected and tinted fills (synthesis selected-bg)"
     },
     "accent-wash": {
       "group": "accent",
-      "light": "rgba(6, 66, 115, 0.06)",
-      "dark": "rgba(255, 255, 255, 0.06)",
-      "from": "derived",
-      "note": "hover and current-item fills",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "rgba(24, 24, 26, 0.045)",
+      "dark": "rgba(237, 237, 234, 0.05)",
+      "from": "council",
+      "note": "hover and current-item wash (synthesis hover-bg)"
     },
     "accent-fg": {
       "group": "accent",
-      "light": "#def3f6",
-      "dark": "#111214",
-      "from": "guide",
-      "note": "text on the primary action: guide on-primary pale; dark = near-black"
+      "light": "#fafaf9",
+      "dark": "#141414",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "link": {
       "group": "accent",
-      "light": "#064273",
-      "dark": "#7fcdff",
-      "from": "guide",
-      "note": "links: guide dark blue (underlined); dark = guide sky, used sparingly"
+      "light": "#18181a",
+      "dark": "#ededea",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "highlight": {
       "group": "accent",
-      "light": "#1da2d8",
-      "dark": "#1da2d8",
-      "from": "guide",
-      "note": "guide cyan: selection edges and progress fills only. Never the only cue (a selection also shows its check) and never a white-text background"
+      "light": "#18181a",
+      "dark": "#ededea",
+      "from": "council",
+      "note": "the selection edge: near-black / near-white (synthesis selected-edge). Progress uses --status-run"
     },
     "focus": {
       "group": "accent",
-      "light": "#1da2d8",
-      "dark": "#1da2d8",
-      "from": "guide",
-      "note": "guide cyan: the focus ring. On light it carries a 1px --focus-edge outside it so the ring clears 3:1"
+      "light": "#18181a",
+      "dark": "#ededea",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "focus-edge": {
       "group": "accent",
-      "light": "#064273",
+      "light": "transparent",
       "dark": "transparent",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ],
-      "note": "a 1px dark-blue line outside the light focus ring: the guide cyan is 2.8:1 on the canvas"
+      "from": "council",
+      "note": "unused by the synthesis (its focus ring clears 3:1 alone); kept so consumers of the token keep working"
     },
     "focus-on-brand": {
       "group": "accent",
-      "light": "#7fcdff",
-      "dark": "#1da2d8",
-      "from": "guide",
-      "note": "the focus ring on the brand panel: guide sky (light)"
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "focus"
     },
     "brand-action": {
       "group": "accent",
-      "light": "#7fcdff",
-      "dark": "#e8e9eb",
-      "from": "guide",
-      "note": "an action on the brand panel: guide sky with dark-blue text; dark = neutral-light"
+      "from": "council",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working",
+      "alias": "accent"
     },
     "brand-action-fg": {
       "group": "accent",
-      "light": "#064273",
-      "dark": "#111214",
-      "from": "guide"
+      "from": "council",
+      "alias": "accent-fg",
+      "note": "the synthesis has no dark-blue brand panel; kept as a neutral alias so consumers keep working"
     },
     "ink-primary": {
       "group": "brand",
-      "alias": "ink-high",
       "from": "brand",
-      "note": "the lockup's mast, cables and 'WICKED'"
+      "note": "the lockup's mast, cables and 'WICKED': the brand mark keeps its own colours (dark blue / pale), not the UI ink",
+      "light": "#064273",
+      "dark": "#def3f6"
     },
     "accent-primary": {
       "group": "brand",
@@ -307,84 +254,66 @@
     },
     "status-gate": {
       "group": "status",
-      "light": "#6a3fb5",
-      "dark": "#b9a2ec",
-      "from": "derived",
-      "note": "waiting on you: violet, restrained",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#6d3e9d",
+      "dark": "#c8a5f0",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-gate-dim": {
       "group": "status",
-      "light": "#f2edfb",
-      "dark": "#221f2a",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#f2ebfa",
+      "dark": "#2e2438",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-fail": {
       "group": "status",
-      "light": "#9b4637",
-      "dark": "#ef8a7c",
-      "from": "guide",
-      "note": "guide error red; dark = derived"
+      "light": "#b3261e",
+      "dark": "#ffaaa1",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-fail-dim": {
       "group": "status",
-      "light": "#f8e9e5",
-      "dark": "#2a1b1a",
-      "from": "guide",
-      "note": "guide error tint; dark = derived"
+      "light": "#fcecea",
+      "dark": "#3b2321",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-fail-fg": {
       "group": "status",
       "light": "#ffffff",
-      "dark": "#111214",
-      "from": "derived",
-      "note": "text on a filled fail",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "dark": "#141414",
+      "from": "council",
+      "note": "text on a filled fail"
     },
     "status-run": {
       "group": "status",
-      "light": "#226b56",
-      "dark": "#6cc79f",
-      "from": "derived",
-      "note": "running / ok: the guide's green (#398770) deepened to clear 4.5:1 as text",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#176548",
+      "dark": "#83c8a4",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-run-dim": {
       "group": "status",
-      "light": "#e3f3ed",
-      "dark": "#15231e",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "#e8f4ed",
+      "dark": "#1c3226",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-warn": {
       "group": "status",
-      "light": "#89502d",
-      "dark": "#e3a857",
-      "from": "guide",
-      "note": "guide amber; dark = derived"
+      "light": "#875300",
+      "dark": "#ebc06b",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-warn-dim": {
       "group": "status",
-      "light": "#fff0d9",
-      "dark": "#2a2215",
-      "from": "guide",
-      "note": "guide warning tint; dark = derived"
+      "light": "#fbf0d9",
+      "dark": "#352c1b",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "status-ok": {
       "group": "status",
@@ -449,72 +378,52 @@
     },
     "shadow-card": {
       "group": "elevation",
-      "light": "0 1px 2px rgba(6, 66, 115, 0.05), 0 0 0 1px var(--border-subtle)",
-      "dark": "0 0 0 1px var(--border-subtle)",
-      "from": "derived",
-      "note": "light: a hairline and a whisper of shadow; dark: a hairline only",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "0 1px 2px rgba(24, 24, 26, 0.04)",
+      "dark": "0 1px 2px rgba(0, 0, 0, 0.36)",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "shadow-raised": {
       "group": "elevation",
-      "light": "0 8px 24px -12px rgba(6, 66, 115, 0.18), 0 0 0 1px var(--border)",
-      "dark": "0 10px 28px -12px rgba(0, 0, 0, 0.70), 0 0 0 1px var(--border)",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "0 2px 6px rgba(24, 24, 26, 0.06), 0 1px 2px rgba(24, 24, 26, 0.04)",
+      "dark": "0 4px 12px rgba(0, 0, 0, 0.44), 0 1px 2px rgba(0, 0, 0, 0.32)",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "shadow-overlay": {
       "group": "elevation",
-      "light": "0 20px 48px -20px rgba(6, 66, 115, 0.26), 0 0 0 1px var(--border)",
-      "dark": "0 24px 56px -20px rgba(0, 0, 0, 0.80), 0 0 0 1px var(--border-strong)",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "0 12px 32px rgba(24, 24, 26, 0.12), 0 2px 6px rgba(24, 24, 26, 0.06)",
+      "dark": "0 16px 40px rgba(0, 0, 0, 0.64), 0 2px 8px rgba(0, 0, 0, 0.44)",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "shadow-button": {
       "group": "elevation",
-      "light": "0 1px 2px rgba(6, 66, 115, 0.16)",
-      "dark": "0 1px 2px rgba(0, 0, 0, 0.50)",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "none",
+      "dark": "none",
+      "from": "council",
+      "note": "buttons are flat"
     },
     "focus-ring": {
       "group": "elevation",
-      "light": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus), 0 0 0 5px var(--focus-edge)",
+      "light": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
       "dark": "0 0 0 2px var(--surface-base), 0 0 0 4px var(--focus)",
-      "from": "studio",
-      "note": "a gap in the page colour, then the guide cyan; on light a 1px dark-blue edge outside it carries the 3:1 the cyan alone cannot (2.8:1 on the canvas)"
+      "from": "council",
+      "note": "a 2px gap in the page colour, then a 2px near-black / near-white ring"
     },
     "focus-ring-on-brand": {
       "group": "elevation",
       "light": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
       "dark": "0 0 0 2px var(--surface-brand), 0 0 0 4px var(--focus-on-brand)",
-      "from": "derived",
-      "note": "the focus ring for controls on the brand panel",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "from": "council",
+      "note": "the focus ring for controls on the brand panel"
     },
     "scrim": {
       "group": "elevation",
-      "light": "rgba(4, 34, 59, 0.40)",
-      "dark": "rgba(0, 0, 0, 0.62)",
-      "from": "derived",
-      "derivedIn": [
-        "light",
-        "dark"
-      ]
+      "light": "rgba(24, 24, 26, 0.32)",
+      "dark": "rgba(0, 0, 0, 0.60)",
+      "from": "council",
+      "note": "the synthesis (operator's pick, 2026-10-31): design/DES-THEMES.md revision 3, option 3"
     },
     "space-1": {
       "group": "space",
@@ -692,6 +601,24 @@
       "from": "guide",
       "note": "the guide's page title"
     },
+    "text-label": {
+      "group": "type",
+      "value": "12px",
+      "from": "council",
+      "note": "labels: sentence case, weight 500"
+    },
+    "text-body": {
+      "group": "type",
+      "value": "14px",
+      "from": "council",
+      "note": "body copy"
+    },
+    "text-title": {
+      "group": "type",
+      "value": "20px",
+      "from": "council",
+      "note": "page and job titles, weight 600, -0.02em"
+    },
     "weight-normal": {
       "group": "type",
       "value": "400",
@@ -712,6 +639,12 @@
       "value": "700",
       "from": "studio"
     },
+    "weight-label": {
+      "group": "type",
+      "value": "500",
+      "from": "council",
+      "note": "labels"
+    },
     "leading-tight": {
       "group": "type",
       "value": "1.2",
@@ -729,43 +662,44 @@
     },
     "weight-heading": {
       "group": "type",
-      "value": "650",
-      "from": "guide",
-      "note": "the guide's heading weight (Inter is variable)"
+      "value": "600",
+      "from": "council",
+      "note": "titles"
     },
     "tracking-display": {
       "group": "type",
-      "value": "-0.025em",
-      "from": "guide",
-      "note": "the guide's h1 letter-spacing (-0.8px at 34px)"
+      "value": "-0.02em",
+      "from": "council",
+      "note": "titles"
     },
     "tracking-eyebrow": {
       "group": "type",
       "value": "0.12em",
       "from": "guide",
-      "note": "uppercase eyebrows (1.4px at 11px)"
+      "note": "kept for the sites; the synthesis sets UI labels in sentence case (no eyebrows)"
     },
     "radius-sm": {
       "group": "radius",
       "value": "6px",
-      "from": "guide"
+      "from": "council"
     },
     "radius-md": {
       "group": "radius",
-      "value": "8px",
-      "from": "studio"
+      "value": "6px",
+      "from": "council",
+      "note": "controls"
     },
     "radius-lg": {
       "group": "radius",
-      "value": "10px",
-      "from": "guide",
+      "value": "8px",
+      "from": "council",
       "note": "cards"
     },
     "radius-xl": {
       "group": "radius",
-      "value": "18px",
-      "from": "guide",
-      "note": "hero panels, the chat composer"
+      "value": "12px",
+      "from": "council",
+      "note": "panels"
     },
     "radius-full": {
       "group": "radius",
