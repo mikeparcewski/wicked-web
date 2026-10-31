@@ -46,7 +46,9 @@ export const PAIRS = [
   { fg: 'border-input', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'an input field edge (WCAG 1.4.11)' },
   // The selection edge is near-black / near-white: it clears 3:1 on every surface and on the selected fill.
   { fg: 'highlight', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'selection edge (WCAG 1.4.11)' },
-  { fg: 'accent', bg: TEXT_SURFACES, min: 3, why: 'the check that carries a selection (WCAG 1.4.11)' },
+  { fg: 'accent', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'the check that carries a selection, on the page and on the selected fill (WCAG 1.4.11)' },
+  { fg: 'ink-primary', bg: TEXT_SURFACES, min: 4.5, why: "the brand mark's wordmark and mast" },
+  { fg: 'status-run', bg: ['border-subtle'], min: 3, why: 'a progress fill on its track (WCAG 1.4.11)' },
   ...['gate', 'fail', 'run', 'warn'].map((s) => ({ fg: `status-${s}`, bg: [...TEXT_SURFACES, `status-${s}-dim`], min: 4.5, why: 'status text' })),
   { fg: 'status-fail-fg', bg: ['status-fail'], min: 4.5, why: 'text on a filled fail' },
   ...['experience', 'control', 'capability', 'foundation'].map((p) => ({ fg: `plane-${p}`, bg: TEXT_SURFACES, min: 4.5, why: 'plane label' })),
@@ -61,10 +63,8 @@ export function audit(src) {
     const page = over(col('surface-base'), [255, 255, 255, 1]);
     for (const p of PAIRS) for (const bgName of p.bg) {
       const bg = over(col(bgName), page);
-      const fgs = Array.isArray(p.fg) ? p.fg : [p.fg];
-      const r = Math.max(...fgs.map((f) => ratio(over(col(f), bg), bg)));
-      const min = typeof p.min === 'object' ? p.min[theme] : p.min;
-      rows.push({ theme, fg: fgs.join('|'), bg: bgName, ratio: Math.floor(r * 1000) / 1000, min, ok: r >= min, why: p.why });
+      const r = ratio(over(col(p.fg), bg), bg);
+      rows.push({ theme, fg: p.fg, bg: bgName, ratio: Math.floor(r * 1000) / 1000, min: p.min, ok: r >= p.min, why: p.why });
     }
   }
   return rows;

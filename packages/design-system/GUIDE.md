@@ -71,11 +71,12 @@ Neutral grounds, near-black and near-white ink, hairlines, and colour only where
 
 ### Colour with meaning
 
-Only status is chromatic, and each status keeps one hue in both themes: **waiting on you** violet
+In the UI only status is chromatic, and each status keeps one hue in both themes: **waiting on you** violet
 (`#6d3e9d` / `#c8a5f0`), **failed** red (`#b3261e` / `#ffaaa1`), **running / ok** green (`#176548` /
 `#83c8a4`; progress bars use it), **warning** amber (`#875300` / `#ebc06b`). Each has a `-dim` tint for
 its pill. The brand mark keeps its own colours (the wave in cyan or sky, the yellow spark) wherever it
-appears; it does not colour the UI.
+appears; it does not colour the UI. One more exception, outside studio's UI: the family sites' four
+**plane** hues (`--plane-experience` … `--plane-foundation`) label the platform map there.
 
 ### Roles (tokens)
 
@@ -84,7 +85,8 @@ appears; it does not colour the UI.
 - **Ink**, quietest to strongest: `dim`, `muted`, `body`, `high`. Titles use `high`, prose `body`.
 - **Action**: `--accent` is the primary button's fill, `--accent-fg` its text.
 - **Selection**: `--accent-subtle` fill, `--highlight` edge, and the check filled in `--accent`.
-  `--accent-wash` is hover and the current rail item, with a 2px `--ink-high` bar at its left edge.
+  The **current rail item** takes the same `--accent-subtle` fill with a 2px `--ink-high` bar at its left
+  edge. `--accent-wash` is hover only.
 - **Not chosen**: an unchecked option is muted (`--ink-muted`), never struck through and never faded.
 - **The brand panel** tokens (`--surface-brand` …) are neutral aliases now; there is no blue panel.
 
@@ -107,8 +109,9 @@ surface is smaller than 11px.
 
 - Space: a 4 px grid (`--space-1` … `--space-16`).
 - Radius: `sm` and `md` 6 (chips, controls) · `lg` 8 (cards) · `xl` 12 (panels) · `full` (pills, dots).
-- Elevation: hairlines first; shadows are soft and only on raised and overlaid surfaces. Messages carry
-  no border or shadow: spacing groups them.
+- Elevation: hairlines first. A card is a hairline (`--border-subtle`) with a whisper of shadow
+  (`--shadow-card`, a 1px 2px drop); raised and overlaid surfaces take softer, deeper shadows. Messages
+  carry no border or shadow: spacing groups them.
 - Focus: `--focus-ring` is a 2px gap in the page colour, then a 2px near-black (light) or near-white
   (dark) line. It clears 3:1 alone. Plugins receive `focus-ring` in the theme handoff.
 - Motion: `--ease-out` for most transitions, `--dur-fast` (120 ms) to `--dur-slow` (300 ms).
@@ -116,9 +119,17 @@ surface is smaller than 11px.
 
 ## Accessibility
 
-Every pair the system promises is measured in CI (`scripts/contrast.mjs`, run by `npm test`): all
-ink and links on every surface and tinted fill ≥ 4.5:1, text on every fill ≥ 4.5:1, input edges,
-selection edges and focus rings ≥ 3:1 (WCAG 1.4.11), in both themes. A new token that is meant to
+Every pair the system promises is measured in CI (`scripts/contrast.mjs`, run by `npm test`), in
+both themes:
+- all four inks and links ≥ 4.5:1 on every surface (page, rail, card, raised, overlay), on the
+  selected fill (`--accent-subtle`) and on the hover wash (`--accent-wash`);
+- each status ink ≥ 4.5:1 on every surface and on **its own** tint (`--status-*-dim`). Other inks on a
+  status tint are not promised (dark `--ink-dim` on a status tint is about 4.2:1): put a status pill's
+  words in its status ink;
+- text on the primary (`--accent-fg` on `--accent`, `--accent-hover`) ≥ 4.5:1, and the brand mark's
+  ink (`--ink-primary`) ≥ 4.5:1 on every surface;
+- input edges, selection edges, the selection check (also on the selected fill), focus rings and a
+  progress fill on its track (`--status-run` on `--border-subtle`) ≥ 3:1 (WCAG 1.4.11). A new token that is meant to
 carry text gets a pair there. `dist/specimen.html` shows a selection with its check, progress with its
 value and a muted not-chosen row (`data-fixture` attributes).
 
