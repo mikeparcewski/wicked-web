@@ -3,23 +3,25 @@
 How the wicked surfaces look, and why. The tokens in `src/tokens.source.json` are the
 machine-readable form of this guide; `dist/specimen.html` shows both themes side by side.
 
-## Sources
+## Sources and the decision
 
-This guide is assembled from the operator's design source, kept unchanged in `source/` (in the
-wicked-web repository at `packages/design-system/source/`; it is not part of the shipped files):
+**The default themes are the operator's pick of 2026-10-31: the design council's synthesis** (program
+`design/DES-THEMES.md`, revision 3, option 3). After two rejected themes ("the dark mode looks like a
+comic book"; "light mode is the blues… a 90s Microsoft site"; "why blues at all?"), two models were
+briefed separately and both chose a monochrome UI. The synthesis takes the best of both. Tokens set
+by it carry `from: "council"`.
 
-| File | What it decides |
+The operator's original design source is kept unchanged in `source/` (in the wicked-web repository at
+`packages/design-system/source/`; it is not part of the shipped files):
+
+| File | What it still decides |
 |---|---|
-| `source/ui-mockups/README.md` (section "Palette") | The five-band blue palette and the role of each colour. Accepted as the default on 2026-10-22. |
-| `source/ui-mockups/index.html` | The derived neutrals (canvas, line, muted text, primary hover), the warning and error tints, the type sizes and heading weights. |
-| `source/appearance.md` | Personal and chat-generated themes, and the limits on custom CSS. |
-| `source/wicked-agile-lockup.svg`, `source/wicked-agile-icons.svg` | The brand mark and the icon set, and the token names the mark draws with. |
-| `source/ui-mockups/palettes.html` | A comparison study of three coastal palettes. It is **not** the default. |
+| `source/wicked-agile-lockup.svg`, `source/wicked-agile-icons.svg` | The brand mark and icons, which keep their own colours. |
+| `source/appearance.md` | Personal and chat-generated themes, and the limits on custom CSS. Users who want colour make it there; the default stays restrained. |
+| `source/ui-mockups/README.md`, `index.html` | The blue palette. No longer the UI palette, it survives in the brand mark and as a theme a user can choose. |
 
-The guide specifies a light ground. Everything it is silent on (the dark theme, the
-elevation, the status hues it does not name) is **derived** and marked as such on every token
-(`from: "derived"`, with the reason in `note`). Where studio already had a considered value
-(spacing, motion, control sizes), the token keeps it (`from: "studio"`).
+Where the synthesis is silent (spacing, motion, control sizes), the tokens keep studio's considered
+values (`from: "studio"`).
 
 ## The mark
 
@@ -28,7 +30,7 @@ The lockup is a cable-stayed mast over a wave horizon, then `WICKED` in a flared
 
 | Part | Token | Light | Dark |
 |---|---|---|---|
-| Mast, cables, `WICKED` | `--ink-primary` (= `--ink-high`) | dark blue `#064273` | near-white `#f2f9fb` |
+| Mast, cables, `WICKED` | `--ink-primary` | dark blue `#064273` | pale `#def3f6` |
 | Wave horizon, `agile` | `--accent-primary` | cyan `#1da2d8` | sky `#7fcdff` |
 | The two spark triangles | `--accent-wicked` | signal yellow `#ffda19` | signal yellow `#ffda19` |
 
@@ -51,75 +53,85 @@ active item, a progress track. They are accents, not texture.
 
 ## Colour
 
-### The palette (guide)
+### Monochrome first
 
-| Colour | Hex | Role |
+Neutral grounds, near-black and near-white ink, hairlines, and colour only where it means something.
+
+| | Light | Dark |
 |---|---|---|
-| Dark blue | `#064273` | Main text, primary actions, the sidebar, chart strokes |
-| Muted blue | `#76b6c4` | Separators and progress tracks on dark surfaces |
-| Sky | `#7fcdff` | Secondary labels on dark surfaces, light hover states, the action on a dark panel |
-| Cyan | `#1da2d8` | Selection edges, focus accents, progress fills |
-| Pale | `#def3f6` | Tinted panels, chat bubbles, text on dark surfaces |
+| Page, rail | `#f5f5f4`, a recessed `#efefed` | `#121212`, a recessed `#0e0e0e` |
+| Cards, raised, overlay | white | `#1a1a1a`, `#212121`, `#282828` |
+| Ink: high, body, muted, dim | `#18181a`, `#3c3c38`, `#55554f`, `#66665f` | `#ededea`, `#cfcfca`, `#a9a9a3`, `#8f8f89` |
+| Hairlines: subtle, default, strong, input | `#e6e6e2`, `#d6d6d1`, `#a8a8a1`, `#7e7e77` | `#232323`, `#2e2e2e`, `#4a4a48`, `#77776f` |
+| Primary button | `#18181a`, text `#fafaf9` | `#ededea`, text `#141414` |
+| Selected fill, edge | `#ecece9`, a 1.5px `#18181a` edge | `#262625`, a 1.5px `#ededea` edge |
+| Hover / current wash | `rgba(24,24,26,.045)` | `rgba(237,237,234,.05)` |
+| Focus | a 2px gap, then a 2px `#18181a` ring | the same in `#ededea` |
+| Links | ink, underlined | ink, underlined |
 
-Rules from the guide: normal text is dark blue on light surfaces, or pale/white on dark blue.
-Cyan is an accent, **never a white-text button background**. Warning and error keep their own
-amber and red hues.
+### Colour with meaning
+
+In the UI only status is chromatic, and each status keeps one hue in both themes: **waiting on you** violet
+(`#6d3e9d` / `#c8a5f0`), **failed** red (`#b3261e` / `#ffaaa1`), **running / ok** green (`#176548` /
+`#83c8a4`; progress bars use it), **warning** amber (`#875300` / `#ebc06b`). Each has a `-dim` tint for
+its pill. The brand mark keeps its own colours (the wave in cyan or sky, the yellow spark) wherever it
+appears; it does not colour the UI. One more exception, outside studio's UI: the family sites' four
+**plane** hues (`--plane-experience` … `--plane-foundation`) label the platform map there.
 
 ### Roles (tokens)
 
-- **Surfaces**, deepest to highest: `base` (the page), `rail`, `card`, `raised`, `overlay`. On
-  light, the canvas is a near-white tinted blue and cards are white. On dark, each step lifts
-  lightness, so the layers read before any border does.
-- **The brand panel** (`--surface-brand`, `--surface-brand-raised`) is the dark-blue ground of
-  the sidebar and the hero card, with `--ink-on-brand`, `--brand-action` (sky, dark text) and
-  `--focus-on-brand` (and `--focus-ring-on-brand` for controls on that panel).
-- **Ink**, quietest to strongest: `dim` (timestamps), `muted` (secondary), `body` (prose),
-  `high` (headings, names, primary labels).
-- **Action**: `--accent` is the fill of a primary button, with `--accent-fg` on it. On light it
-  is the guide's dark blue; on dark it is sky with dark text, so the primary action is the
-  brightest thing on a dark page.
-- **Highlight and focus**: `--highlight` (cyan) marks a selection or a progress fill;
-  `--focus` draws the focus ring. Both clear 3:1 against every surface.
-- **Status**: `gate` (waiting on you, violet), `fail` (red), `run`/`ok` (green), `warn` (amber),
-  `done` (dim ink). Each has a `-dim` tint for its pill background.
-
-### Dark is a counterpart, not an inversion
-
-The dark theme keeps the same hues, the same roles and the same order of emphasis. Only the
-lightness moves: navy grounds on the dark-blue hue, pale ink, sky for the action. A component
-reads the same in both themes because it names roles, never colours.
+- **Surfaces**, deepest to highest: `base` (the page), `rail` (recessed, a step under the page),
+  `card`, `raised`, `overlay`.
+- **Ink**, quietest to strongest: `dim`, `muted`, `body`, `high`. Titles use `high`, prose `body`.
+- **Action**: `--accent` is the primary button's fill, `--accent-fg` its text.
+- **Selection**: `--accent-subtle` fill, `--highlight` edge, and the check filled in `--accent`.
+  The **current rail item** takes the same `--accent-subtle` fill with a 2px `--ink-high` bar at its left
+  edge. `--accent-wash` is hover only.
+- **Not chosen**: an unchecked option is muted (`--ink-muted`), never struck through and never faded.
+- **The brand panel** tokens (`--surface-brand` …) are neutral aliases now; there is no blue panel.
 
 ## Type
 
 | Slot | Token | Face today | Use |
 |---|---|---|---|
-| Sans | `--font-sans` | Inter (Wicked Sans when it ships) | Every UI word |
-| Serif | `--font-serif` | Marcellus (Wicked Serif when it ships) | Display only: page titles and section heads, 18 px and up |
+| Sans | `--font-sans` | Inter (Wicked Sans when it ships) | Every UI word, titles included |
+| Serif | `--font-serif` | Marcellus (Wicked Serif when it ships) | Brand moments only. UI titles are Inter |
 | Script | `--font-script` | Dancing Script (Wicked Script when it ships) | Brand moments only, never UI text |
 | Mono | `--font-mono` | JetBrains Mono | Code, ids, paths, data |
 
-Scale: `--text-2xs` 11 (the floor; the guide's 10 px eyebrows round up) · `xs` 12 · `sm` 13 ·
-`md` 15 (body) · `lg` 18 · `xl` 22 · `2xl` 28 · `3xl` 34 (the guide's page title). Headings use
-`--weight-heading` (650) with `--tracking-display` (-0.025em) at display sizes. Eyebrows are
-uppercase at `--text-2xs`, `--weight-bold`, `--tracking-eyebrow` (0.12em).
+The synthesis sets three sizes for the UI: **titles** `--text-title` 20px at `--weight-heading` 600
+and `--tracking-display` -0.02em; **body** `--text-body` 14px at 400; **labels** `--text-label` 12px at
+`--weight-label` 500, in **sentence case** (no uppercase eyebrows in the UI). The wider scale
+(`--text-2xs` 11 … `--text-3xl` 34) stays for the sites and for special cases; nothing on a decision
+surface is smaller than 11px.
 
 ## Space, shape, elevation, motion
 
 - Space: a 4 px grid (`--space-1` … `--space-16`).
-- Radius: `sm` 6 (chips) · `md` 8 (buttons, inputs) · `lg` 10 (cards) · `xl` 18 (hero panels,
-  the composer) · `full` (pills, dots).
-- Elevation: shadows encode height, not decoration. Light shadows are tinted with the dark
-  blue, never grey. Dark elevation is a lighter surface plus a faint top rim light.
-- Focus: `--focus-ring` is a gap in the page colour, then the focus colour.
+- Radius: `sm` and `md` 6 (chips, controls) · `lg` 8 (cards) · `xl` 12 (panels) · `full` (pills, dots).
+- Elevation: hairlines first. A card is a hairline (`--border-subtle`) with a whisper of shadow
+  (`--shadow-card`, a 1px 2px drop); raised and overlaid surfaces take softer, deeper shadows. Messages
+  carry no border or shadow: spacing groups them.
+- Focus: `--focus-ring` is a 2px gap in the page colour, then a 2px near-black (light) or near-white
+  (dark) line. It clears 3:1 alone. Plugins receive `focus-ring` in the theme handoff.
 - Motion: `--ease-out` for most transitions, `--dur-fast` (120 ms) to `--dur-slow` (300 ms).
   Respect `prefers-reduced-motion`.
 
 ## Accessibility
 
-Every pair the system promises is measured in CI (`scripts/contrast.mjs`, run by `npm test`):
-all ink on every surface ≥ 4.5:1, text on every fill ≥ 4.5:1, focus ring, selection edge and
-input edge ≥ 3:1 (WCAG 1.4.11), in both themes. A new token that is meant to carry text gets a
-pair there.
+Every pair the system promises is measured in CI (`scripts/contrast.mjs`, run by `npm test`), in
+both themes:
+- all four inks and links ≥ 4.5:1 on every surface (page, rail, card, raised, overlay), on the
+  selected fill (`--accent-subtle`) and on the hover wash (`--accent-wash`);
+- each status ink ≥ 4.5:1 on every surface and on **its own** tint (`--status-*-dim`). Other inks on a
+  status tint are not promised (dark `--ink-dim` on a status tint is about 4.2:1): put a status pill's
+  words in its status ink;
+- text on the primary (`--accent-fg` on `--accent`, `--accent-hover`) ≥ 4.5:1, and the brand mark's
+  ink (`--ink-primary`) ≥ 4.5:1 on every surface;
+- input edges, selection edges, the selection check (also on the selected fill), focus rings and a
+  progress fill on its track (`--status-run` on `--border-subtle`) ≥ 3:1 (WCAG 1.4.11). A new token that is meant to
+carry text gets a pair there. `dist/specimen.html` shows a selection with its check, progress with its
+value and a muted not-chosen row (`data-fixture` attributes).
 
 ## Personal themes (appearance.md)
 

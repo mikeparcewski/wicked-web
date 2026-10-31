@@ -139,11 +139,14 @@ export function buildSpecimen(src, lockup, icons) {
   const iconRow = Object.entries(icons).map(([n, svg]) => `<figure>${svg.replace('<svg ', '<svg width="44" height="44" ')}<figcaption>${n}</figcaption></figure>`).join('');
   const pane = (th) => `<section data-theme="${th}" class="pane">
   <div class="lock">${lockup.replace(/ id="navBrandLockup"/, '').replace(/viewBox="0 0 360 54" class="[^"]*"/, `viewBox="${LOCKUP_VIEWBOX}" width="300" height="50"`)}</div>
-  <p class="eyebrow">${th} theme · wicked-design</p>
+  <p class="eyebrow">${th === "light" ? "Light" : "Dark"} theme · wicked-design</p>
   <h1>A little clarity. A lot of momentum.</h1>
-  <h2 class="serif">Needs you · 3 decisions</h2>
-  <p class="body">Body copy in the sans at 15px. <span class="muted">Muted secondary copy.</span> <span class="dim">Dim label, 2 min ago.</span> <code>run 4f2a · main</code></p>
-  <p class="script">agile</p>
+  <h2 class="title">Needs you · 3 decisions</h2>
+  <div class="choice" data-fixture="selection"><span class="chk" aria-hidden="true">✓</span><span>acme/payments-api <small>chosen: the check and the edge</small></span></div>
+  <div class="choice off" data-fixture="not-chosen"><span class="chk" aria-hidden="true"></span><span>acme/infra <small>not chosen: muted, never struck through</small></span></div>
+  <div class="prog" data-fixture="progress"><span class="bar"><i style="width:58%"></i></span><span class="pct">58%</span></div>
+  <p class="body">Body copy in the sans at 14px. <span class="muted">Muted secondary copy.</span> <span class="dim">Dim label, 2 min ago.</span> <code>run 4f2a · main</code></p>
+  <p class="brandline" data-fixture="brand"><span class="serif">WICKED</span> <span class="script">agile</span> <small>brand moments only: the serif and script never set UI text</small></p>
   <div class="row"><button class="primary">Approve plan</button><button class="secondary">Ask a question</button><input placeholder="Type here"></div>
   <div class="row"><span class="pill gate">waiting on you</span><span class="pill fail">failed</span><span class="pill run">running</span><span class="pill warn">warning</span></div>
   <div class="card">A card on the page<div class="raised">raised</div></div>
@@ -158,23 +161,31 @@ export function buildSpecimen(src, lockup, icons) {
 body{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));font-family:var(--font-sans)}
 .pane{background:var(--surface-base);color:var(--ink-body);padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-4)}
 .lock{color:var(--ink-high)} h1{font-size:var(--text-3xl);letter-spacing:var(--tracking-display);color:var(--ink-high);font-weight:var(--weight-heading);line-height:var(--leading-tight);margin:0}
-.serif{font-family:var(--font-serif);font-weight:400;font-size:var(--text-2xl);color:var(--ink-high);margin:0}
-.eyebrow{font-size:var(--text-2xs);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-bold);color:var(--ink-muted);margin:0}
-.body{font-size:var(--text-md);line-height:var(--leading-body);margin:0}.muted{color:var(--ink-muted)}.dim{color:var(--ink-dim)}code{font-family:var(--font-mono);font-size:var(--text-sm)}
-.script{font-family:var(--font-script);font-size:40px;color:var(--accent-primary);margin:0;line-height:1}
+.title{font-size:var(--text-title);font-weight:var(--weight-heading);letter-spacing:var(--tracking-display);color:var(--ink-high);margin:0}
+.serif{font-family:var(--font-serif);font-size:28px;color:var(--ink-high);letter-spacing:.06em}
+.brandline{display:flex;align-items:baseline;gap:10px;margin:0}.brandline small{font-size:var(--text-xs);color:var(--ink-dim)}
+.choice{display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:var(--radius-lg);background:var(--accent-subtle);box-shadow:inset 0 0 0 1.5px var(--highlight);color:var(--ink-high);font-size:var(--text-sm)}
+.choice small{color:var(--ink-muted);margin-left:6px}.choice.off{background:var(--surface-card);box-shadow:inset 0 0 0 1px var(--border);color:var(--ink-muted)}
+.chk{display:inline-flex;width:18px;height:18px;border-radius:5px;align-items:center;justify-content:center;background:var(--accent);color:var(--accent-fg);font-size:12px}
+.off .chk{background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-input)}
+.prog{display:flex;align-items:center;gap:10px}.bar{flex:1;height:6px;border-radius:9999px;background:var(--border-subtle);overflow:hidden}.bar i{display:block;height:100%;background:var(--status-run)}.pct{font-size:var(--text-sm);color:var(--ink-body);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:var(--text-label);font-weight:var(--weight-label);color:var(--ink-muted);margin:0}
+.body{font-size:var(--text-body);line-height:var(--leading-body);margin:0}.muted{color:var(--ink-muted)}.dim{color:var(--ink-dim)}code{font-family:var(--font-mono);font-size:var(--text-sm)}
+.script{font-family:var(--font-script);font-size:30px;color:var(--accent-primary);line-height:1}
 .row{display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center}
 button,input{font:inherit;font-size:var(--text-sm);height:var(--control-h);padding:0 var(--control-px);border-radius:var(--radius-md)}
 .primary{background:var(--accent);color:var(--accent-fg);border:0;box-shadow:var(--shadow-button)}
 .secondary{background:var(--surface-card);color:var(--ink-high);border:1px solid var(--border)}
-input{background:var(--surface-card);color:var(--ink-body);border:1px solid var(--border-input)} input:focus{outline:2px solid transparent;box-shadow:var(--focus-ring)}
+input{background:var(--surface-card);color:var(--ink-body);border:1px solid var(--border-input)} button:focus-visible,input:focus{outline:2px solid transparent;box-shadow:var(--focus-ring)}
+.brand button:focus-visible{outline:2px solid transparent;box-shadow:var(--focus-ring-on-brand)}
 .pill{font-size:var(--text-xs);padding:2px 10px;border-radius:var(--radius-full);font-weight:var(--weight-semi)}
 .gate{color:var(--status-gate);background:var(--status-gate-dim)}.fail{color:var(--status-fail);background:var(--status-fail-dim)}.run{color:var(--status-run);background:var(--status-run-dim)}.warn{color:var(--status-warn);background:var(--status-warn-dim)}
-.card{background:var(--surface-card);box-shadow:var(--shadow-card);border-radius:var(--radius-lg);padding:var(--space-4);color:var(--ink-body)}
+.card{background:var(--surface-card);box-shadow:inset 0 0 0 1px var(--border-subtle),var(--shadow-card);border-radius:var(--radius-lg);padding:var(--space-4);color:var(--ink-body)}
 .raised{margin-top:var(--space-3);background:var(--surface-raised);box-shadow:var(--shadow-raised);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);width:max-content}
 .brand{background:var(--surface-brand);color:var(--ink-on-brand);border-radius:var(--radius-xl);padding:var(--space-5);display:flex;justify-content:space-between;align-items:center}
 .bact{background:var(--brand-action);color:var(--brand-action-fg);border:0}
 .icons{display:flex;gap:var(--space-4);color:var(--ink-high)} figure{margin:0;text-align:center;font-size:var(--text-2xs);color:var(--ink-dim)}
-h3{font-size:var(--text-xs);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--ink-dim);margin:var(--space-2) 0 0}
+h3{font-size:var(--text-label);font-weight:var(--weight-label);color:var(--ink-dim);margin:var(--space-2) 0 0}
 .sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-2)}
 .sw div{display:grid;grid-template-columns:28px 1fr;column-gap:8px;font-size:var(--text-2xs);align-items:center}
 .sw i{grid-row:span 2;width:28px;height:28px;border-radius:var(--radius-sm);box-shadow:0 0 0 1px var(--border)}

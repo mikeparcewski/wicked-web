@@ -39,10 +39,16 @@ export const PAIRS = [
   { fg: 'ink-on-brand-muted', bg: ['surface-brand', 'surface-brand-raised'], min: 4.5, why: 'secondary text on the brand panel' },
   { fg: 'brand-action', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'action fill on the brand panel (non-text)' },
   { fg: 'brand-action-fg', bg: ['brand-action'], min: 4.5, why: 'text on a brand-panel action' },
+  // The synthesis' focus ring is a 2px near-black / near-white line after a gap: it clears 3:1 alone.
   { fg: 'focus', bg: TEXT_SURFACES, min: 3, why: 'focus ring (WCAG 1.4.11)' },
+  { fg: 'link', bg: [...TEXT_SURFACES, ...TINTS], min: 4.5, why: 'link text' },
   { fg: 'focus-on-brand', bg: ['surface-brand', 'surface-brand-raised'], min: 3, why: 'focus ring on the brand panel' },
-  { fg: 'border-input', bg: TEXT_SURFACES, min: 3, why: 'an input field edge (WCAG 1.4.11)' },
-  { fg: 'highlight', bg: TEXT_SURFACES, min: 3, why: 'selection edge, progress fill (WCAG 1.4.11)' },
+  { fg: 'border-input', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'an input field edge (WCAG 1.4.11)' },
+  // The selection edge is near-black / near-white: it clears 3:1 on every surface and on the selected fill.
+  { fg: 'highlight', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'selection edge (WCAG 1.4.11)' },
+  { fg: 'accent', bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'the check that carries a selection, on the page and on the selected fill (WCAG 1.4.11)' },
+  { fg: 'ink-primary', bg: TEXT_SURFACES, min: 4.5, why: "the brand mark's wordmark and mast" },
+  { fg: 'status-run', bg: ['border-subtle'], min: 3, why: 'a progress fill on its track (WCAG 1.4.11)' },
   ...['gate', 'fail', 'run', 'warn'].map((s) => ({ fg: `status-${s}`, bg: [...TEXT_SURFACES, `status-${s}-dim`], min: 4.5, why: 'status text' })),
   { fg: 'status-fail-fg', bg: ['status-fail'], min: 4.5, why: 'text on a filled fail' },
   ...['experience', 'control', 'capability', 'foundation'].map((p) => ({ fg: `plane-${p}`, bg: TEXT_SURFACES, min: 4.5, why: 'plane label' })),
