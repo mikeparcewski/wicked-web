@@ -48,7 +48,7 @@ const {
 
 <style is:global>
 /* FOOTER */
-/* footer: +20% size (spacing ×1.2), fonts ×1.5, dark-blue 75% panel */
+/* footer: generous spacing, the type scale, a translucent panel over the page ground */
 .footer{border-top:1px solid var(--hairline);color:var(--muted);scroll-snap-align:start;background:color-mix(in oklab,var(--surface-base) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 /* self-contained width constraint — must NOT depend on a host-site .wrap rule
    (sites with their own token CSS don't define one, which blew the footer to
@@ -58,7 +58,7 @@ const {
 .footer-main{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-start;gap:53px 67px;padding:53px 0 34px}
 .footer-brand-block{flex-shrink:0;max-width:360px}
 .footer-title{font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-title);line-height:1.1;letter-spacing: var(--tracking-title);color:var(--ink);margin:12px 0 0}
-.footer-accent{color:var(--accent)}
+.footer-accent{color:var(--muted)}
 .footer-desc{margin:31px 0 0;font-size: var(--text-section);color:var(--muted);line-height:1.65;max-width:30ch}
 .footer-cta{margin:17px 0 0;display:flex;gap:8px;flex-wrap:wrap}
 .footer-cta a{font-family: var(--font-sans);font-size: var(--text-body);color:var(--muted);text-decoration:none;border:1px solid var(--hairline-strong);padding:6px 16px;border-radius:999px;transition:border-color .22s var(--ease),color .22s var(--ease)}

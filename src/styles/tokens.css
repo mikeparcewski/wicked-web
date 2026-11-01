@@ -2,13 +2,27 @@
    wickedagile — design tokens + global base
    Canonical style source for the wicked-* family.
 
-   Everything here lives in @layer base so it NEVER clobbers a consuming
-   site's own styles: on Tailwind sites Tailwind's `utilities` layer wins
-   (so py-24/mx-auto/etc. apply), and on any site the page's own unlayered
-   rules win (so a site can override tokens with its own palette). Without
-   this, the unlayered reset/`html` rules beat Tailwind utilities and broke
-   the Tailwind sites' section layouts.
+   This file is self-contained (it is a documented export): it imports the
+   design package first (faces + Wicked Dark / Light tokens), by a RELATIVE
+   path, not `wicked-web/design/*`: the sites' dev alias maps `wicked-web` to
+   this src/ folder, where that export path does not exist. Relative works
+   from the alias and from the installed git package alike, and Vite bundles
+   the woff2 files with the site (same origin, no font CDN).
+
+   Layer order: the package (@layer wicked-design) first, the chrome
+   (@layer base) above it, so a chrome alias wins over a package value.
+
+   The reset, html/body and helper rules live in @layer base so they NEVER
+   clobber a consuming site's own styles: on Tailwind sites Tailwind's
+   `utilities` layer wins (so py-24/mx-auto/etc. apply), and on any site the
+   page's own unlayered rules win. The ONE exception is the custom-property
+   block at the end (the type scale, the wordmark face, --font-display): it
+   is unlayered on purpose, see its comment. Never add unlayered element or
+   reset rules here.
    ────────────────────────────────────────────────────────────── */
+
+@layer wicked-design, base;
+@import "../../packages/design-system/index.css";
 
 @layer base {
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -75,7 +89,7 @@
 /* ── TYPE SCALE (studio's approved scale, ui-v3 src/styles/tokens.css round 6) ──
    Six sizes, two weights, one tracking value (page titles). Every font-size,
    font-weight and letter-spacing in the chrome and the sites' CSS is one of these.
-   UNLAYERED on purpose: the design package still carries an older
+   UNLAYERED on purpose (custom properties only, never element rules): the design package still carries an older
    --text-title (20px) in @layer wicked-design, and on a Tailwind site the layer
    order is not ours to fix, so an unlayered declaration is the one that holds.
    A site may still override any of them in its own unlayered CSS. */
@@ -92,6 +106,10 @@
   /* the wordmark's face, the one place Wicked Serif is set. Its own name (not --font-display) so a
      site's Tailwind @theme, which may claim --font-display for headings, can never restyle it. */
   --font-wordmark:'Wicked Serif','Marcellus',ui-serif,Georgia,serif;
+  /* On the sites --font-display was the heading face (Archivo), and the package means Wicked Serif by it.
+     The approved look sets the serif on the wordmark only, so here it is the text face: any site CSS still
+     reading var(--font-display) gets Wicked Sans, never a serif heading. */
+  --font-display:var(--font-sans);
   /* THE ONE DEVIATION (flagged for the operator): a landing page's single hero <h1>.
      A marketing hero at 28px reads as a heading; this keeps it a hero on desktop and
      lands on --text-title on a phone. var(--text-title) here = strictly on-scale. */

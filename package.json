@@ -7,6 +7,9 @@
     "./design/*": "./packages/design-system/*",
     "./*": "./src/*"
   },
+  "scripts": {
+    "test:chrome": "node --test test/"
+  },
   "files": [
     "src",
     "packages/design-system/package.json",
