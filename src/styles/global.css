@@ -1,7 +1,7 @@
 /* ──────────────────────────────────────────────────────────────
    wickedagile — global stylesheet
-   Imports the design tokens + base, then layers any remaining
-   truly-global helpers (scroll-snap helper, etc.).
+   Imports the design tokens + base (tokens.css, which imports the design
+   package itself), then any remaining truly-global helpers.
    ────────────────────────────────────────────────────────────── */
 
 @import "./tokens.css";

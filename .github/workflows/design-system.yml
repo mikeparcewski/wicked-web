@@ -2,15 +2,26 @@ name: design-system
 
 on:
   pull_request:
-    paths: ['packages/design-system/**', 'package.json', '.github/workflows/design-system.yml']
+    paths: ['packages/design-system/**', 'src/**', 'test/**', 'package.json', '.github/workflows/design-system.yml']
   push:
     branches: [main]
-    paths: ['packages/design-system/**', 'package.json', '.github/workflows/design-system.yml']
+    paths: ['packages/design-system/**', 'src/**', 'test/**', 'package.json', '.github/workflows/design-system.yml']
 
 permissions:
   contents: read
 
 jobs:
+  # The shared chrome (src/) wears the design package: tokens.css imports it, the family names alias onto it,
+  # the type scale is studio's, and theme init agrees between Base and Topbar (test/chrome.test.mjs).
+  chrome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run test:chrome
+
   tokens:
     runs-on: ubuntu-latest
     defaults:
