@@ -3,6 +3,7 @@
 // Rendering is checked on each site's PR (screenshots, computed fonts); this pins the contract the
 // sites rely on so a later edit cannot quietly undo it.
 import { test } from 'node:test';
+import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -41,7 +42,16 @@ test('every family alias points at a token the package or tokens.css defines', (
 
 test("the type scale is studio's, unlayered, with the wordmark serif on its own token", () => {
   const css = noComments(TOKENS);
-  const unlayered = css.slice(css.lastIndexOf(':root{')); // the unlayered block after @layer base { ... }
+  // The scale must sit in a TOP-LEVEL rule (depth 1 inside its own braces), not inside @layer base:
+  // unlayered is what makes it hold over the package's older --text-title whatever a Tailwind site's layer order.
+  const at = css.indexOf('--text-caption:');
+  assert.ok(at > 0, 'the scale is declared');
+  let depth = 0;
+  for (const ch of css.slice(0, at)) depth += ch === '{' ? 1 : ch === '}' ? -1 : 0;
+  assert.equal(depth, 1, 'the scale block is a top-level rule, outside every @layer');
+  const start = css.lastIndexOf('{', at);
+  assert.match(css.slice(0, start), /:root\s*$/, 'the top-level rule is :root');
+  const unlayered = css.slice(start, css.indexOf('}', at));
   const px = (n) => Number(new RegExp(`--text-${n}:(\\d+)px`).exec(unlayered)?.[1]);
   assert.deepEqual(['caption', 'body', 'lead', 'section', 'title', 'code'].map(px), [12, 14, 16, 20, 28, 13]);
   assert.match(unlayered, /--weight-regular:400;/);
@@ -76,16 +86,55 @@ test('no font CDN and no v2 palette literals in the chrome', () => {
   }
 });
 
-test('Base and Topbar agree: default dark, one storage key, written only on a click', () => {
+/** Run an inline <script> against a stub page; returns the stub so a test can read what it did. */
+function runPage(script, { theme = null, stored = null } = {}) {
+  const attrs = theme ? { 'data-theme': theme } : {};
+  const listeners = {};
+  const el = (id) => ({ id, innerHTML: '', attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, getAttribute(k) { return this.attrs[k] ?? null; },
+    addEventListener(t, fn) { listeners[`${id}:${t}`] = fn; } });
+  const els = { themeBtn: el('themeBtn'), themeIcon: el('themeIcon'), projectsBtn: el('projectsBtn'), projectsMenu: el('projectsMenu'),
+    menuBtn: el('menuBtn'), mobileMenu: el('mobileMenu') };
+  const meta = el('meta');
+  const store = new Map(stored ? [['wa-theme-v3', stored]] : []);
+  const writes = [];
+  const page = {
+    writes, store, meta, listeners,
+    document: {
+      documentElement: { getAttribute: (k) => attrs[k] ?? null, setAttribute: (k, v) => { attrs[k] = v; } },
+      getElementById: (id) => els[id] ?? null,
+      querySelector: (q) => (q.startsWith('meta') ? meta : null),
+      addEventListener: () => {},
+    },
+    window: { addEventListener: () => {}, innerWidth: 1440 },
+    localStorage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => { writes.push([k, v]); store.set(k, v); } },
+    theme: () => attrs['data-theme'],
+  };
+  vm.runInNewContext(script, { document: page.document, window: page.window, localStorage: page.localStorage });
+  return page;
+}
+const inline = (src) => /<script is:inline>([\s\S]*?)<\/script>/.exec(src)[1];
+
+test('theme: default dark, the stored v3 choice wins, and only a click writes it', () => {
   const base = read('src/layouts/Base.astro');
   const top = read('src/components/Topbar.astro');
   assert.match(base, /<html lang="en" data-theme="dark">/);
-  assert.match(base, /localStorage\.getItem\('wa-theme-v3'\) === 'light' \? 'light' : 'dark'/);
-  assert.match(top, /setTheme\(init\|\|'dark',false\)/);
-  assert.match(top, /if\(persist\)\{try\{localStorage\.setItem\('wa-theme-v3',t\)\}/);
-  assert.doesNotMatch(base + top, /(get|set)Item\('wa-theme'\)/);
-  for (const src of [base, top]) {
-    assert.match(src, /'#f5f5f4'/);
-    assert.match(src, /'#121212'/);
-  }
+  // Base's no-flash init: no stored choice -> dark; a stored v3 'light' -> light; it never writes.
+  let p = runPage(inline(base), { theme: 'dark' });
+  assert.equal(p.theme(), 'dark');
+  assert.equal(p.meta.attrs.content, '#121212');
+  p = runPage(inline(base), { theme: 'dark', stored: 'light' });
+  assert.equal(p.theme(), 'light');
+  assert.equal(p.meta.attrs.content, '#f5f5f4');
+  assert.deepEqual(p.writes, []);
+  // Topbar: loading writes nothing; without Base's attribute it falls back to the stored choice.
+  p = runPage(inline(top), { theme: 'dark' });
+  assert.deepEqual(p.writes, [], 'a page load persists nothing');
+  assert.equal(runPage(inline(top), { stored: 'light' }).theme(), 'light');
+  assert.equal(runPage(inline(top)).theme(), 'dark');
+  // A click flips the theme and writes the v3 key, once.
+  p.listeners['themeBtn:click']();
+  assert.equal(p.theme(), 'light');
+  assert.deepEqual(p.writes, [['wa-theme-v3', 'light']]);
+  assert.equal(p.meta.attrs.content, '#f5f5f4');
+  assert.doesNotMatch(base + top, /(get|set)Item\('wa-theme'\)/, 'the v2 key is neither read nor written');
 });

@@ -8,7 +8,7 @@
     "./*": "./src/*"
   },
   "scripts": {
-    "test:chrome": "node --test test/"
+    "test:chrome": "node --test test/chrome.test.mjs"
   },
   "files": [
     "src",

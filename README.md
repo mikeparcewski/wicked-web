@@ -48,7 +48,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 - `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand lockup and icons, and the self-hosted faces: the brand's Wicked Sans, Serif and Script, then their OFL fallbacks with their licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide. Licences: `packages/design-system/LICENSE` (code MIT, the fallback faces OFL 1.1, and the brand marks and Wicked faces, `LicenseRef-wicked-brand-marks`, have no licence granted yet).
 
 Design language (v3, 2026-11-01): the sites wear studio's approved look. The chrome's
-`global.css` imports the design package (`packages/design-system/index.css`, by a relative path so
+`tokens.css` (and so `global.css`) imports the design package (`packages/design-system/index.css`, by a relative path so
 it resolves through the sites' dev alias and from the installed package alike), so every site gets:
 
 - **Faces, self-hosted** (Vite bundles the woff2 with the site; no font CDN): Wicked Sans (400/600,
@@ -111,7 +111,7 @@ import Base from 'wicked-web/layouts/Base.astro';
 import '../styles/global.css';   // site's Tailwind entry — shared Base does NOT import it
 ```
 
-Their `global.css` should **not** redefine the family tokens — those come from the shared `tokens.css` (loaded by `Base`). Define only site-specific extensions (e.g. garden's `--c-*` role colors, grain) and the `@theme` mapping. Restate the package's stacks in `@theme` (`--font-sans: 'Wicked Sans', 'Inter', …`, `--font-mono: 'JetBrains Mono', …`) so Tailwind's own defaults never win on layer order, and map Tailwind's `--text-*`, `--font-weight-*` and `--tracking-*` onto the scale above. Never point a heading at `--font-display`'s serif: the wordmark is the one place it is set.
+Their `global.css` should **not** redefine the family tokens — those come from the shared `tokens.css` (loaded by `Base`). Define only site-specific extensions (e.g. garden's `--c-*` role colors, grain) and the `@theme` mapping. Restate the package's stacks in `@theme` (`--font-sans: 'Wicked Sans', 'Inter', …`, `--font-mono: 'JetBrains Mono', …`) so Tailwind's own defaults never win on layer order, and map Tailwind's `--text-*`, `--font-weight-*` and `--tracking-*` onto the scale above. In the chrome `--font-display` is an alias of the text face (`--font-sans`), so headings may use either; the serif is only `--font-wordmark`, the wordmark's own token.
 
 ## Releasing a change (IMPORTANT)
 

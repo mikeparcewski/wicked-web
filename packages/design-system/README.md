@@ -82,8 +82,8 @@ import tokens from 'wicked-web/design/dist/tokens.json' with { type: 'json' };  
 <img src="…/wicked-web/design/dist/brand/wicked-agile-lockup.light.svg" alt="wicked agile">
 ```
 
-The chrome already does this for every site: `wicked-web/styles/global.css` imports this package
-(faces and tokens) and its `tokens.css` maps the family names the sites use onto these tokens, so a
+The chrome already does this for every site: `wicked-web/styles/tokens.css` (which `global.css`
+imports) imports this package (faces and tokens) and maps the family names the sites use onto them, so a
 site that uses the shared `Base` gets the faces and Wicked Dark / Light by bumping the sha.
 
 ### wicked-interactive: tokens in rendered output

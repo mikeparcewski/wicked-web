@@ -29,7 +29,7 @@
 
   /* ── DESIGN LANGUAGE (v3, 2026-11-01: studio's approved look) ───────────────
      The palette, faces and per-theme plane hues come from the design package
-     (packages/design-system, `wicked-design`), imported by global.css: Wicked Dark
+     (packages/design-system, `wicked-design`), imported at the top of this file: Wicked Dark
      (the default) and Wicked Light, the monochrome synthesis studio ships. Neutral
      grounds, near-black / near-white ink and actions, colour only where it means
      something (the four plane hues, status). Signal yellow survives only as the
