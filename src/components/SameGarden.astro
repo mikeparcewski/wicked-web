@@ -208,11 +208,13 @@ const PLANES = FAMILY_PLANES.map((p) => ({
    per-plane `owns` line. The product name, role, blurb and links all stay, so nothing that
    identifies or links a product is lost; only the commentary is. */
 @media (max-height: 800px) {
-  .same-garden{ padding:14px 0; }
+  /* vertical room is the constraint here: the family copy (data/family.js) grows, and the band must still fit
+     a 1280x660 window under the 64px topbar (garden's band-fits e2e) */
+  .same-garden{ padding:8px 0; }
   .same-garden .sg-sub{ display:none; }
   .same-garden .sg-plane-owns{ display:none; }
   .same-garden .sg-h2{ font-size: var(--text-section); }
-  .same-garden .sg-head{ margin-bottom:12px; }
+  .same-garden .sg-head{ margin-bottom:8px; }
   .same-garden .sg-blurb{ font-size: var(--text-caption); line-height:1.4; margin-top:4px; }
   .same-garden .sg-card-body{ padding:7px 10px 5px; }
   .same-garden .sg-card-foot{ padding:5px 10px 6px; }
