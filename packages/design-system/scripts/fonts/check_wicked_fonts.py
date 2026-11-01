@@ -3,9 +3,11 @@
 
 For every face in the given folders (default: the package's fonts/wicked and
 source/wicked-fonts):
-  * every required character is in the cmap and has a non-empty outline;
-  * each cmap glyph's outline is hashed; digits, a-z and A-Z must all be distinct,
-    and any other required characters that share an outline are reported;
+  * every required character is in the cmap and has an outline that encloses some area
+    (no contours, or contours flattened to a line, both fail);
+  * each cmap glyph's outline is hashed with its left edge moved to x=0, so the same shape
+    at a different side bearing still counts as the same; digits, a-z and A-Z must all be
+    distinct, and any other required characters that share an outline are reported;
   * the ten digits share one advance width (tabular figures);
   * vertical metrics and the OS/2 weight class are printed.
 
@@ -16,7 +18,10 @@ import hashlib
 import sys
 from pathlib import Path
 
+from fontTools.pens.areaPen import AreaPen
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.recordingPen import DecomposingRecordingPen
+from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 REQUIRED = (
@@ -30,11 +35,17 @@ PUA = [0xE000 + i for i in range(6)]
 
 
 def outline_hash(font, gname):
+    """A hash of the glyph's shape, independent of its side bearing; None when it draws no ink."""
     gs = font.getGlyphSet()
-    pen = DecomposingRecordingPen(gs)
-    gs[gname].draw(pen)
-    if not pen.value:
+    glyph = gs[gname]
+    bounds = BoundsPen(gs)
+    glyph.draw(bounds)
+    area = AreaPen(gs)
+    glyph.draw(area)
+    if bounds.bounds is None or abs(area.value) < 1:
         return None
+    pen = DecomposingRecordingPen(gs)
+    glyph.draw(TransformPen(pen, (1, 0, 0, 1, -bounds.bounds[0], 0)))
     return hashlib.sha1(repr(pen.value).encode()).hexdigest()[:12]
 
 
@@ -50,7 +61,7 @@ def check(path):
             continue
         h = outline_hash(font, cmap[cp])
         if h is None:
-            fails.append(f"empty outline U+{cp:04X} {ch!r}")
+            fails.append(f"empty outline (no area) U+{cp:04X} {ch!r}")
             continue
         hashes[ch] = h
     for cp in PUA:

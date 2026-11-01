@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, posix } from 'node:path';
 import { loadSource, buildCss, buildJson, buildSpecimen, resolve, splitIcons, lockupFor, derivedIn, FOLLOWS_OS, LOCKUP_VIEWBOX, ROOT } from '../scripts/build.mjs';
 import { audit } from '../scripts/contrast.mjs';
 
@@ -70,17 +70,18 @@ test('per-theme lockups carry resolved colours; icons are split and drawn in cur
   for (const svg of Object.values(icons)) { assert.match(svg, /currentColor/); assert.doesNotMatch(svg, /#111111/); }
 });
 
-/** Every url() in a stylesheet and the stylesheets it @imports, resolved against the file that names it. */
+/** Every url() in a stylesheet and the stylesheets it @imports, resolved against the file that names it.
+ *  Paths are package-relative with '/' on every OS (CSS URLs are; Windows `join` would use '\\'). */
 function cssFontFiles(rel, seen = new Set()) {
   if (seen.has(rel)) return [];
   seen.add(rel);
   const text = readFileSync(join(ROOT, rel), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const here = dirname(rel);
+  const here = posix.dirname(rel);
   const out = [];
-  for (const [, imp] of text.matchAll(/@import\s+["']([^"']+)["']/g)) out.push(...cssFontFiles(join(here, imp), seen));
-  for (const [, u] of text.matchAll(/url\('([^']+)'\)/g)) {
+  for (const [, imp] of text.matchAll(/@import\s+["']([^"']+)["']/g)) out.push(...cssFontFiles(posix.join(here, imp), seen));
+  for (const [, , u] of text.matchAll(/url\(\s*(['"]?)([^'")\s]+)\1\s*\)/g)) {
     assert.match(u, /^\.\//, `${rel}: url('${u}') must be relative to the stylesheet (./…) so it resolves when consumed`);
-    out.push(join(here, u));
+    out.push(posix.join(here, u));
   }
   return out;
 }

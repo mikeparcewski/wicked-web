@@ -2,16 +2,18 @@
 
   uv run --with fonttools --with brotli python -I -m unittest discover -s test -p 'test_*.py'
 """
+import base64
 import contextlib
 import copy
 import importlib.util
 import io
+import re
 import tempfile
 import unittest
 from pathlib import Path
 
 from fontTools.ttLib import TTFont
-from fontTools.ttLib.tables._g_l_y_f import Glyph
+from fontTools.ttLib.tables._g_l_y_f import Glyph, GlyphCoordinates
 
 PACKAGE = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("check_wicked_fonts", PACKAGE / "scripts" / "fonts" / "check_wicked_fonts.py")
@@ -46,6 +48,13 @@ class CheckWickedFonts(unittest.TestCase):
             ok, out = run_check(path)
             self.assertTrue(ok, out)
 
+    def test_inlined_stylesheet_carries_the_shipped_woff2(self):
+        css = (PACKAGE / "source" / "wicked-fonts" / "wicked-agile-fonts.css").read_text(encoding="utf-8")
+        payloads = re.findall(r"url\('data:font/woff2;base64,([A-Za-z0-9+/=]+)'\)", css)
+        shipped = sorted((PACKAGE / "fonts" / "wicked").glob("*.woff2"))
+        self.assertEqual(len(payloads), len(shipped))
+        self.assertEqual(sorted(base64.b64decode(p) for p in payloads), sorted(p.read_bytes() for p in shipped))
+
     def test_collapsed_letters_fail(self):
         def collapse(font, cmap):
             # What a broken drawer does: 'b' gets the outline and metrics of 'a'.
@@ -55,12 +64,31 @@ class CheckWickedFonts(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("shared outline among letters/digits: a b", out)
 
+    def test_collapsed_letters_fail_at_a_different_side_bearing(self):
+        def collapse(font, cmap):
+            # The same shape, but 'b' keeps its own advance and left side bearing, so it sits elsewhere.
+            font["glyf"][cmap[ord("b")]] = copy.deepcopy(font["glyf"][cmap[ord("a")]])
+            self.assertNotEqual(font["hmtx"][cmap[ord("b")]], font["hmtx"][cmap[ord("a")]])
+        ok, out = run_check(self.mutated(collapse))
+        self.assertFalse(ok)
+        self.assertIn("shared outline among letters/digits: a b", out)
+
+    def test_flattened_outline_fails(self):
+        def flatten(font, cmap):
+            # Contours remain, but every point is on one line: nothing is drawn.
+            glyph = font["glyf"][cmap[ord("Q")]]
+            self.assertGreater(glyph.numberOfContours, 0)
+            glyph.coordinates = GlyphCoordinates([(x, 0) for x, _ in glyph.coordinates])
+        ok, out = run_check(self.mutated(flatten))
+        self.assertFalse(ok)
+        self.assertIn("empty outline (no area) U+0051", out)
+
     def test_empty_outline_fails(self):
         def empty(font, cmap):
             font["glyf"][cmap[ord("Q")]] = Glyph()
         ok, out = run_check(self.mutated(empty))
         self.assertFalse(ok)
-        self.assertIn("empty outline U+0051", out)
+        self.assertIn("empty outline (no area) U+0051", out)
 
     def test_proportional_digits_fail(self):
         def widen(font, cmap):
