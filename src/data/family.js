@@ -65,11 +65,11 @@ export const PLANES = [
     seam: 'calls skills from sandboxed agents — a failed check sends the work back or stops the job',
     products: [
       {
-        name: 'wicked-crew', short: 'crew', kind: 'the control plane', tag: 'runs and checks jobs', lang: 'JS',
+        name: 'wicked-crew', short: 'crew', kind: 'the control plane', tag: 'runs and checks jobs', lang: 'TS',
         href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
         screenshot: '/screenshots/wicked-crew.png',
         blurb: 'Runs your agents in sandboxes. A different agent reviews the work, and feature and bug-fix jobs are acceptance-tested before delivery, or say why not.',
-        desc: 'Runs the jobs studio starts, with your coding agents in sandboxes that see placeholders, not your keys (a Claude subscription’s sign-in token is the one exception). A different agent reviews the work against your rules; when only the builder could review it, the job stops unless you launch it as “reduced assurance”, which is labelled everywhere. Feature, bug-fix, migration, MCP-server and editor-plugin jobs pass acceptance testing before delivery unless waived or skipped, which is labelled. “Done” is re-checked from evidence, never asserted.',
+        desc: 'Runs the jobs studio starts, with your coding agents in sandboxes that see placeholders, not your keys (a Claude subscription’s sign-in token is the one exception). By default a different agent reviews the work against your rules; when only the builder could review it, the job stops unless you launch it as “reduced assurance”, which is labelled everywhere. Feature, bug-fix, migration, MCP-server and editor-plugin jobs pass acceptance testing before delivery unless waived or skipped, which is labelled. “Done” is re-checked from evidence, never asserted.',
       },
     ],
   },
@@ -110,7 +110,7 @@ export const PLANES = [
         desc: 'What your agents know about your system. A code graph over 114 languages (depth varies by language) shows what breaks if you change something, including the event and command links grep never sees. Memory (what happened, what you told it) and knowledge (what it learned from your code and docs) stay separate and cited. One local binary over MCP.',
       },
       {
-        name: 'wicked-interactive', short: 'interactive', kind: 'the document engine', tag: 'documents', lang: 'TS',
+        name: 'wicked-interactive', short: 'interactive', kind: 'the document engine', tag: 'documents', lang: 'JS',
         href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
         blurb: 'The engine behind the docs, decks and captioned demo recordings studio produces. You use it through studio.',
         desc: 'The document engine: docs with version history, HTML/PDF/PPTX export, and captioned screen recordings of your app (no voice-over). crew runs it for you and studio is where you use it, so you never visit it directly.',
