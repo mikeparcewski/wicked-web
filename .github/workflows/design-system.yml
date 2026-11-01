@@ -34,9 +34,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install fonttools brotli
+      - run: pip install fonttools brotli playwright==1.64.1
       # A regenerated face with a missing or empty glyph, letters or digits that collapsed onto one
       # outline, or proportional digits fails here (scripts/fonts/check_wicked_fonts.py, every format).
       - run: python -I scripts/fonts/check_wicked_fonts.py
       # The check itself must still catch those faults (it is run against deliberately broken copies).
       - run: python -I -m unittest discover -s test -p 'test_*.py'
+      # In Chromium, a 500 (--weight-label) Wicked Sans span must draw with the SemiBold face, and a bold
+      # Wicked Serif or Script must not be faux-bolded (scripts/fonts/check_wicked_fonts_chromium.py).
+      - run: python -m playwright install --with-deps --only-shell chromium
+      - run: python -I scripts/fonts/check_wicked_fonts_chromium.py

@@ -2061,21 +2061,26 @@ def compile_face(family_name, ps_prefix, style_key, style_name, weight, params):
     return face, woff2_bytes
 
 
+# The CSS weight range each @font-face claims. CSS font matching sends a weight between two
+# point-weight faces to the lighter one when it is under 500, so with 400 and 600 faces a 500
+# (--weight-label) would render Regular. The ranges split Wicked Sans at 500: 100-499 is Regular,
+# 500-900 SemiBold. Serif and Script have one face each, so it claims every weight: a bold request
+# matches the face itself instead of being synthesised (faux bold) from it.
 FACES = [
-    # family, ps prefix, style key, style name, CSS weight, params
-    ("Wicked Sans", "WickedSans", "sans", "Regular", 400, SANS_WEIGHTS[400]),
-    ("Wicked Sans", "WickedSans", "sans", "SemiBold", 600, SANS_WEIGHTS[600]),
-    ("Wicked Serif", "WickedSerif", "serif", "Regular", 400, SERIF_PARAMS),
-    ("Wicked Script", "WickedScript", "script", "Regular", 400, SCRIPT_PARAMS),
+    # family, ps prefix, style key, style name, OS/2 weight, CSS weight range, params
+    ("Wicked Sans", "WickedSans", "sans", "Regular", 400, "100 499", SANS_WEIGHTS[400]),
+    ("Wicked Sans", "WickedSans", "sans", "SemiBold", 600, "500 900", SANS_WEIGHTS[600]),
+    ("Wicked Serif", "WickedSerif", "serif", "Regular", 400, "100 900", SERIF_PARAMS),
+    ("Wicked Script", "WickedScript", "script", "Regular", 400, "100 900", SCRIPT_PARAMS),
 ]
 
 
-def font_face_rule(family, weight, src):
+def font_face_rule(family, css_weights, src):
     return (
         "@font-face {\n"
         f"  font-family: '{family}';\n"
         f"  src: {src} format('woff2');\n"
-        f"  font-weight: {weight};\n"
+        f"  font-weight: {css_weights};\n"
         "  font-style: normal;\n"
         "  font-display: swap;\n"
         "}"
@@ -2085,17 +2090,17 @@ def font_face_rule(family, weight, src):
 def main():
     print("Building Wicked Agile 3-Font Suite (v2)...")
     built = []
-    for family, prefix, style_key, style_name, weight, params in FACES:
+    for family, prefix, style_key, style_name, weight, css_weights, params in FACES:
         print(f"\n--- {family} {style_name} ({weight}) ---")
         face, woff2 = compile_face(family, prefix, style_key, style_name, weight, params)
-        built.append((family, weight, face, woff2))
+        built.append((family, css_weights, face, woff2))
 
     inline = ["/* Wicked Agile web fonts: woff2 inlined as base64 (no external files). */"]
     hosted = ["/* Wicked Agile web fonts: self-hosted woff2 files next to this stylesheet. */"]
-    for family, weight, face, woff2 in built:
+    for family, css_weights, face, woff2 in built:
         b64 = base64.b64encode(woff2).decode("ascii")
-        inline.append(font_face_rule(family, weight, f"url('data:font/woff2;base64,{b64}')"))
-        hosted.append(font_face_rule(family, weight, f"url('./{face}.woff2')"))
+        inline.append(font_face_rule(family, css_weights, f"url('data:font/woff2;base64,{b64}')"))
+        hosted.append(font_face_rule(family, css_weights, f"url('./{face}.woff2')"))
     Path("wicked-agile-fonts.css").write_text("\n\n".join(inline) + "\n", encoding="utf-8")
     Path("wicked-agile-fonts-selfhost.css").write_text("\n\n".join(hosted) + "\n", encoding="utf-8")
     print("\n[ok] wicked-agile-fonts.css (base64 bundle)")

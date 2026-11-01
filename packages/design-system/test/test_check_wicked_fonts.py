@@ -22,10 +22,14 @@ SPEC.loader.exec_module(checker)
 SANS_TTF = PACKAGE / "source" / "wicked-fonts" / "WickedSans-Regular.ttf"
 
 
-def run_check(path):
+SHEETS = [PACKAGE / "fonts" / "wicked" / "wicked-agile-fonts-selfhost.css",
+          PACKAGE / "source" / "wicked-fonts" / "wicked-agile-fonts.css"]
+
+
+def run_check(path, check=None):
     out = io.StringIO()
     with contextlib.redirect_stdout(out):
-        ok = checker.check(path)
+        ok = (check or checker.check)(path)
     return ok, out.getvalue()
 
 
@@ -54,6 +58,62 @@ class CheckWickedFonts(unittest.TestCase):
         shipped = sorted((PACKAGE / "fonts" / "wicked").glob("*.woff2"))
         self.assertEqual(len(payloads), len(shipped))
         self.assertEqual(sorted(base64.b64decode(p) for p in payloads), sorted(p.read_bytes() for p in shipped))
+
+    def sheet(self, source, change):
+        path = Path(self.tmp.name) / source.name
+        path.write_text(change(source.read_text(encoding="utf-8")), encoding="utf-8")
+        return path
+
+    def test_shipped_stylesheets_declare_the_weight_ranges(self):
+        for sheet in SHEETS:
+            ok, out = run_check(sheet, checker.check_css)
+            self.assertTrue(ok, out)
+            self.assertIn("WickedSans-Regular 100 499, WickedSans-SemiBold 500 900, "
+                          "WickedSerif-Regular 100 900, WickedScript-Regular 100 900", out)
+
+    def test_point_weights_fail(self):
+        # The v2 sheets as first shipped: a 500 fell to the 400 face, a bold Serif was faux-bolded.
+        points = {"100 499": "400", "500 900": "600", "100 900": "400"}
+        for sheet in SHEETS:
+            broken = self.sheet(sheet, lambda css: re.sub(
+                r"font-weight: ([0-9 ]+);", lambda m: f"font-weight: {points[m.group(1)]};", css))
+            ok, out = run_check(broken, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-Regular: font-weight '400', expected '100 499'", out)
+            self.assertIn("WickedSans-SemiBold: font-weight '600', expected '500 900'", out)
+            self.assertIn("WickedSerif-Regular: font-weight '400', expected '100 900'", out)
+
+    def test_a_missing_or_duplicated_face_fails(self):
+        # Both sheets: rule 0 is the header comment, rules 1-4 the faces in FACES order.
+        for sheet in SHEETS:
+            rules = sheet.read_text(encoding="utf-8").split("\n\n")
+            self.assertEqual(len(rules), 5)
+            missing = self.sheet(sheet, lambda css: "\n\n".join(r for i, r in enumerate(rules) if i != 2))
+            ok, out = run_check(missing, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-SemiBold: declared 0 times, expected once", out)
+            # A commented-out rule is not declared.
+            commented = self.sheet(sheet, lambda css: re.sub(r"(@font-face \{.*?\})", r"/* \1 */", css, count=1, flags=re.S))
+            ok, out = run_check(commented, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-Regular: declared 0 times, expected once", out)
+            doubled = self.sheet(sheet, lambda css: css + "\n" + rules[1])
+            ok, out = run_check(doubled, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-Regular: declared 2 times, expected once", out)
+
+    def test_wrong_family_fails(self):
+        for sheet in SHEETS:
+            swapped = self.sheet(sheet, lambda css: css.replace("'Wicked Serif'", "'Wicked Sans'"))
+            ok, out = run_check(swapped, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSerif-Regular: font-family 'Wicked Sans', expected 'Wicked Serif'", out)
+
+    def test_a_url_to_a_missing_file_fails(self):
+        moved = self.sheet(SHEETS[0], lambda css: css)          # a copy, with no woff2 next to it
+        ok, out = run_check(moved, checker.check_css)
+        self.assertFalse(ok, out)
+        self.assertIn("WickedSans-Regular: WickedSans-Regular.woff2 is not next to wicked-agile-fonts-selfhost.css", out)
 
     def test_collapsed_letters_fail(self):
         def collapse(font, cmap):
