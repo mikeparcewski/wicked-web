@@ -71,7 +71,7 @@ else changes.
 ### The product sites: through their existing wicked-web dependency
 
 Each site already pins `wicked-web` by commit (`github:mikeparcewski/wicked-web#<sha>`). Bump
-the sha and import from the new export path:
+the sha; for anything beyond the chrome, import from the export path:
 
 ```js
 import 'wicked-web/design/index.css';               // faces + tokens
@@ -82,8 +82,9 @@ import tokens from 'wicked-web/design/dist/tokens.json' with { type: 'json' };  
 <img src="…/wicked-web/design/dist/brand/wicked-agile-lockup.light.svg" alt="wicked agile">
 ```
 
-The existing `wicked-web/styles/tokens.css` (the family chrome palette) is unchanged; a site
-moves to the design tokens when it is restyled.
+The chrome already does this for every site: `wicked-web/styles/global.css` imports this package
+(faces and tokens) and its `tokens.css` maps the family names the sites use onto these tokens, so a
+site that uses the shared `Base` gets the faces and Wicked Dark / Light by bumping the sha.
 
 ### wicked-interactive: tokens in rendered output
 

@@ -1,9 +1,20 @@
 /* ──────────────────────────────────────────────────────────────
    wickedagile — global stylesheet
-   Imports the design tokens + base, then layers any remaining
-   truly-global helpers (scroll-snap helper, etc.).
+   Imports the design package (faces + Wicked Dark/Light tokens), then the
+   chrome's tokens + base, then any remaining truly-global helpers.
+
+   The package is imported by a RELATIVE path, not `wicked-web/design/*`: the
+   sites' dev alias maps `wicked-web` to this src/ folder, where that export
+   path does not exist. Relative works from the alias and from the installed
+   git package alike, and Vite bundles the woff2 files with the site (same
+   origin, no font CDN).
+
+   Layer order: the package (@layer wicked-design) first, the chrome
+   (@layer base) above it, so a chrome alias always wins over a package value.
    ────────────────────────────────────────────────────────────── */
 
+@layer wicked-design, base;
+@import "../../packages/design-system/index.css";
 @import "./tokens.css";
 
 /* SNAP */

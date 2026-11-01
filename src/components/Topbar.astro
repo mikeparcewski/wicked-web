@@ -26,10 +26,15 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 <header class="topbar">
   <div class="topbar__inner">
     <a href="https://wickedagile.com" class="wordmark" aria-label="wickedagile">
-      <span class="wordmark-mark" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d1117" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l3.5 14L12 8l5.5 11L21 5"/></svg>
-      </span>
-      <span><span class="wk">wicked</span><span class="ag">agile</span></span>
+      <!-- the brand mark (packages/design-system/brand/wicked-agile-lockup.svg, its mast + wave + spark),
+           drawn in the guide's three tokens so it follows the theme -->
+      <svg class="wordmark-mark" viewBox="0 0 36 40" width="22" height="24" aria-hidden="true">
+        <path d="M 18 2 L 4 38 L 32 38 Z" fill="none" stroke="var(--ink-primary)" stroke-width="2"/>
+        <line x1="18" y1="2" x2="18" y2="38" stroke="var(--ink-primary)" stroke-width="1.5"/>
+        <path d="M 0 38 Q 10 31 18 38 T 36 38" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round"/>
+        <polygon points="18,0 22,7 14,7" fill="var(--accent-wicked)"/>
+      </svg>
+      <span class="wordmark-name"><span class="wk">wicked</span> <span class="ag">agile</span></span>
     </a>
     {pkg && (
       <span class="topbar-pkg">
@@ -94,21 +99,22 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 
 <style is:global>
 /* TOPBAR */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--topbar-h);background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline-strong)}
-[data-theme="light"] .topbar{background:rgba(24,47,60,.94)}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--topbar-h);background:color-mix(in oklab,var(--surface-base) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline-strong)}
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 clamp(16px,4vw,28px);max-width:1240px;margin:0 auto}
-.wordmark{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:900;font-stretch:125%;font-size:1.22rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
-.wordmark-mark{width:28px;height:28px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex-shrink:0}
+.wordmark{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+/* the wordmark is the one place Wicked Serif is set (--font-wordmark), capitalised like studio's "Wicked Studio" */
+.wordmark-name{font-family:var(--font-wordmark);font-size:var(--text-section);font-weight:var(--weight-regular);text-transform:capitalize;font-synthesis:none;white-space:nowrap}
+.wordmark-mark{display:block;flex-shrink:0;overflow:visible}
 .wordmark .wk{color:var(--ink)}
-.wordmark .ag{color:var(--accent)}
+.wordmark .ag{color:var(--ink)}
 /* secondary header: "<logo> / <package>" in jetbrains-mono. margin-right:auto
    keeps logo+pkg grouped on the left and pushes the nav to the right. */
-.topbar-pkg{display:inline-flex;align-items:center;gap:8px;margin-left:7px;margin-right:auto;font-family:var(--font-mono);font-weight:500;font-size:.92rem;letter-spacing:.01em;color:var(--muted)}
-.topbar-pkg-sep{color:var(--faint);font-weight:400}
+.topbar-pkg{display:inline-flex;align-items:center;gap:8px;margin-left:7px;margin-right:auto;font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-body);color:var(--muted)}
+.topbar-pkg-sep{color:var(--faint);font-weight: var(--weight-regular)}
 @media(max-width:560px){.topbar-pkg{display:none}}
 .nav{display:flex;align-items:center;gap:12px}
 [data-tip]{position:relative}
-[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.92);color:#e6edf3;font-family:var(--font-mono);font-size:.6rem;white-space:nowrap;padding:4px 9px;border-radius:5px;border:1px solid var(--hairline-strong);pointer-events:none;opacity:0;transition:opacity .18s;z-index:300}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface-overlay);color:var(--ink-high);border:1px solid var(--border);font-family: var(--font-sans);font-size: var(--text-caption);white-space:nowrap;padding:4px 9px;border-radius:5px;border:1px solid var(--hairline-strong);pointer-events:none;opacity:0;transition:opacity .18s;z-index:300}
 [data-tip]:hover::after{opacity:1}
 .icon-btn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;border:1px solid var(--hairline-strong);color:var(--ink);background:transparent;cursor:pointer;text-decoration:none;transition:border-color .25s var(--ease),color .25s var(--ease),background .25s var(--ease);padding:0;font-size:inherit;text-transform:none;flex-shrink:0}
 .icon-btn:hover{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
@@ -119,19 +125,19 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
    the topbar is fixed, so a clipped menu leaves items unreachable — cap height
    and scroll inside instead */
 #projectsMenu.dropdown-menu{max-height:calc(100vh - var(--topbar-h) - 24px);overflow-y:auto}
-.dropdown-kicker{display:block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding:7px 10px 5px}
+.dropdown-kicker{display:block;font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);padding:7px 10px 5px}
 /* a PLANE group: a colored head (dot + name + role note), its products beneath.
    --plane is set inline per group from the shared plane tokens. */
 .dropdown-plane{padding:3px 0 2px;border-top:1px solid var(--hairline)}
 .dropdown-plane:first-of-type{border-top:none}
-.dp-head{display:flex;align-items:center;gap:7px;padding:5px 10px 3px;font-family:var(--font-mono);font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
+.dp-head{display:flex;align-items:center;gap:7px;padding:5px 10px 3px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
 .dp-dot{width:7px;height:7px;border-radius:50%;background:var(--plane,var(--accent));box-shadow:0 0 8px -1px var(--plane,var(--accent));flex-shrink:0}
-.dp-note{margin-left:auto;font-weight:400;letter-spacing:.06em;text-transform:none;color:var(--faint)}
-.dropdown-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 7px 24px;border-radius:6px;color:var(--ink);font-size:.82rem;text-decoration:none;transition:background .15s,color .15s}
+.dp-note{margin-left:auto;font-weight: var(--weight-regular);text-transform:none;color:var(--faint)}
+.dropdown-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 7px 24px;border-radius:6px;color:var(--ink);font-size: var(--text-body);text-decoration:none;transition:background .15s,color .15s}
 .dropdown-item:hover{background:color-mix(in oklab,var(--plane,var(--accent)) 14%,transparent);color:var(--ink)}
-.dropdown-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--faint);letter-spacing:.1em;flex-shrink:0}
+.dropdown-tag{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
 .di-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.di-tag{color:var(--muted);font-family:var(--font-mono);font-weight:400;font-size:.82em;letter-spacing:.01em}
+.di-tag{color:var(--muted);font-family: var(--font-sans);font-weight: var(--weight-regular);font-size: var(--text-caption);}
 .dropdown-divider{height:1px;background:var(--hairline);margin:4px 0}
 
 /* ── MOBILE EXPAND NAV (hamburger) ─────────────────────────────────────────
@@ -146,9 +152,9 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 .mobile-menu .dropdown-kicker{padding:11px 12px 6px}
 .mobile-menu .dropdown-divider{margin:6px 10px}
 /* plane group head on mobile — same dot + colored name as the desktop menu */
-.mm-plane{display:flex;align-items:center;gap:8px;padding:10px 12px 2px;font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
-.mm-item{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:11px 12px 11px 27px;border-radius:8px;color:var(--ink);font-family:var(--font-display);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;text-decoration:none;transition:background .15s}
-.mm-item:hover,.mm-item:active{background:rgba(255,218,25,.14)}
+.mm-plane{display:flex;align-items:center;gap:8px;padding:10px 12px 2px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
+.mm-item{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:11px 12px 11px 27px;border-radius:8px;color:var(--ink);font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-lead);text-decoration:none;transition:background .15s}
+.mm-item:hover,.mm-item:active{background:var(--accent-wash)}
 /* the writing/repo rows after the divider sit outside the plane groups — unindent */
 .mobile-menu .dropdown-divider ~ .mm-item{padding-left:12px}
 /* mirror .di-label so a long crew label truncates instead of overflowing the row */
@@ -158,7 +164,7 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
    font and scales with any viewport clamp on the row text. */
 .mm-glyph{width:.95em;height:.95em;margin-right:.5em;vertical-align:-.13em;opacity:.82;flex-shrink:0;transition:opacity .15s}
 .mm-item:hover .mm-glyph,.mm-item:active .mm-glyph{opacity:1}
-.mm-item .dropdown-tag{font-family:var(--font-mono);font-weight:400;font-size:.62rem;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0}
+.mm-item .dropdown-tag{font-family: var(--font-sans);font-weight: var(--weight-regular);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
 @keyframes mm-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){
   .nav{gap:8px}
@@ -176,9 +182,9 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
   /* THEME */
   var SUN = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   var MOON = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
-  function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('wa-theme',t);var ic=document.getElementById('themeIcon');if(ic)ic.innerHTML=t==='light'?MOON:SUN}
+  function setTheme(t){t=t==='light'?'light':'dark';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('wa-theme',t)}catch(e){}var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#f5f5f4':'#121212');var ic=document.getElementById('themeIcon');if(ic)ic.innerHTML=t==='light'?MOON:SUN}
   /* respect the no-flash init already on <html>, falling back to stored/default */
-  setTheme(document.documentElement.getAttribute('data-theme')||localStorage.getItem('wa-theme')||'light');
+  setTheme(document.documentElement.getAttribute('data-theme')||'dark');
   var themeBtn=document.getElementById('themeBtn');
   if(themeBtn)themeBtn.addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')});
 

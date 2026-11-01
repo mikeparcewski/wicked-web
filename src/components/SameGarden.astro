@@ -126,8 +126,8 @@ const PLANES = FAMILY_PLANES.map((p) => ({
 .same-garden .sg-kicker{ color:var(--accent); }
 .same-garden .sg-kicker::before, .same-garden .sg-kicker::after{ content:''; display:inline-block; width:22px; height:1px; background:var(--accent); vertical-align:middle; margin-bottom:3px; }
 .same-garden .sg-kicker::before{ margin-right:10px; } .same-garden .sg-kicker::after{ margin-left:10px; }
-.same-garden .sg-h2{ font-family:var(--font-display); font-weight:900; font-stretch:125%; font-size:clamp(1.35rem,2.2vw,1.7rem); color:var(--ink); margin:7px 0 0; letter-spacing:-.02em; line-height:1.06; }
-.same-garden .sg-sub{ font-family:var(--font-mono); font-size:.66rem; color:var(--muted); margin:7px auto 0; max-width:112ch; line-height:1.45; }
+.same-garden .sg-h2{ font-family: var(--font-sans); font-weight: var(--weight-strong);  font-size: var(--text-title); color:var(--ink); margin:7px 0 0; letter-spacing: var(--tracking-title); line-height:1.06; }
+.same-garden .sg-sub{ font-family: var(--font-sans); font-size: var(--text-caption); color:var(--muted); margin:7px auto 0; max-width:112ch; line-height:1.45; }
 
 /* ── the map: plane bands with contract seams between ───────────────────── */
 .same-garden .sg-map{ display:flex; flex-direction:column; max-width:980px; margin:0 auto; }
@@ -157,9 +157,9 @@ const PLANES = FAMILY_PLANES.map((p) => ({
 .same-garden .sg-plane-node{ width:12px; height:12px; border-radius:50%; border:2px solid var(--plane); background:var(--surface); box-shadow:0 0 0 4px color-mix(in oklab, var(--plane) 12%, transparent); transition:background .28s var(--ease); }
 .same-garden .sg-plane:hover .sg-plane-node,
 .same-garden .sg-plane:focus-within .sg-plane-node{ background:var(--plane); }
-.same-garden .sg-plane-name{ font-family:var(--font-display); font-weight:900; font-stretch:110%; font-size:1.1rem; letter-spacing:-.01em; color:var(--ink); line-height:1.05; }
-.same-garden .sg-plane-role{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); line-height:1.4; }
-.same-garden .sg-plane-owns{ font-size:.7rem; line-height:1.4; color:var(--muted); max-width:34ch; }
+.same-garden .sg-plane-name{ font-family: var(--font-sans); font-weight: var(--weight-strong);  font-size: var(--text-lead);  color:var(--ink); line-height:1.05; }
+.same-garden .sg-plane-role{ font-family: var(--font-sans); font-size: var(--text-caption);   font-weight: var(--weight-strong); color:color-mix(in oklab, var(--plane) 78%, var(--ink)); line-height:1.4; }
+.same-garden .sg-plane-owns{ font-size: var(--text-caption); line-height:1.4; color:var(--muted); max-width:34ch; }
 
 /* product cards inside a plane (two side-by-side for the skins) */
 .same-garden .sg-plane-cards{ display:grid; grid-template-columns:1fr; gap:9px; min-width:0; }
@@ -180,24 +180,24 @@ const PLANES = FAMILY_PLANES.map((p) => ({
 .same-garden .sg-card:focus-within .sg-card-glow,
 .same-garden .sg-plane:focus-within .sg-card-glow{ opacity:1; }
 .same-garden .sg-card-body{ flex:1; padding:9px 12px 7px; }
-.same-garden .sg-eyebrow{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.7rem; font-weight:700; letter-spacing:.05em; color:var(--ink); }
+.same-garden .sg-eyebrow{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family: var(--font-sans); font-size: var(--text-caption); font-weight: var(--weight-strong);  color:var(--ink); }
 .same-garden .sg-dot{ width:6px; height:6px; border-radius:50%; background:var(--plane); box-shadow:0 0 8px -1px var(--plane); flex-shrink:0; }
-.same-garden .sg-kind{ font-weight:400; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 70%, var(--muted)); }
-.same-garden .sg-blurb{ font-size:.735rem; line-height:1.46; color:var(--muted); margin:5px 0 0; }
+.same-garden .sg-kind{ font-weight: var(--weight-regular); font-size: var(--text-caption);   color:color-mix(in oklab, var(--plane) 70%, var(--muted)); }
+.same-garden .sg-blurb{ font-size: var(--text-caption); line-height:1.46; color:var(--muted); margin:5px 0 0; }
 .same-garden .sg-card-foot{ display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:6px 12px 7px; border-top:1px solid var(--hairline); }
 .same-garden .sg-links{ display:inline-flex; align-items:center; gap:12px; flex-wrap:wrap; }
-.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.64rem; letter-spacing:.02em; color:var(--muted); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
+.same-garden .sg-visit{ display:inline-flex; align-items:center; gap:5px; font-family: var(--font-sans); font-size: var(--text-caption);  color:var(--muted); white-space:nowrap; text-decoration:none; transition:color .22s var(--ease); }
 .same-garden .sg-arrow{ display:inline-block; transition:transform .22s var(--ease); }
 .same-garden .sg-visit:hover,
 .same-garden .sg-card:hover .sg-visit{ color:var(--plane); }
 .same-garden .sg-card:hover .sg-arrow{ transform:translate(2px,-2px); }
-.same-garden .sg-repo{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:.62rem; letter-spacing:.03em; color:var(--muted); white-space:nowrap; text-decoration:none; position:relative; z-index:3; transition:color .22s var(--ease); }
+.same-garden .sg-repo{ display:inline-flex; align-items:center; gap:5px; font-family: var(--font-sans); font-size: var(--text-caption);  color:var(--muted); white-space:nowrap; text-decoration:none; position:relative; z-index:3; transition:color .22s var(--ease); }
 .same-garden .sg-repo:hover{ color:var(--ink); }
 /* stretched primary link — covers the whole card (site when present, else repo) */
 .same-garden .sg-primary::after{ content:''; position:absolute; inset:0; z-index:2; }
 .same-garden .sg-repo.sg-primary{ position:static; }
 .same-garden .sg-card a:focus-visible{ outline:2px solid var(--plane); outline-offset:3px; border-radius:3px; }
-.same-garden .sg-here-chip{ font-family:var(--font-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
+.same-garden .sg-here-chip{ font-family:var(--font-sans); font-size: var(--text-caption);   color:color-mix(in oklab, var(--plane) 78%, var(--ink)); border:1px dashed color-mix(in oklab, var(--plane) 45%, var(--hairline-strong)); border-radius:999px; padding:3px 10px; }
 
 /* SHORT VIEWPORTS (13" laptops and anything scaled): the full band is ~700px, which does not fit
    a ~660px window -- nor, it turns out, a 760px one. The topbar is position:fixed and `html` sets
@@ -211,9 +211,9 @@ const PLANES = FAMILY_PLANES.map((p) => ({
   .same-garden{ padding:14px 0; }
   .same-garden .sg-sub{ display:none; }
   .same-garden .sg-plane-owns{ display:none; }
-  .same-garden .sg-h2{ font-size:1.4rem; }
+  .same-garden .sg-h2{ font-size: var(--text-section); }
   .same-garden .sg-head{ margin-bottom:12px; }
-  .same-garden .sg-blurb{ font-size:.7rem; line-height:1.4; margin-top:4px; }
+  .same-garden .sg-blurb{ font-size: var(--text-caption); line-height:1.4; margin-top:4px; }
   .same-garden .sg-card-body{ padding:7px 10px 5px; }
   .same-garden .sg-card-foot{ padding:5px 10px 6px; }
   .same-garden .sg-plane{ padding:7px 12px; }
@@ -237,8 +237,8 @@ const PLANES = FAMILY_PLANES.map((p) => ({
 .same-garden .sg-contract{ display:flex; align-items:center; gap:9px; padding:2px 4px 2px 28px; position:relative; }
 .same-garden .sg-contract-line{ position:absolute; left:14px; top:-4px; bottom:-4px; width:2px; border-radius:2px;
   background:linear-gradient(var(--hairline-strong), var(--hairline-strong)); transition:background .28s var(--ease); }
-.same-garden .sg-contract-label{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.06em; color:var(--faint); line-height:1.5; transition:color .28s var(--ease); }
-.same-garden .sg-contract::before{ content:'⇅'; font-size:.78rem; line-height:1; color:var(--faint); transition:color .28s var(--ease); }
+.same-garden .sg-contract-label{ font-family: var(--font-sans); font-size: var(--text-caption);  color:var(--faint); line-height:1.5; transition:color .28s var(--ease); }
+.same-garden .sg-contract::before{ content:'⇅'; font-size: var(--text-caption); line-height:1; color:var(--faint); transition:color .28s var(--ease); }
 /* light the seam when EITHER adjacent plane is lit:
    below a lit plane = adjacent-sibling; above a lit plane = :has(+) */
 .same-garden .sg-plane:hover + .sg-contract .sg-contract-label,
