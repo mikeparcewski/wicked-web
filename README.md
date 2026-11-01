@@ -71,6 +71,7 @@ Component props worth knowing:
 // astro.config.mjs — local source while developing, the git package in CI
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+// '../wicked-web/src' for the apex (its root is the site); '../../wicked-web/src' for a product site under site/
 const localUI = fileURLToPath(new URL('../wicked-web/src', import.meta.url));
 const alias = existsSync(localUI) ? { 'wicked-web': localUI } : {};
 export default defineConfig({ /* ... */ vite: { resolve: { alias } } });
@@ -89,11 +90,11 @@ import Footer from 'wicked-web/components/Footer.astro';
 </Base>
 ```
 
-Edit a component here → if `../wicked-web` sits beside the site, dev picks it up live. Push here + the sites rebuild → everyone gets the update (CI installs from `github:mikeparcewski/wicked-web`).
+Edit a component here → if `wicked-web` sits beside the site's repo, dev picks it up live. CI installs the commit each site's lock pins, so a pushed change reaches a site only after that site re-pins it (see [Releasing a change](#releasing-a-change-important)).
 
 ## Tailwind / React sites (garden, estate)
 
-Plain-Astro sites (wickedagile, interactive) import the shared `Base` directly. Tailwind/React sites keep their **own** `global.css` (it needs `@import "tailwindcss"` + `@theme`, which can't live in the shared plain-CSS file) but still use the shared `Base` + chrome:
+Plain-Astro sites (wickedagile, crew, studio) import the shared `Base` directly. Tailwind/React sites keep their **own** `global.css` (it needs `@import "tailwindcss"` + `@theme`, which can't live in the shared plain-CSS file) but still use the shared `Base` + chrome:
 
 ```astro
 import Base from 'wicked-web/layouts/Base.astro';
@@ -104,20 +105,20 @@ Their `global.css` should **not** redefine the family tokens — those come from
 
 ## Releasing a change (IMPORTANT)
 
-Git dependencies are **pinned by commit in each site's `package-lock.json`**. After you push `wicked-web`, a site will NOT pick up the change in CI until you bump its pin:
+Git dependencies are **pinned by commit in each site's lock**: the repo root's `package-lock.json` for the apex, `site/package-lock.json` for the product sites (each builds from `site/`). After you push `wicked-web`, a site will NOT pick up the change in CI until you bump its pin. Install the exact commit; a bare `github:` spec can resolve to npm's cached older commit and silently rewrite the lock back:
 
 ```bash
-cd <site> && npm install github:mikeparcewski/wicked-web   # updates the pinned commit
+cd <site> && npm install "github:mikeparcewski/wicked-web#<40-char sha>"   # pins that commit
 git commit -am "chore: pick up wicked-web change" && git push  # triggers that site's deploy
 ```
 
-So a shared change isn't "live everywhere" until every consuming site is reinstalled + redeployed.
+So a shared change isn't "live everywhere" until every consuming site is re-pinned and redeployed.
 
 ## Adding a new family site
 
-1. Add the product to its plane's entry in `PLANES` in `SameGarden.astro` (name, kind, href, repo, blurb) — every site's four-plane map picks it up automatically (its own card becomes "you are here" via `current`).
-2. Add the product to its plane's column in `Footer.astro` + its plane group in the `Topbar` ecosystem dropdown.
-3. New site consumes the shared `Base`/`Topbar`/`Footer`/`SameGarden` and passes `pkg`/`repo`/`current`.
+1. Add the product to its plane's `products` in `src/data/family.js` with every field its neighbours carry: `name`, `short`, `kind`, `tag`, `lang`, `href`, `repo`, `hasSite: true`, `screenshot`, `blurb`, `desc` (Topbar reads `short` and `tag`, Footer `short`, SameGarden `kind` and `blurb`, the apex `desc`, `lang` and `screenshot`). Topbar, Footer and SameGarden all render from that manifest, so the nav, the footer column and every site's four-plane map pick it up (its own card becomes "you are here" via `current`).
+2. New site consumes the shared `Base`/`Topbar`/`Footer`/`SameGarden` and passes `pkg`/`repo`/`current`.
+3. To show it on the apex's stack, add it to the apex's presentation map (`PRESENT` in `Shipped.astro`, plus `FEATURED` in `src/scripts/data.js` and a screenshot), then re-pin `wicked-web` there.
 
 ## Conventions & gotchas
 
@@ -126,7 +127,7 @@ So a shared change isn't "live everywhere" until every consuming site is reinsta
 - **The shared `tokens.css`/`global.css` live in `@layer base`** — do NOT add unlayered rules to them. Tailwind v4 utilities sit in `@layer utilities`, and unlayered CSS beats *any* layer, so an unlayered shared reset/`html` rule will silently clobber the Tailwind sites' `py-*`/`mx-auto`/etc. and collapse their layouts (plain-CSS sites like wickedagile won't show it — verify the Tailwind sites' mid-page sections after any shared-CSS change).
 - **Shared components must be plain CSS on the family tokens** (`var(--canvas)`, `var(--ink)`, …) with a scoped `<style is:global>` — never Tailwind classes — so they also render on the plain-Astro sites.
 - **Self-contained widths**: don't rely on a global `.wrap`; sites with their own token CSS don't define one. Footer scopes its own `.footer .wrap`.
-- **CI Node version**: Astro 6 sites need **Node ≥ 22** in their Pages workflow (Astro 4 sites are fine on 20). Symptom if wrong: "Node.js 20 is not supported by Astro".
+- **CI Node version**: Astro 6 and later need **Node ≥ 22** in the Pages workflow (every family site is on Astro 7). Symptom if wrong: "Node.js 20 is not supported by Astro".
 - **Sites under a project base** (e.g. garden at `/wicked-garden/`): pass a base-aware `favicon` to `Base`, computed in the site's frontmatter:
   ```astro
   const favicon = `${import.meta.env.BASE_URL}/favicon.svg`.replace(/\/{2,}/g, "/");
