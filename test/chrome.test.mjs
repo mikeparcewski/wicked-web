@@ -1,5 +1,5 @@
 // The shared chrome wears studio's approved look (2026-11-01). Static checks, no dependencies:
-//   node --test test/          (npm run test:chrome)
+//   npm run test:chrome         (node --test test/chrome.test.mjs; Node 22 needs the file name)
 // Rendering is checked on each site's PR (screenshots, computed fonts); this pins the contract the
 // sites rely on so a later edit cannot quietly undo it.
 import { test } from 'node:test';
