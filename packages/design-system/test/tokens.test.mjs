@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { loadSource, buildCss, buildJson, buildSpecimen, resolve, splitIcons, lockupFor, derivedIn, FOLLOWS_OS, LOCKUP_VIEWBOX, ROOT } from '../scripts/build.mjs';
 import { audit } from '../scripts/contrast.mjs';
 
@@ -70,14 +70,44 @@ test('per-theme lockups carry resolved colours; icons are split and drawn in cur
   for (const svg of Object.values(icons)) { assert.match(svg, /currentColor/); assert.doesNotMatch(svg, /#111111/); }
 });
 
+/** Every url() in a stylesheet and the stylesheets it @imports, resolved against the file that names it. */
+function cssFontFiles(rel, seen = new Set()) {
+  if (seen.has(rel)) return [];
+  seen.add(rel);
+  const text = readFileSync(join(ROOT, rel), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const here = dirname(rel);
+  const out = [];
+  for (const [, imp] of text.matchAll(/@import\s+["']([^"']+)["']/g)) out.push(...cssFontFiles(join(here, imp), seen));
+  for (const [, u] of text.matchAll(/url\('([^']+)'\)/g)) {
+    assert.match(u, /^\.\//, `${rel}: url('${u}') must be relative to the stylesheet (./…) so it resolves when consumed`);
+    out.push(join(here, u));
+  }
+  return out;
+}
+
 test('every font file fonts.css names exists, and every face ships its licence', () => {
-  const fontsCss = readFileSync(join(ROOT, 'fonts.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const files = [...fontsCss.matchAll(/url\('\.\/(fonts\/[^']+)'\)/g)].map((m) => m[1]);
-  assert.ok(files.length >= 10);
+  const files = cssFontFiles('fonts.css');
+  assert.ok(files.length >= 16);
   for (const f of files) assert.ok(existsSync(join(ROOT, f)), f);
+  for (const face of ['WickedSans-Regular', 'WickedSans-SemiBold', 'WickedSerif-Regular', 'WickedScript-Regular']) {
+    assert.ok(files.includes(`fonts/wicked/${face}.woff2`), face);
+  }
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+  assert.equal(pkg.exports['./wicked-fonts.css'], './fonts/wicked/wicked-agile-fonts-selfhost.css');
+  assert.deepEqual(cssFontFiles('fonts/wicked/wicked-agile-fonts-selfhost.css').filter((f) => !existsSync(join(ROOT, f))), []);
+  assert.match(readFileSync(join(ROOT, 'LICENSE'), 'utf8'), /fonts\/wicked\//, 'LICENSE names the owner-drawn faces');
   for (const lic of ['LICENSE-Inter.txt', 'LICENSE-Marcellus.txt', 'LICENSE-DancingScript.txt', 'LICENSE-JetBrainsMono.txt']) {
     assert.match(readFileSync(join(ROOT, 'licenses', lic), 'utf8'), /SIL Open Font License, Version 1\.1/, lic);
   }
+});
+
+test('the font stacks put the Wicked faces first, with their fallbacks', () => {
+  const v = (n) => src.tokens[n].value;
+  assert.match(v('font-sans'), /^'Wicked Sans', 'Inter', system-ui,/);
+  assert.match(v('font-display'), /^'Wicked Serif',/);
+  assert.equal(v('font-serif'), v('font-display'));
+  assert.match(v('font-script'), /^'Wicked Script',/);
+  assert.match(css, /--font-display: 'Wicked Serif',/);
 });
 
 test('every token records where its value came from', () => {
