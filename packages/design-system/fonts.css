@@ -7,6 +7,7 @@
  *   --font-display  'Wicked Serif'           -> Marcellus       display sizes and brand moments
  *   --font-serif    'Wicked Serif'           -> Marcellus       (the same stack, the older name)
  *   --font-script   'Wicked Script'          -> Dancing Script  brand moments only
+ *   (Wicked Serif and Wicked Script have one face each, drawn at every weight: never faux-bolded.)
  *   --font-mono                                 JetBrains Mono  code, ids, data
  *
  * The Wicked faces cover basic Latin, UI punctuation and a few symbols only (no accented letters), so

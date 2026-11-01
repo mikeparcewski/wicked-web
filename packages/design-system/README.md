@@ -170,8 +170,9 @@ loads them with `scripts/fonts/render_wicked_fonts_sample.py <page.html> <out.pn
 CI (`design-system.yml`, job `fonts`) runs the same check on every face and format, and fails a
 face with a missing or empty glyph, letters or digits that collapsed onto one outline, or
 proportional digits, and a stylesheet whose `font-weight` ranges are not the ones above. It then
-checks in Chromium that a 500 Wicked Sans span draws with the SemiBold face and that a 700 Wicked
-Serif or Script draws the same pixels as a 400 (`scripts/fonts/check_wicked_fonts_chromium.py`).
+checks in Chromium, through `fonts.css` and both Wicked stylesheets, which face draws each weight:
+Wicked Sans 500 must draw SemiBold, and every weight of a face must draw the same pixels as the
+face's own weight, so nothing is faux-bolded (`scripts/fonts/check_wicked_fonts_chromium.py`).
 
 **Brand marks and the Wicked faces**: the lockup, the icons and the three Wicked faces were created by the project owner. The source folder
 carries no licence for them, and `LICENSE` grants none yet; they are for the

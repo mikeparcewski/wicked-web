@@ -84,23 +84,36 @@ class CheckWickedFonts(unittest.TestCase):
             self.assertIn("WickedSerif-Regular: font-weight '400', expected '100 900'", out)
 
     def test_a_missing_or_duplicated_face_fails(self):
-        sheet = SHEETS[0]
-        rules = sheet.read_text(encoding="utf-8").split("\n\n")
-        self.assertEqual(len(rules), 5)
-        missing = self.sheet(sheet, lambda css: "\n\n".join(r for r in rules if "SemiBold" not in r))
-        ok, out = run_check(missing, checker.check_css)
-        self.assertFalse(ok)
-        self.assertIn("WickedSans-SemiBold: declared 0 times, expected once", out)
-        doubled = self.sheet(sheet, lambda css: css + "\n" + rules[1])
-        ok, out = run_check(doubled, checker.check_css)
-        self.assertFalse(ok)
-        self.assertIn("WickedSans-Regular: declared 2 times, expected once", out)
+        # Both sheets: rule 0 is the header comment, rules 1-4 the faces in FACES order.
+        for sheet in SHEETS:
+            rules = sheet.read_text(encoding="utf-8").split("\n\n")
+            self.assertEqual(len(rules), 5)
+            missing = self.sheet(sheet, lambda css: "\n\n".join(r for i, r in enumerate(rules) if i != 2))
+            ok, out = run_check(missing, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-SemiBold: declared 0 times, expected once", out)
+            # A commented-out rule is not declared.
+            commented = self.sheet(sheet, lambda css: re.sub(r"(@font-face \{.*?\})", r"/* \1 */", css, count=1, flags=re.S))
+            ok, out = run_check(commented, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-Regular: declared 0 times, expected once", out)
+            doubled = self.sheet(sheet, lambda css: css + "\n" + rules[1])
+            ok, out = run_check(doubled, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSans-Regular: declared 2 times, expected once", out)
 
     def test_wrong_family_fails(self):
-        swapped = self.sheet(SHEETS[0], lambda css: css.replace("'Wicked Serif'", "'Wicked Sans'"))
-        ok, out = run_check(swapped, checker.check_css)
-        self.assertFalse(ok)
-        self.assertIn("WickedSerif-Regular: font-family 'Wicked Sans', expected 'Wicked Serif'", out)
+        for sheet in SHEETS:
+            swapped = self.sheet(sheet, lambda css: css.replace("'Wicked Serif'", "'Wicked Sans'"))
+            ok, out = run_check(swapped, checker.check_css)
+            self.assertFalse(ok, out)
+            self.assertIn("WickedSerif-Regular: font-family 'Wicked Sans', expected 'Wicked Serif'", out)
+
+    def test_a_url_to_a_missing_file_fails(self):
+        moved = self.sheet(SHEETS[0], lambda css: css)          # a copy, with no woff2 next to it
+        ok, out = run_check(moved, checker.check_css)
+        self.assertFalse(ok, out)
+        self.assertIn("WickedSans-Regular: WickedSans-Regular.woff2 is not next to wicked-agile-fonts-selfhost.css", out)
 
     def test_collapsed_letters_fail(self):
         def collapse(font, cmap):

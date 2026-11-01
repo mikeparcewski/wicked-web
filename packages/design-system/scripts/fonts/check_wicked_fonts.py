@@ -10,9 +10,9 @@ source/wicked-fonts):
     distinct, and any other required characters that share an outline are reported;
   * the ten digits share one advance width (tabular figures);
   * vertical metrics and the OS/2 weight class are printed.
-And every stylesheet (*.css) in those folders declares each Wicked face exactly once, under its
+And every folder has a stylesheet (*.css), and each one declares each Wicked face exactly once, under its
 family, with the CSS weight range in CSS_WEIGHTS (a face is named by its url() file, or by the
-PostScript name of the woff2 inlined as base64).
+PostScript name of the woff2 inlined as base64); a url() file must exist next to the stylesheet.
 
   uv run --with fonttools --with brotli python -I scripts/fonts/check_wicked_fonts.py [folder ...]
 Exit status 1 on any failure, or when a folder holds no font.
@@ -126,14 +126,17 @@ def css_face_name(src):
 
 def check_css(path):
     fails = []
-    seen = {}
-    for block in re.findall(r"@font-face\s*\{(.*?)\}", path.read_text(encoding="utf-8"), re.S):
+    seen, weights = {}, {}
+    # Comments first: a rule commented out is not declared.
+    css = re.sub(r"/\*.*?\*/", "", path.read_text(encoding="utf-8"), flags=re.S)
+    for block in re.findall(r"@font-face\s*\{(.*?)\}", css, re.S):
         # One declaration per line: a data: URL carries a ';' of its own.
         decl = dict(re.findall(r"^\s*([a-z-]+)\s*:\s*(.*?);\s*$", block, re.M))
         family = decl.get("font-family", "").strip().strip("'\"")
         weight = " ".join(decl.get("font-weight", "").split())
         face = css_face_name(decl.get("src", ""))
         seen[face] = seen.get(face, 0) + 1
+        weights[face] = weight
         if face not in CSS_WEIGHTS:
             fails.append(f"unexpected @font-face for {face or decl.get('src', '')[:40]!r}")
             continue
@@ -142,11 +145,13 @@ def check_css(path):
             fails.append(f"{face}: font-family {family!r}, expected {want_family!r}")
         if weight != want_weight:
             fails.append(f"{face}: font-weight {weight!r}, expected {want_weight!r}")
+        if "data:" not in decl.get("src", "") and not (path.parent / f"{face}.woff2").is_file():
+            fails.append(f"{face}: {face}.woff2 is not next to {path.name}")
     for face in CSS_WEIGHTS:
         if seen.get(face, 0) != 1:
             fails.append(f"{face}: declared {seen.get(face, 0)} times, expected once")
     print(f"{path.name}: {sum(seen.values())} @font-face rules, weights "
-          + ", ".join(f"{f} {CSS_WEIGHTS[f][1]}" for f in CSS_WEIGHTS if seen.get(f)))
+          + ", ".join(f"{f} {w}" for f, w in weights.items()))
     for f in fails:
         print(f"  FAIL {f}")
     return not fails
@@ -165,7 +170,11 @@ def main():
             print(f"no fonts in {folder}")
             return 1
         files += found
-        sheets += sorted(folder.glob("*.css"))
+        found = sorted(folder.glob("*.css"))
+        if not found:
+            print(f"no stylesheet in {folder}")
+            return 1
+        sheets += found
     ok = all([check(p) for p in files] + [check_css(p) for p in sheets])
     print("ALL CHECKS PASSED" if ok else "CHECKS FAILED")
     return 0 if ok else 1
