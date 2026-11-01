@@ -219,7 +219,7 @@ const PLANES = FAMILY_PLANES.map((p) => ({
   .same-garden .sg-plane{ padding:6px 12px; }
   .same-garden .sg-contract{ padding:1px 4px 1px 28px; }
   /* the v3 labels are 12px (the scale's caption), up from 9.6-11.8px: give the height back here */
-  .same-garden .sg-contract-label{ line-height:1.3; }
+  .same-garden .sg-contract .sg-contract-label{ line-height:1.3; } /* outranks the default rule below */
 }
 
 /* Below the height the band can actually fit in, stop being a snap target. A snap point you
