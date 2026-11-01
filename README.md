@@ -71,6 +71,7 @@ Component props worth knowing:
 // astro.config.mjs — local source while developing, the git package in CI
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+// '../wicked-web/src' for the apex (its root is the site); '../../wicked-web/src' for a product site under site/
 const localUI = fileURLToPath(new URL('../wicked-web/src', import.meta.url));
 const alias = existsSync(localUI) ? { 'wicked-web': localUI } : {};
 export default defineConfig({ /* ... */ vite: { resolve: { alias } } });
@@ -89,7 +90,7 @@ import Footer from 'wicked-web/components/Footer.astro';
 </Base>
 ```
 
-Edit a component here → if `../wicked-web` sits beside the site, dev picks it up live. Push here + the sites rebuild → everyone gets the update (CI installs from `github:mikeparcewski/wicked-web`).
+Edit a component here → if `wicked-web` sits beside the site's repo, dev picks it up live. CI installs the commit each site's lock pins, so a pushed change reaches a site only after that site re-pins it (see [Releasing a change](#releasing-a-change-important)).
 
 ## Tailwind / React sites (garden, estate)
 
@@ -115,7 +116,7 @@ So a shared change isn't "live everywhere" until every consuming site is re-pinn
 
 ## Adding a new family site
 
-1. Add the product to its plane's `products` in `src/data/family.js` (name, kind, href, repo, `hasSite: true`, blurb, desc). Topbar, Footer and SameGarden all render from that manifest, so the nav, the footer column and every site's four-plane map pick it up (its own card becomes "you are here" via `current`).
+1. Add the product to its plane's `products` in `src/data/family.js` with every field its neighbours carry: `name`, `short`, `kind`, `tag`, `lang`, `href`, `repo`, `hasSite: true`, `screenshot`, `blurb`, `desc` (Topbar reads `short` and `tag`, Footer `short`, SameGarden `kind` and `blurb`, the apex `desc`, `lang` and `screenshot`). Topbar, Footer and SameGarden all render from that manifest, so the nav, the footer column and every site's four-plane map pick it up (its own card becomes "you are here" via `current`).
 2. New site consumes the shared `Base`/`Topbar`/`Footer`/`SameGarden` and passes `pkg`/`repo`/`current`.
 3. To show it on the apex's stack, add it to the apex's presentation map (`PRESENT` in `Shipped.astro`, plus `FEATURED` in `src/scripts/data.js` and a screenshot), then re-pin `wicked-web` there.
 
