@@ -23,3 +23,20 @@ jobs:
           node-version: 22
       # No dependencies: dist/ must match the source, and every promised colour pair must meet WCAG AA.
       - run: npm test
+
+  fonts:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/design-system
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install fonttools brotli
+      # A regenerated face with a missing or empty glyph, letters or digits that collapsed onto one
+      # outline, or proportional digits fails here (scripts/fonts/check_wicked_fonts.py, every format).
+      - run: python -I scripts/fonts/check_wicked_fonts.py
+      # The check itself must still catch those faults (it is run against deliberately broken copies).
+      - run: python -I -m unittest discover -s test -p 'test_*.py'
