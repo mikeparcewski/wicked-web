@@ -19,7 +19,7 @@ approved, consumers take it by git reference or as a vendored copy (below).
 | `scripts/fonts/` | `build_wicked_sans.py` (the Wicked Sans cut of Inter), the v2 compiler `build_wicked_fonts.py` (Serif and Script, every outline drawn in code), their checks and a page renderer. Repository only. |
 | `source/wicked-fonts/` | The same faces as `.otf` and `.ttf` for desktop use, and `wicked-agile-fonts.css` (the woff2 inlined as base64 data URLs, for self-contained documents). Repository only: not shipped. |
 | `index.css` | `fonts.css` + `dist/tokens.css`. Import this once. |
-| `brand/` | The marks (fonts-v3, 2026-11-02): the Shoreline + Wave W lockups (`wicked-{agile,studio}-wordmark{,-display,-small}.svg`), the Shoreline mark (`shoreline{,-large}.svg`) and the favicon (`favicon.svg`), in `currentColor` (GUIDE.md, "The mark"). And the v2 lockup and icon sheet, byte-identical to `source/`. |
+| `brand/` | The marks (fonts-v3, 2026-11-02): the Shoreline + Wave W lockups (`wicked-{agile,studio}-wordmark{,-display,-small}.svg`), the lettering alone (`wicked-{agile,studio}-lettering{,-small}.svg`), the Shoreline mark (`shoreline{,-large}.svg`) and the favicon (`favicon.svg`), in `currentColor` (GUIDE.md, "The mark"). And the v2 lockup and icon sheet, byte-identical to `source/`. |
 | `dist/brand/wicked-agile-lockup.{light,dark}.svg` | Generated. The lockup with resolved colours, for `<img>`, favicons, email. |
 | `dist/icons/*.svg` | Generated. One file per icon, drawn in `currentColor`. |
 | `source/` | The operator's design source, unchanged (guide, mockups, marks), plus `source/wicked-fonts/`. Only in the wicked-web repository (`packages/design-system/source/`): not in the shipped or vendored file set. |

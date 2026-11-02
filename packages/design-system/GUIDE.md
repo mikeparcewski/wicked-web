@@ -34,6 +34,7 @@ its W reads as a W and as water). Both are drawn artwork, one colour, `currentCo
 | `brand/wicked-agile-wordmark.svg`, `brand/wicked-studio-wordmark.svg` | The lockup: large lettering, the mark's small cut (heavier strokes) | Headers, 12 to 18 px caps (the site Topbar and footer: 15.5 px caps) |
 | `brand/wicked-agile-wordmark-display.svg`, `brand/wicked-studio-wordmark-display.svg` | Large lettering, the mark's large cut | Above 18 px caps (the mark then renders above 24 px) |
 | `brand/wicked-agile-wordmark-small.svg`, `brand/wicked-studio-wordmark-small.svg` | The lettering's small cut (looser spacing) with the mark's small cut | About 11 px caps (studio's sidebar) |
+| `brand/wicked-agile-lettering{,-small}.svg`, `brand/wicked-studio-lettering{,-small}.svg` | The lettering alone ("the W is the symbol") | Beside a mark that is not ours (a custom logo) |
 | `brand/shoreline.svg`, `brand/shoreline-large.svg` | The mark alone: small cut for 16 to 24 px, large for 32 px and up | Compact headers, app icons |
 | `brand/favicon.svg` | The small-cut mark, ink on a light tab and paper on a dark one (`prefers-color-scheme`) | The favicon (the chrome's `Base.astro` default) |
 
