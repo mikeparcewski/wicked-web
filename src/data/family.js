@@ -61,14 +61,14 @@ export const PLANES = [
     role: 'Intent in, gated work out',
     note: 'checked jobs',
     owns: 'Runs the jobs, checks every step, keeps the evidence: your coding agents as sandboxed workers.',
-    contract: 'calls skills from sandboxed agents — a failed check sends the work back or stops the job; every verdict lands in the record',
-    seam: 'calls skills from sandboxed agents — a failed check sends the work back or stops the job',
+    contract: 'calls skills from sandboxed agents — a failed check sends the work back, waits for you or stops the job; every verdict lands in the record',
+    seam: 'calls skills from sandboxed agents — a failed check sends the work back, waits for you or stops the job',
     products: [
       {
         name: 'wicked-crew', short: 'crew', kind: 'the control plane', tag: 'runs and checks jobs', lang: 'TS',
         href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
         screenshot: '/screenshots/wicked-crew.png',
-        blurb: 'Runs your agents in sandboxes. A different agent reviews the work, and feature and bug-fix jobs are acceptance-tested before delivery, or say why not.',
+        blurb: 'Runs your agents in sandboxes. By default a different agent reviews the work, and feature and bug-fix jobs are acceptance-tested before delivery, or say why not.',
         desc: 'Runs the jobs studio starts, with your coding agents in sandboxes that see placeholders, not your keys (a Claude subscription’s sign-in token is the one exception). By default a different agent reviews the work against your rules; when only the builder could review it, the job stops unless you launch it as “reduced assurance”, which is labelled everywhere. Feature, bug-fix, migration, MCP-server and editor-plugin jobs pass acceptance testing before delivery unless waived or skipped, which is labelled. Gates report the checks that actually ran, and an unverified pass is labelled.',
       },
     ],
