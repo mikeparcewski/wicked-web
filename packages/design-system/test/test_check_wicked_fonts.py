@@ -171,6 +171,15 @@ class CheckWickedFonts(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("missing icon U+E003", out)
 
+    def test_a_figure_width_hyphen_fails(self):
+        # What freezing all of Inter's tnum did: the hyphen took the digits' advance.
+        def tabular_hyphen(font, cmap):
+            adv, lsb = font["hmtx"][cmap[ord("-")]]
+            font["hmtx"][cmap[ord("-")]] = (font["hmtx"][cmap[ord("0")]][0], lsb)
+        ok, out = run_check(self.mutated(tabular_hyphen))
+        self.assertFalse(ok)
+        self.assertIn("the hyphen is figure-width", out)
+
     def test_proportional_digits_fail(self):
         def widen(font, cmap):
             name = cmap[ord("1")]

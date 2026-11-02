@@ -8,7 +8,8 @@ source/wicked-fonts):
   * each cmap glyph's outline is hashed with its left edge moved to x=0, so the same shape
     at a different side bearing still counts as the same; digits, a-z and A-Z must all be
     distinct, and any other required characters that share an outline are reported;
-  * the ten digits share one advance width (tabular figures);
+  * the ten digits share one advance width (tabular figures), and in Wicked Sans the hyphen does not
+    (a figure-width hyphen reads as a spaced dash);
   * the six brand icons (U+E000-U+E005) are in Wicked Serif and Script, and NOT in Wicked Sans (OFL);
   * vertical metrics and the OS/2 weight class are printed.
 And every folder has a stylesheet (*.css), and each one declares each Wicked face exactly once, under its
@@ -107,6 +108,12 @@ def check(path):
     digit_adv = {hmtx[cmap[ord(d)]][0] for d in "0123456789" if ord(d) in cmap}
     if len(digit_adv) != 1:
         fails.append(f"digits are not tabular: advances {sorted(digit_adv)}")
+    # Wicked Sans (the Inter cut) is tabular on the digits only. Inter's tnum also maps the hyphen to a
+    # figure-width dash, which reads as a spaced dash in a word ("wicked - crew"): keep it proportional.
+    if Path(path).name.startswith("WickedSansA-") and len(digit_adv) == 1 and ord("-") in cmap:
+        hyphen = hmtx[cmap[ord("-")]][0]
+        if hyphen > 0.8 * next(iter(digit_adv)):
+            fails.append(f"the hyphen is figure-width ({hyphen} of {next(iter(digit_adv))}): tabular figures are for digits only")
 
     os2, hhea = font["OS/2"], font["hhea"]
     name = font["name"].getDebugName(4)

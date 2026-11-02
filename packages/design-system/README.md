@@ -157,7 +157,9 @@ uv run --with fonttools --with brotli --with skia-pathops python -I scripts/font
   'Inter[opsz,wght].ttf' "$(mktemp -d)"
 ```
 
-It reproduces the shipped files table for table (only `head`'s timestamps and checksum differ).
+With fontTools 4.68.0 it reproduced the shipped files table for table (only `head`'s timestamps and checksum
+differed). Another fontTools version can serialise GSUB and GPOS differently (lookup types, extension
+lookups); compare cmap, glyf, gvar and hmtx, and run the font checks, rather than bytes.
 
 ### Wicked Serif and Wicked Script
 

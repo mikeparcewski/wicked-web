@@ -39,7 +39,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
   sandbox, rules; not seat, run, floor, steering), and never contradicts the engine's own honesty
   labels ("reduced assurance", "approved by default, not verified").
 
-- `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, favicon, global stylesheet, no-flash theme init, `<slot/>`.
+- `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, the family favicon, global stylesheet, no-flash theme init, `<slot/>`.
 - `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + the Media link (wicked bits) + theme toggle.
 - `wicked-web/components/Footer.astro` — family footer (one link column per plane, a Media column, the latest-bit promo card, brand block, strip).
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
@@ -72,7 +72,7 @@ it resolves through the sites' dev alias and from the installed package alike), 
 Component props worth knowing:
 - `Topbar`: `pkg` (secondary "<logo> / <pkg>" label, omit on the umbrella site) · `repo` (GitHub-icon link → that page's repo).
 - `Footer`: `repo` (GitHub-chiclet link → that page's repo).
-- `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default `/favicon.svg`; pass a base-aware path on sites under a project base — see gotchas).
+- `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default: the family's Shoreline mark, `packages/design-system/brand/favicon.svg`, bundled by Vite so it resolves under a project base too; pass `favicon` only to override it, with a base-aware path on a site under a project base — see gotchas).
 - `SameGarden`: `current` (this site's package name).
 
 ## Use it (per site)
@@ -143,8 +143,9 @@ So a shared change isn't "live everywhere" until every consuming site is re-pinn
 - **Shared components must be plain CSS on the family tokens** (`var(--canvas)`, `var(--ink)`, …) with a scoped `<style is:global>` — never Tailwind classes — so they also render on the plain-Astro sites.
 - **Self-contained widths**: don't rely on a global `.wrap`; sites with their own token CSS don't define one. Footer scopes its own `.footer .wrap`.
 - **CI Node version**: Astro 6 and later need **Node ≥ 22** in the Pages workflow (every family site is on Astro 7). Symptom if wrong: "Node.js 20 is not supported by Astro".
-- **Sites under a project base** (e.g. garden at `/wicked-garden/`): pass a base-aware `favicon` to `Base`, computed in the site's frontmatter:
+- **Favicons**: `Base` bundles the family's Shoreline favicon, so a site needs no `public/favicon.svg` and no
+  `favicon` prop, under a project base too (Vite prefixes the base). To override it on a site under a project
+  base, compute the path in the site's frontmatter:
   ```astro
   const favicon = `${import.meta.env.BASE_URL}/favicon.svg`.replace(/\/{2,}/g, "/");
   ```
-  Sites at the domain root can omit it (default `/favicon.svg`). Each site needs a real `public/favicon.svg` (the shared Base references it).
