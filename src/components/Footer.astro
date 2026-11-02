@@ -91,11 +91,13 @@ const {
 .footer-links a:hover{color:var(--plane,var(--accent))}
 .footer-links .ext{color:var(--faint);font-size: var(--text-body);}
 /* the latest-bit promo card: under the link columns, spanning them. contain:inline-size keeps
-   its text out of the max-content column sizing, so a longer line wraps instead of widening them. */
-.footer-promo{grid-column:1/-1;contain:inline-size;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 24px;margin-top:8px;padding:14px 18px;border:1px solid var(--hairline-strong);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;transition:border-color .22s var(--ease)}
+   its text out of the max-content column sizing, so a longer line wraps instead of widening them;
+   min-width keeps room for a longer title where the link block is narrow (961px down to the phone
+   layout), and the text column may shrink (minmax 0) so "Play it →" always stays inside the card. */
+.footer-promo{grid-column:1/-1;contain:inline-size;min-width:320px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 24px;margin-top:8px;padding:14px 18px;border:1px solid var(--hairline-strong);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;transition:border-color .22s var(--ease)}
 .footer-promo:hover{border-color:var(--accent)}
 .footer-promo-kicker{grid-column:1;font-size: var(--text-caption);color:var(--muted)}
-.footer-promo-title{grid-column:1;font-size: var(--text-lead);font-weight: var(--weight-strong);color:var(--ink)}
+.footer-promo-title{grid-column:1;overflow-wrap:break-word;font-size: var(--text-lead);font-weight: var(--weight-strong);color:var(--ink)}
 .footer-promo-line{grid-column:1;font-size: var(--text-body);color:var(--muted)}
 .footer-promo-cta{grid-column:2;grid-row:1/4;font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--ink);white-space:nowrap}
 .footer-promo:hover .footer-promo-cta{color:var(--accent)}
@@ -122,7 +124,7 @@ const {
   .footer .footer-col-head{margin-bottom:0;flex:0 0 6.5rem;font-size: var(--text-caption);line-height:1.35}
   .footer-links{flex:1;gap:8px}
   /* the promo card stacks: its "Play it →" drops under the line */
-  .footer-promo{grid-template-columns:1fr}
+  .footer-promo{min-width:0;grid-template-columns:minmax(0,1fr)}
   .footer-promo-cta{grid-column:1;grid-row:auto;margin-top:8px}
 }
 </style>
