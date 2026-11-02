@@ -32,8 +32,9 @@
      (packages/design-system, `wicked-design`), imported at the top of this file: Wicked Dark
      (the default) and Wicked Light, the monochrome synthesis studio ships. Neutral
      grounds, near-black / near-white ink and actions, colour only where it means
-     something (the four plane hues, status). Signal yellow survives only as the
-     package's --accent-wicked spark in the brand mark: never text, never a fill.
+     something (the four plane hues, status). The brand marks are monochrome (fonts-v3: the
+     Shoreline + Wave W lockup in currentColor); signal yellow survives only as the package's
+     --accent-wicked token (the v2 lockup's spark): never text, never a fill.
 
      The family names below are what every site's CSS already uses; they are
      ALIASES onto the package tokens and carry no colour of their own. Names the
@@ -108,8 +109,9 @@
      (2026-11-02) the wordmark is drawn (components/Wordmark.astro, the Shoreline + Wave W lockup). */
   --font-wordmark:'Wicked Serif','Marcellus',ui-serif,Georgia,serif;
   /* On the sites --font-display was the heading face (Archivo), and the package means Wicked Serif by it.
-     The approved look sets the serif on the wordmark only, so here it is the text face: any site CSS still
-     reading var(--font-display) gets Wicked Sans, never a serif heading. */
+     The approved look sets no serif text (the wordmark is drawn: Wordmark.astro), so here it is the text face:
+     any site CSS still reading var(--font-display) gets Wicked Sans, never a serif heading. --font-wordmark
+     above is kept for sites that still name it. */
   --font-display:var(--font-sans);
   /* THE ONE DEVIATION (flagged for the operator): a landing page's single hero <h1>.
      A marketing hero at 28px reads as a heading; this keeps it a hero on desktop and

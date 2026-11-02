@@ -16,9 +16,9 @@ The operator's original design source is kept unchanged in `source/` (in the wic
 
 | File | What it still decides |
 |---|---|
-| `source/wicked-agile-lockup.svg`, `source/wicked-agile-icons.svg` | The brand mark and icons, which keep their own colours. |
+| `source/wicked-agile-lockup.svg`, `source/wicked-agile-icons.svg` | The v2 brand mark (historical: the chrome draws the monochrome fonts-v3 lockup, `brand/wicked-*-wordmark*.svg`, since 2026-11-02) and the icons, which keep their own colours. |
 | `source/appearance.md` | Personal and chat-generated themes, and the limits on custom CSS. Users who want colour make it there; the default stays restrained. |
-| `source/ui-mockups/README.md`, `index.html` | The blue palette. No longer the UI palette, it survives in the brand mark and as a theme a user can choose. |
+| `source/ui-mockups/README.md`, `index.html` | The blue palette. No longer the UI palette, it survives in the v2 brand mark and as a theme a user can choose. |
 
 Where the synthesis is silent (spacing, motion, control sizes), the tokens keep studio's considered
 values (`from: "studio"`).

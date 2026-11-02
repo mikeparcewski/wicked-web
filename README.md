@@ -60,7 +60,7 @@ it resolves through the sites' dev alias and from the installed package alike), 
   A site that passes its own `favicon` keeps it.
 - **Themes:** Wicked Dark (the default) and Wicked Light, the monochrome synthesis: neutral grounds,
   near-black / near-white ink and actions, colour only where it means something (the four `--plane-*`
-  hues, status). Signal yellow is only the spark in the brand mark.
+  hues, status). The marks are monochrome (the Shoreline + Wave W lockup in `currentColor`).
 - **Type scale** (studio's, `src/styles/tokens.css`): `--text-caption 12`, `--text-body 14`,
   `--text-lead 16`, `--text-section 20`, `--text-title 28`, `--text-code 13`; `--weight-regular 400`,
   `--weight-strong 600`; `--tracking-title` on page titles only. One flagged extra step,

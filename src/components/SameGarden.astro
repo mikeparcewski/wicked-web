@@ -235,13 +235,13 @@ const PLANES = FAMILY_PLANES.map((p) => ({
    mandatory` -- which wicked-crew, wicked-garden and wicked-estate all set -- the browser pulls
    the viewport to the top of this band and the bottom plane becomes unreachable.
 
-   The threshold tracks the COMPACT height PLUS the topbar. The block above strips the band to
-   582px (599px at 1024px wide, where one more blurb wraps; Wicked Sans A), and a snapped section gets
-   viewport minus the 64px fixed bar, so the band needs a 663px window to fit — not 599. Rounded to 664.
-   (This was 580px, which let the band keep snapping at 1152x600, where it overflowed by 38px; then 640px
-   for the v2 face's 574px band.) Below 1024px wide the compact band is taller still (655px at 861px wide,
-   616px at 900-960px), so there the band stops snapping below a 720px window. */
-@media (max-height: 664px), (max-width: 1023px) and (max-height: 720px) {
+   The threshold tracks the COMPACT height PLUS the topbar, per width (Wicked Sans A): the block above strips
+   the band to 582px from 1040px wide up, and a snapped section gets viewport minus the 64px fixed bar, so
+   there the band needs a 647px window, so it stops snapping at 646px and below; a 1280x660 laptop still
+   snaps (582 of 596; garden's e2e pins it). From 1024 to 1039px one more blurb wraps (599px: a 663px window), and below 1024px the band is taller
+   still (655px at 861px wide, 616px at 900-960px: a 720px window). (The global value was 580px, which let
+   the band keep snapping at 1152x600, where it overflowed by 38px; then 640px for the v2 face's 574px band.) */
+@media (max-height: 646px), (max-width: 1039px) and (max-height: 664px), (max-width: 1023px) and (max-height: 720px) {
   .same-garden{ scroll-snap-align:none; }
 }
 
