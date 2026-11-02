@@ -4,8 +4,9 @@
  * each one lives, and the one-line claim each surface makes about it.
  *
  * Consumers (keep this list current when you add one):
- *   - this repo: components/Topbar.astro (plane dropdown + mobile menu),
- *     components/Footer.astro (one link column per plane),
+ *   - this repo: components/Topbar.astro (plane dropdown + mobile menu, the
+ *     Media link), components/Footer.astro (one link column per plane, the
+ *     Media column and the latest-bit promo card),
  *     components/SameGarden.astro (the four-plane map)
  *   - wickedagile: src/components/Shipped.astro (`layers` / `capstone` /
  *     `packages`) and src/scripts/data.js (`FEATURED`)
@@ -134,3 +135,11 @@ export const SITES = PRODUCTS.filter((s) => s.hasSite);
 
 /** The family strip line every footer carries. */
 export const TAGLINE = 'One surface · one control plane · one catalog · one record';
+
+/** Media: wicked bits, the family's interactive pieces and media. The Topbar and the Footer's
+ *  Media column link BITS; the footer's promo card shows LATEST_BIT, so posting the next bit
+ *  is a one-line change here (title, one plain line, its path on bits). BITS is the one place
+ *  the address lives: the GitHub Pages project URL until bits.wickedagile.com has DNS, then
+ *  'https://bits.wickedagile.com/' (wicked-bits README, "Switch to bits.wickedagile.com"). */
+export const BITS = 'https://mikeparcewski.github.io/wicked-bits/';
+export const LATEST_BIT = { title: 'The Work: the one-shift factory', line: 'Job in. Crew out. A playable scrolling factory.', href: `${BITS}the-work-factory/` };

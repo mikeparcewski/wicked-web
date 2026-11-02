@@ -31,7 +31,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)`, `FAMILY_LINE` and `TAGLINE`. Topbar, Footer and SameGarden render from it, and the apex
+  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: the GitHub Pages project URL until bits.wickedagile.com has DNS) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
   one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
   the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
@@ -40,8 +40,8 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
   labels ("reduced assurance", "approved by default, not verified").
 
 - `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, favicon, global stylesheet, no-flash theme init, `<slot/>`.
-- `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + theme toggle.
-- `wicked-web/components/Footer.astro` — family footer (one link column per plane, brand block, strip).
+- `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + the Media link (wicked bits) + theme toggle.
+- `wicked-web/components/Footer.astro` — family footer (one link column per plane, a Media column, the latest-bit promo card, brand block, strip).
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
 - `wicked-web/styles/tokens.css`, `wicked-web/styles/global.css` — the family token names (aliases onto the design package, which `tokens.css` imports itself, so either file works alone) + the type scale + global background grid. `npm run test:chrome` checks them.
 - `wicked-web/scripts/scroll-wheel.js` — wheel-to-snap streamliner.

@@ -138,3 +138,24 @@ test('theme: default dark, the stored v3 choice wins, and only a click writes it
   assert.equal(p.meta.attrs.content, '#f5f5f4');
   assert.doesNotMatch(base + top, /(get|set)Item\('wa-theme'\)/, 'the v2 key is neither read nor written');
 });
+
+test('Media: the Topbar and the Footer link wicked bits, and the promo card renders the one LATEST_BIT entry', async () => {
+  const fam = await import('../src/data/family.js');
+  // one value, an https site root or project path ending in '/', so a domain switch is one edit
+  assert.match(fam.BITS, /^https:\/\/[a-z0-9.-]+\/([a-z0-9-]+\/)?$/);
+  assert.deepEqual(Object.keys(fam.LATEST_BIT).sort(), ['href', 'line', 'title']);
+  assert.ok(fam.LATEST_BIT.href.startsWith(fam.BITS) && fam.LATEST_BIT.href.length > fam.BITS.length, 'the latest bit lives on bits');
+  for (const k of ['title', 'line']) assert.ok(fam.LATEST_BIT[k].trim(), `LATEST_BIT.${k} is set`);
+  const top = read('src/components/Topbar.astro');
+  const foot = read('src/components/Footer.astro');
+  // the desktop button and the phone-menu row
+  assert.equal([...top.matchAll(/href=\{BITS\}/g)].length, 2);
+  assert.match(top, /aria-label="Media: wicked bits" data-tip="media"/);
+  // the Media column after the plane columns, then the promo card
+  const media = foot.indexOf('<span class="kicker footer-col-head">Media</span>');
+  assert.ok(media > foot.indexOf('{PLANES.map('), 'Media follows the plane columns');
+  assert.match(foot.slice(media), /href=\{BITS\}/);
+  for (const bit of ['href={LATEST_BIT.href}', '{LATEST_BIT.title}', '{LATEST_BIT.line}', 'Play it →']) assert.ok(foot.includes(bit), bit);
+  // the manifest is the one place the address lives
+  assert.doesNotMatch(top + foot, /bits\.wickedagile\.com|wicked-bits/);
+});

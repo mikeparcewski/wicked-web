@@ -6,8 +6,11 @@
  *
  * Props (per-site):
  *   repo — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
+ *
+ * After the plane columns: a Media column (wicked bits) and a promo card for the
+ * latest bit, both from data/family.js (BITS, LATEST_BIT).
  */
-import { GH, PLANES, TAGLINE } from '../data/family.js';
+import { BITS, GH, LATEST_BIT, PLANES, TAGLINE } from '../data/family.js';
 
 const {
   repo = GH,
@@ -37,6 +40,18 @@ const {
             </ul>
           </div>
         ))}
+        <div>
+          <span class="kicker footer-col-head">Media</span>
+          <ul class="footer-links">
+            <li><a href={BITS}>bits <span class="ext">↗</span></a></li>
+          </ul>
+        </div>
+        <a class="footer-promo" href={LATEST_BIT.href}>
+          <span class="footer-promo-kicker">Latest on wicked bits</span>
+          <span class="footer-promo-title">{LATEST_BIT.title}</span>
+          <span class="footer-promo-line">{LATEST_BIT.line}</span>
+          <span class="footer-promo-cta">Play it →</span>
+        </a>
       </div>
     </div>
     <div class="footer-strip">
@@ -67,13 +82,25 @@ const {
    so there's real space between the "wicked good" brand and the links — while the
    column titles/links themselves stay left-aligned inside each column. One column
    per PLANE (--plane set inline from the shared plane tokens): the column head
-   carries its plane hue, links hover into it. */
-.footer-cols{display:grid;grid-template-columns:repeat(4,max-content);gap:24px 52px;margin-left:auto;align-self:start;padding-top:2px}
+   carries its plane hue, links hover into it. The fifth column is Media (no plane,
+   so it falls back to the accent). */
+.footer-cols{display:grid;grid-template-columns:repeat(5,max-content);gap:24px 52px;margin-left:auto;align-self:start;padding-top:2px}
 .footer .footer-col-head{margin-bottom:12px;display:block;font-size: var(--text-caption);color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
 .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
 .footer-links a{color:var(--ink);text-decoration:none;font-family: var(--font-sans);font-size: var(--text-lead);display:inline-flex;align-items:baseline;gap:6px;transition:color .22s var(--ease)}
 .footer-links a:hover{color:var(--plane,var(--accent))}
 .footer-links .ext{color:var(--faint);font-size: var(--text-body);}
+/* the latest-bit promo card: under the link columns, spanning them. contain:inline-size keeps
+   its text out of the max-content column sizing, so a longer line wraps instead of widening them;
+   min-width keeps room for a longer title where the link block is narrow (961px down to the phone
+   layout), and the text column may shrink (minmax 0) so "Play it →" always stays inside the card. */
+.footer-promo{grid-column:1/-1;contain:inline-size;min-width:320px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 24px;margin-top:8px;padding:14px 18px;border:1px solid var(--hairline-strong);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;transition:border-color .22s var(--ease)}
+.footer-promo:hover{border-color:var(--accent)}
+.footer-promo-kicker{grid-column:1;font-size: var(--text-caption);color:var(--muted)}
+.footer-promo-title{grid-column:1;overflow-wrap:break-word;font-size: var(--text-lead);font-weight: var(--weight-strong);color:var(--ink)}
+.footer-promo-line{grid-column:1;font-size: var(--text-body);color:var(--muted)}
+.footer-promo-cta{grid-column:2;grid-row:1/4;font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--ink);white-space:nowrap}
+.footer-promo:hover .footer-promo-cta{color:var(--accent)}
 .footer-strip{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:17px 0 26px;border-top:1px solid var(--hairline);font-family: var(--font-sans);font-size: var(--text-body);color:var(--muted)}
 .footer-strip a{color:inherit}
 .footer-strip a:hover{color:var(--accent)}
@@ -96,5 +123,8 @@ const {
   .footer-cols>div{display:flex;align-items:baseline;gap:16px}
   .footer .footer-col-head{margin-bottom:0;flex:0 0 6.5rem;font-size: var(--text-caption);line-height:1.35}
   .footer-links{flex:1;gap:8px}
+  /* the promo card stacks: its "Play it →" drops under the line */
+  .footer-promo{min-width:0;grid-template-columns:minmax(0,1fr)}
+  .footer-promo-cta{grid-column:1;grid-row:auto;margin-top:8px}
 }
 </style>
