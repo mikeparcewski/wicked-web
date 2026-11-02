@@ -205,11 +205,12 @@ const PLANES = FAMILY_PLANES.map((p) => ({
    at 1440x760 that is 696px of usable height against a 700px band. With Wicked Sans A (the Inter cut,
    2026-11-02, wider than v2) the full band measures 779px at an 801px window and 795px at 900px (its head
    margin follows vh), so it first fits under the bar at about 856px: the cut-off is 860px, not the viewport
-   height the band nominally fits. Rather than let it overflow, drop the two supplementary layers and
+   height the band nominally fits. Below 1024px wide more blurbs wrap (844px at 861x861, 850px at 861x900),
+   so there the cut-off is 920px. Rather than let it overflow, drop the two supplementary layers and
    tighten the rest -- the sub paragraph (the seams below already state the contracts) and the
    per-plane `owns` line. The product name, role, blurb and links all stay, so nothing that
    identifies or links a product is lost; only the commentary is. */
-@media (max-height: 860px) {
+@media (max-height: 860px), (max-width: 1023px) and (max-height: 920px) {
   /* vertical room is the constraint here: the family copy (data/family.js) grows, and the band must still fit
      a 1280x660 window under the 64px topbar (garden's band-fits e2e) */
   .same-garden{ padding:8px 0; }
@@ -238,8 +239,9 @@ const PLANES = FAMILY_PLANES.map((p) => ({
    582px (599px at 1024px wide, where one more blurb wraps; Wicked Sans A), and a snapped section gets
    viewport minus the 64px fixed bar, so the band needs a 663px window to fit — not 599. Rounded to 664.
    (This was 580px, which let the band keep snapping at 1152x600, where it overflowed by 38px; then 640px
-   for the v2 face's 574px band.) */
-@media (max-height: 664px) {
+   for the v2 face's 574px band.) Below 1024px wide the compact band is taller still (655px at 861px wide,
+   616px at 900-960px), so there the band stops snapping below a 720px window. */
+@media (max-height: 664px), (max-width: 1023px) and (max-height: 720px) {
   .same-garden{ scroll-snap-align:none; }
 }
 
