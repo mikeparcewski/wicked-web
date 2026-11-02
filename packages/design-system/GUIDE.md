@@ -95,8 +95,9 @@ Neutral grounds, near-black and near-white ink, hairlines, and colour only where
 In the UI only status is chromatic, and each status keeps one hue in both themes: **waiting on you** violet
 (`#6d3e9d` / `#c8a5f0`), **failed** red (`#b3261e` / `#ffaaa1`), **running / ok** green (`#176548` /
 `#83c8a4`; progress bars use it), **warning** amber (`#875300` / `#ebc06b`). Each has a `-dim` tint for
-its pill. The brand mark keeps its own colours (the wave in cyan or sky, the yellow spark) wherever it
-appears; it does not colour the UI. One more exception, outside studio's UI: the family sites' four
+its pill. The brand marks are monochrome (fonts-v3: the Shoreline + Wave W lockup in `currentColor`, the
+ink of the text around it); the v2 lockup kept its own colours (the wave in cyan or sky, the yellow spark).
+Neither colours the UI. One more exception, outside studio's UI: the family sites' four
 **plane** hues (`--plane-experience` … `--plane-foundation`) label the platform map there.
 
 ### Roles (tokens)
