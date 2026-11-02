@@ -9,6 +9,7 @@ source/wicked-fonts):
     at a different side bearing still counts as the same; digits, a-z and A-Z must all be
     distinct, and any other required characters that share an outline are reported;
   * the ten digits share one advance width (tabular figures);
+  * the six brand icons (U+E000-U+E005) are in Wicked Serif and Script, and NOT in Wicked Sans (OFL);
   * vertical metrics and the OS/2 weight class are printed.
 And every folder has a stylesheet (*.css), and each one declares each Wicked face exactly once, under its
 family, with the CSS weight range in CSS_WEIGHTS (a face is named by its url() file, or by the
@@ -38,6 +39,9 @@ REQUIRED = (
 MUST_BE_DISTINCT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 EXTRA = "↑↓−°"
 PUA = [0xE000 + i for i in range(6)]
+# The six brand icons live in the owner's faces only. Wicked Sans is OFL (a cut of Inter): carrying them
+# there would put them under the OFL, so it must NOT have them.
+PUA_FACES = ("WickedSerif-", "WickedScript-")
 
 # face -> (family, CSS font-weight). Wicked Sans splits at 500 so a 500 (--weight-label) gets
 # SemiBold: with point weights 400 and 600, CSS matching sends 500 to the 400 face. Serif and
@@ -80,9 +84,14 @@ def check(path):
             fails.append(f"empty outline (no area) U+{cp:04X} {ch!r}")
             continue
         hashes[ch] = h
-    for cp in PUA:
-        if cp not in cmap or outline_hash(font, cmap[cp]) is None:
-            fails.append(f"missing icon U+{cp:04X}")
+    if Path(path).name.startswith(PUA_FACES):
+        for cp in PUA:
+            if cp not in cmap or outline_hash(font, cmap[cp]) is None:
+                fails.append(f"missing icon U+{cp:04X}")
+    else:
+        for cp in PUA:
+            if cp in cmap:
+                fails.append(f"brand icon U+{cp:04X} in an OFL face")
 
     by_hash = {}
     for ch, h in hashes.items():

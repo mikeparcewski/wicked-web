@@ -150,6 +150,27 @@ class CheckWickedFonts(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("empty outline (no area) U+0051", out)
 
+    def test_a_brand_icon_in_wicked_sans_fails(self):
+        # Wicked Sans is OFL: a brand icon inside it would be under the OFL.
+        def add_icon(font, cmap):
+            for table in font["cmap"].tables:
+                if table.isUnicode():
+                    table.cmap[0xE000] = cmap[ord("Q")]
+        ok, out = run_check(self.mutated(add_icon))
+        self.assertFalse(ok)
+        self.assertIn("brand icon U+E000 in an OFL face", out)
+
+    def test_wicked_serif_without_its_icons_fails(self):
+        font = TTFont(PACKAGE / "source" / "wicked-fonts" / "WickedSerif-Regular.ttf")
+        for table in font["cmap"].tables:
+            if table.isUnicode():
+                table.cmap.pop(0xE003, None)
+        path = Path(self.tmp.name) / "WickedSerif-Regular.ttf"
+        font.save(path)
+        ok, out = run_check(path)
+        self.assertFalse(ok)
+        self.assertIn("missing icon U+E003", out)
+
     def test_proportional_digits_fail(self):
         def widen(font, cmap):
             name = cmap[ord("1")]

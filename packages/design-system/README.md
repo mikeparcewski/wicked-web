@@ -19,7 +19,7 @@ approved, consumers take it by git reference or as a vendored copy (below).
 | `scripts/fonts/` | `build_wicked_sans.py` (the Wicked Sans cut of Inter), the v2 compiler `build_wicked_fonts.py` (Serif and Script, every outline drawn in code), their checks and a page renderer. Repository only. |
 | `source/wicked-fonts/` | The same faces as `.otf` and `.ttf` for desktop use, and `wicked-agile-fonts.css` (the woff2 inlined as base64 data URLs, for self-contained documents). Repository only: not shipped. |
 | `index.css` | `fonts.css` + `dist/tokens.css`. Import this once. |
-| `brand/` | The marks (fonts-v3, 2026-11-02): the Shoreline + Wave W lockups (`wicked-{agile,studio}-wordmark{,-small}.svg`), the Shoreline mark (`shoreline{,-large}.svg`) and the favicon (`favicon.svg`), in `currentColor` (GUIDE.md, "The mark"). And the v2 lockup and icon sheet, byte-identical to `source/`. |
+| `brand/` | The marks (fonts-v3, 2026-11-02): the Shoreline + Wave W lockups (`wicked-{agile,studio}-wordmark{,-display,-small}.svg`), the Shoreline mark (`shoreline{,-large}.svg`) and the favicon (`favicon.svg`), in `currentColor` (GUIDE.md, "The mark"). And the v2 lockup and icon sheet, byte-identical to `source/`. |
 | `dist/brand/wicked-agile-lockup.{light,dark}.svg` | Generated. The lockup with resolved colours, for `<img>`, favicons, email. |
 | `dist/icons/*.svg` | Generated. One file per icon, drawn in `currentColor`. |
 | `source/` | The operator's design source, unchanged (guide, mockups, marks), plus `source/wicked-fonts/`. Only in the wicked-web repository (`packages/design-system/source/`): not in the shipped or vendored file set. |
@@ -141,20 +141,20 @@ Since 2026-11-02 (fonts-v3, the operator's pick) Wicked Sans is a cut of Inter 4
 size axis kept (opsz 14 to 32), the alternates that make it ours frozen into the cmap (open digits, a
 tailed `l`, a serifed `I`, tabular figures by default on the ten digits only: Inter's `tnum` also maps
 the hyphen to a 0.65 em figure-width dash, and the space and punctuation, which the fonts-v3 specimen
-build froze too), the UI glyphs Inter lacks drawn from its own
-parts (check, times, the comparison marks), the six brand icons carried at U+E000 to U+E005, renamed,
-and subset to Latin-1, Latin Extended-A and the UI symbols. It is a Modified Version under the SIL OFL
+build froze too), the one UI glyph Inter lacks (the close mark ✕) drawn from its own strokes, renamed,
+and subset to Latin-1, Latin Extended-A and the UI symbols. Unlike the fonts-v3 specimen build, it does
+not carry the six brand icons (U+E000 to U+E005): inside an OFL font they would be under the OFL. They
+stay in Wicked Serif and Script and in `dist/icons/`; the font check fails a Wicked Sans that has them. It is a Modified Version under the SIL OFL
 1.1 (`licenses/LICENSE-WickedSans.txt`); Inter declares no Reserved Font Name. The files are
 `fonts/wicked/WickedSansA-{Regular,SemiBold}.woff2` (the `A` is the fonts-v3 direction; the family
 name is `Wicked Sans`). 0 and O still differ only by width.
 
 Rebuilding it needs Inter's `Inter[opsz,wght].ttf` with its `OFL.txt` beside it (google/fonts
-`ofl/inter`) and the v2 Wicked Sans Regular TTF for the icons
-(`git show 0600118:packages/design-system/source/wicked-fonts/WickedSans-Regular.ttf`):
+`ofl/inter`):
 
 ```sh
 uv run --with fonttools --with brotli --with skia-pathops python -I scripts/fonts/build_wicked_sans.py \
-  'Inter[opsz,wght].ttf' WickedSans-v2-Regular.ttf "$(mktemp -d)"
+  'Inter[opsz,wght].ttf' "$(mktemp -d)"
 ```
 
 It reproduces the shipped files table for table (only `head`'s timestamps and checksum differ).

@@ -11,7 +11,7 @@ wicked-design is licensed in three parts.
    Reserved Font Name). Each face's full licence text and copyright lines are in
    licenses/LICENSE-<face>.txt:
      - Wicked Sans: The Inter Project Authors; the modifications, The Wicked Agile Project Authors.
-       It carries the six brand icons at U+E000-U+E005, which ship under the same licence inside it.
+       It does not carry the six brand icons (U+E000-U+E005): those stay under part 3.
      - Inter (variable): The Inter Project Authors. Same files wicked-studio self-hosts.
      - JetBrains Mono (variable): The JetBrains Mono Project Authors. Same files wicked-studio self-hosts.
      - Marcellus (static, 400): Brian J. Bonislawsky (Astigmatic), Reserved Font Name "Marcellus".

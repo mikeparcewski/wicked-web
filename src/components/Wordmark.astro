@@ -10,9 +10,13 @@
  *           (its box holds the mark above the caps and the g's descender below), width from its viewBox.
  *   class — an extra class on the <svg>.
  */
-import lockup from '../../packages/design-system/brand/wicked-agile-wordmark.svg?raw';
+import header from '../../packages/design-system/brand/wicked-agile-wordmark.svg?raw';
+import display from '../../packages/design-system/brand/wicked-agile-wordmark-display.svg?raw';
 
 const { cap = 15.5, class: cls = '' } = Astro.props;
+// The mark's small cut (heavier strokes) while it renders at 24 px or less, as the specimen draws it:
+// the mark is 132 units against a 100-unit cap, so that is up to 18.18 px caps.
+const lockup = (132 * cap) / 100 <= 24 ? header : display;
 const [, , vbW, vbH] = /viewBox="([^"]+)"/.exec(lockup)[1].split(' ').map(Number);
 const k = cap / 100; // the artwork's cap height is 100 units
 const svg = lockup

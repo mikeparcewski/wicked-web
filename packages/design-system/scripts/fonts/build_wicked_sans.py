@@ -3,18 +3,19 @@
 
 Inter's variable font instanced at 400 and 600 with its optical-size axis kept (opsz 14-32); the
 signature alternates frozen into the cmap (ss01 open digits, cv05 tailed l, cv08 serifed I, cv10, and
-tabular figures by default on the digits only); the UI glyphs Inter lacks drawn from its own parts (check, times, and the
-<= >= != +- marks); the six v2 brand icons carried at U+E000-U+E005; renamed "Wicked Sans" (Inter declares
-no Reserved Font Name); subset to Latin-1, Latin Extended-A and the UI symbols; woff2 + ttf.
-The result is a Modified Version under the SIL OFL 1.1: licenses/LICENSE-WickedSans.txt.
+tabular figures by default on the digits only); the one UI glyph Inter lacks, the close mark U+2715, drawn
+from its own strokes (add_missing() draws the others only when a source lacks them, and Inter has them);
+renamed "Wicked Sans" (Inter declares no Reserved Font Name); subset to Latin-1, Latin Extended-A and the
+UI symbols; woff2 + ttf. The result is a Modified Version under the SIL OFL 1.1:
+licenses/LICENSE-WickedSans.txt. The six v2 brand icons (U+E000-U+E005) are NOT carried into it, so
+they are not put under the OFL: they stay in Wicked Serif and Script and in dist/icons/.
 This is the fonts-v3 exploration build (direction A), trimmed to the one direction that shipped.
 
   uv run --with fonttools --with brotli --with skia-pathops python -I build_wicked_sans.py \
-      <Inter[opsz,wght].ttf> <icons.ttf> <out-dir>
+      <Inter[opsz,wght].ttf> <out-dir>
 
-<Inter[opsz,wght].ttf>: google/fonts ofl/inter (Inter 4.1), with its OFL.txt beside it. <icons.ttf>: Wicked Sans v2 Regular, the
-source of the six brand icons (no longer in the tree: `git show 0600118:packages/design-system/source/
-wicked-fonts/WickedSans-Regular.ttf`). Writes WickedSansA-{Regular,SemiBold}.{ttf,woff2} to <out-dir>.
+<Inter[opsz,wght].ttf>: google/fonts ofl/inter (Inter 4.1), with its OFL.txt beside it.
+Writes WickedSansA-{Regular,SemiBold}.{ttf,woff2} to <out-dir>.
 """
 import sys, pathlib, json, copy, io
 from fontTools.ttLib import TTFont, newTable
@@ -26,7 +27,7 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.pens.boundsPen import BoundsPen
 import pathops
 
-INTER = pathlib.Path(sys.argv[1]); ICONS = pathlib.Path(sys.argv[2]); OUT = pathlib.Path(sys.argv[3])
+INTER = pathlib.Path(sys.argv[1]); OUT = pathlib.Path(sys.argv[2])
 
 DIRS = {
     "A": dict(label="Inter cut", keep={"opsz": (14, 32)}, pin={},
@@ -38,7 +39,7 @@ DIRS = {
 WEIGHTS = {400: "Regular", 600: "SemiBold"}
 UNICODES = ([*range(0x20, 0x7F), *range(0xA0, 0x180), 0x131, 0x152, 0x153, 0x2C6, 0x2DA, 0x2DC, *range(0x2000, 0x2070),
              0x20AC, 0x2122, *range(0x2190, 0x219A), 0x2212, 0x2260, 0x2264, 0x2265, 0x00B1, 0x2713, 0x2715, 0x2026,
-             0x2022, 0x25CF, 0x2318, 0x21B5, 0x2325, 0x21E7, 0x2715, *range(0xE000, 0xE006)])
+             0x2022, 0x25CF, 0x2318, 0x21B5, 0x2325, 0x21E7, 0x2715])
 
 
 def single_maps(font, tag, only_chars=None):
@@ -254,20 +255,6 @@ def add_missing(font, redraw=""):
 
 
 
-def carry_icons(font):
-    """Copy the six v2 brand icons (PUA U+E000-E005) from Wicked Sans v2, scaled to this UPM."""
-    v2 = TTFont(ICONS); vc = v2.getBestCmap(); gs = v2.getGlyphSet()
-    k = font["head"].unitsPerEm / v2["head"].unitsPerEm
-    for cp in range(0xE000, 0xE006):
-        if cp not in vc:
-            continue
-        p = pathops.Path(); gs[vc[cp]].draw(TransformPen(p.getPen(), (k, 0, 0, k, 0, 0)))
-        draw_glyph(font, f"uni{cp:04X}", [p], v2["hmtx"][vc[cp]][0] * k)
-        for t in font["cmap"].tables:
-            if t.isUnicode():
-                t.cmap[cp] = f"uni{cp:04X}"
-
-
 
 
 def rename(font, did, D, weight):
@@ -318,7 +305,6 @@ def build(did, D):
             f["gvar"].variations = {k: f["gvar"].variations[k] for k in f.getGlyphOrder()}
         n_frozen = freeze(f, D["freeze"], D.get("tnum_chars"))
         added = add_missing(f, D.get('redraw', ''))
-        carry_icons(f)
         rename(f, did, D, weight)
         # subset: keep the layout features people use in UI (kern, tnum/pnum, case, frac, zero, the unused ss/cv)
         opts = subset.Options(); opts.layout_features = ["*"]; opts.name_IDs = ["*"]; opts.name_languages = ["*"]

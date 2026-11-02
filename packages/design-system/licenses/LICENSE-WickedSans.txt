@@ -2,7 +2,7 @@ Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
 Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
 Wicked Sans A modifications Copyright 2026 The Wicked Agile Project Authors.
 
-Wicked Sans A is a Modified Version of the Font Software above, derived from Inter 4.1 (rsms/inter): renamed; alternates frozen; tabular figures by default; glyphs added; subset. The original declares no Reserved Font Name. Glyphs U+E000-U+E005 (six brand icons) come from Wicked Sans v2 by The Wicked Agile Project Authors; shipping this font would contribute them under the same licence (exploration build: not yet decided).
+Wicked Sans A is a Modified Version of the Font Software above, derived from Inter 4.1 (rsms/inter): renamed; alternates frozen; tabular figures by default on the digits; a close mark (U+2715) added; subset. The original declares no Reserved Font Name.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

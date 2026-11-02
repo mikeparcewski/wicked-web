@@ -63,14 +63,24 @@ test("the type scale is studio's, unlayered, with the serif on its own token", (
 
 test('the brand: the Wordmark lockup in the Topbar and the Footer, the Shoreline favicon in Base, the Wicked Sans A faces', () => {
   const brand = (f) => read(`packages/design-system/brand/${f}`);
-  // the lockup is the fonts-v3 artwork, drawn in currentColor (so it follows the theme), no text and no serif
-  const lockup = brand('wicked-agile-wordmark.svg');
-  assert.match(lockup, /<svg [^>]*viewBox="0 -150 [0-9.]+ 200"/, 'cap height 100 units, box -150..50');
-  assert.doesNotMatch(lockup, /<text|font-family|#[0-9a-f]{3,6}\b/i, 'drawn, not set, and no fixed colour');
-  assert.match(lockup, /fill="currentColor"/);
+  // the lockups are the fonts-v3 artwork at the specimen's geometry (cap 100 units in a -150..50 box; mark 132
+  // + gap 30 beside large lettering, 140 + 36 beside small), drawn in currentColor, no text, no fixed colour
+  const geometry = { 'wicked-agile-wordmark.svg': [978.3, 170.3, '3.0'], 'wicked-agile-wordmark-display.svg': [978.3, 170.3, '2.3'],
+    'wicked-agile-wordmark-small.svg': [1029.5, 184.7, '3.0'], 'wicked-studio-wordmark.svg': [1065.5, 170.3, '3.0'],
+    'wicked-studio-wordmark-display.svg': [1065.5, 170.3, '2.3'], 'wicked-studio-wordmark-small.svg': [1120.4, 184.7, '3.0'] };
+  for (const [f, [width, letterX, markStroke]] of Object.entries(geometry)) {
+    const svg = brand(f);
+    assert.match(svg, new RegExp(`<svg [^>]*viewBox="0 -150 ${width} 200"`), `${f}: box`);
+    assert.match(svg, new RegExp(`<path transform="translate\\(${letterX} 0\\)" fill="currentColor" d="M[^"]{2000,}"/>`), `${f}: the lettering, placed`);
+    assert.match(svg, new RegExp(`stroke="currentColor" stroke-width="${markStroke.replace('.', '\\.')}"`), `${f}: the mark's cut`);
+    assert.doesNotMatch(svg, /<text|font-family|#[0-9a-f]{3,6}\b/i, `${f}: drawn, not set, and no fixed colour`);
+  }
+  // the chrome draws it at the specimen's header size: 15.5 px caps, so the mark's small cut (<= 24 px)
   const wm = read('src/components/Wordmark.astro');
-  assert.match(wm, /import lockup from '\.\.\/\.\.\/packages\/design-system\/brand\/wicked-agile-wordmark\.svg\?raw';/);
-  assert.match(wm, /aria-hidden="true"/);
+  assert.match(wm, /import header from '\.\.\/\.\.\/packages\/design-system\/brand\/wicked-agile-wordmark\.svg\?raw';/);
+  assert.match(wm, /const \{ cap = 15\.5, /);
+  assert.match(wm, /const lockup = \(132 \* cap\) \/ 100 <= 24 \? header : display;/);
+  assert.match(wm, /width="\$\{\(vbW \* k\)\.toFixed\(1\)\}" height="\$\{\(vbH \* k\)\.toFixed\(1\)\}" aria-hidden="true"/);
   // the Topbar's link and the Footer's brand block both draw it, and the link names it
   const top = read('src/components/Topbar.astro');
   const foot = read('src/components/Footer.astro');
