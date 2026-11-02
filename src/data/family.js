@@ -139,7 +139,6 @@ export const TAGLINE = 'One surface · one control plane · one catalog · one r
 /** Media: wicked bits, the family's interactive pieces and media. The Topbar and the Footer's
  *  Media column link BITS; the footer's promo card shows LATEST_BIT, so posting the next bit
  *  is a one-line change here (title, one plain line, its path on bits). BITS is the one place
- *  the address lives: the GitHub Pages project URL until bits.wickedagile.com has DNS, then
- *  'https://bits.wickedagile.com/' (wicked-bits README, "Switch to bits.wickedagile.com"). */
-export const BITS = 'https://mikeparcewski.github.io/wicked-bits/';
+ *  the address lives: bits.wickedagile.com (the bits site's custom domain, served at its root). */
+export const BITS = 'https://bits.wickedagile.com/';
 export const LATEST_BIT = { title: 'The Work: the one-shift factory', line: 'Job in. Crew out. A playable scrolling factory.', href: `${BITS}the-work-factory/` };

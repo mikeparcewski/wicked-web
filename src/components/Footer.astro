@@ -7,10 +7,12 @@
  * Props (per-site):
  *   repo — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
  *
+ * The brand block opens with the Wordmark lockup (the same one as the Topbar).
  * After the plane columns: a Media column (wicked bits) and a promo card for the
  * latest bit, both from data/family.js (BITS, LATEST_BIT).
  */
 import { BITS, GH, LATEST_BIT, PLANES, TAGLINE } from '../data/family.js';
+import Wordmark from './Wordmark.astro';
 
 const {
   repo = GH,
@@ -22,6 +24,7 @@ const {
   <div class="wrap">
     <div class="footer-main">
       <div class="footer-brand-block">
+        <a class="footer-wordmark" href="https://wickedagile.com" aria-label="Wicked Agile"><Wordmark /></a>
         <p class="footer-title">wicked<br><span class="footer-accent">good.</span></p>
         <p class="footer-desc">The plan is a hypothesis.<br>The work is the evidence.</p>
         <div class="footer-cta">
@@ -72,6 +75,7 @@ const {
 .footer .kicker{font-size: var(--text-lead)}
 .footer-main{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-start;gap:53px 67px;padding:80px 0 56px}
 .footer-brand-block{flex-shrink:0;max-width:360px}
+.footer-wordmark{display:inline-block;color:var(--ink);text-decoration:none}
 .footer-title{font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-title);line-height:1.1;letter-spacing: var(--tracking-title);color:var(--ink);margin:12px 0 0}
 .footer-accent{color:var(--muted)}
 .footer-desc{margin:31px 0 0;font-size: var(--text-section);color:var(--muted);line-height:1.65;max-width:30ch}

@@ -31,7 +31,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: the GitHub Pages project URL until bits.wickedagile.com has DNS) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
+  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
   one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
   the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
@@ -45,15 +45,19 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
 - `wicked-web/styles/tokens.css`, `wicked-web/styles/global.css` — the family token names (aliases onto the design package, which `tokens.css` imports itself, so either file works alone) + the type scale + global background grid. `npm run test:chrome` checks them.
 - `wicked-web/scripts/scroll-wheel.js` — wheel-to-snap streamliner.
-- `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand lockup and icons, and the self-hosted faces: the brand's Wicked Sans, Serif and Script, then their OFL fallbacks with their licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide. Licences: `packages/design-system/LICENSE` (code MIT, the fallback faces OFL 1.1, and the brand marks and Wicked faces, `LicenseRef-wicked-brand-marks`, have no licence granted yet).
+- `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand marks (the Shoreline + Wave W lockups, the favicon, the v2 lockup and icons), and the self-hosted faces: Wicked Sans (an OFL cut of Inter), the brand's Wicked Serif and Script, then their OFL fallbacks with their licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide. Licences: `packages/design-system/LICENSE` (code MIT; Wicked Sans and the fallback faces OFL 1.1; the brand marks and Wicked Serif and Script, `LicenseRef-wicked-brand-marks`, have no licence granted yet).
 
 Design language (v3, 2026-11-01): the sites wear studio's approved look. The chrome's
 `tokens.css` (and so `global.css`) imports the design package (`packages/design-system/index.css`, by a relative path so
 it resolves through the sites' dev alias and from the installed package alike), so every site gets:
 
 - **Faces, self-hosted** (Vite bundles the woff2 with the site; no font CDN): Wicked Sans (400/600,
-  tabular digits) for every word, Inter drawing the characters Wicked Sans lacks, Wicked Serif for the
-  wordmark only (`--font-wordmark`), JetBrains Mono for code only.
+  tabular digits; since 2026-11-02 the fonts-v3 cut of Inter, OFL) for every word, Inter drawing the
+  characters Wicked Sans lacks, JetBrains Mono for code only.
+- **Marks** (fonts-v3, 2026-11-02): the Topbar and the footer draw the Wicked Agile lockup, the Shoreline
+  mark beside the Wave W lettering (`components/Wordmark.astro`, inline SVG in `currentColor`); `Base`'s
+  default favicon is the Shoreline mark (`packages/design-system/brand/favicon.svg`, bundled by Vite).
+  A site that passes its own `favicon` keeps it.
 - **Themes:** Wicked Dark (the default) and Wicked Light, the monochrome synthesis: neutral grounds,
   near-black / near-white ink and actions, colour only where it means something (the four `--plane-*`
   hues, status). Signal yellow is only the spark in the brand mark.

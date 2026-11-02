@@ -103,8 +103,9 @@
   --weight-regular:400;  /* body */
   --weight-strong:600;   /* labels, titles, headings (Wicked Sans SemiBold) */
   --tracking-title:-0.02em; /* page titles only */
-  /* the wordmark's face, the one place Wicked Serif is set. Its own name (not --font-display) so a
-     site's Tailwind @theme, which may claim --font-display for headings, can never restyle it. */
+  /* Wicked Serif, under its own name (not --font-display) so a site's Tailwind @theme, which may claim
+     --font-display for headings, can never restyle it. The chrome no longer sets it: since fonts-v3
+     (2026-11-02) the wordmark is drawn (components/Wordmark.astro, the Shoreline + Wave W lockup). */
   --font-wordmark:'Wicked Serif','Marcellus',ui-serif,Georgia,serif;
   /* On the sites --font-display was the heading face (Archivo), and the package means Wicked Serif by it.
      The approved look sets the serif on the wordmark only, so here it is the text face: any site CSS still

@@ -90,7 +90,7 @@ test('every font file fonts.css names exists, and every face ships its licence',
   const files = cssFontFiles('fonts.css');
   assert.ok(files.length >= 16);
   for (const f of files) assert.ok(existsSync(join(ROOT, f)), f);
-  for (const face of ['WickedSans-Regular', 'WickedSans-SemiBold', 'WickedSerif-Regular', 'WickedScript-Regular']) {
+  for (const face of ['WickedSansA-Regular', 'WickedSansA-SemiBold', 'WickedSerif-Regular', 'WickedScript-Regular']) {
     assert.ok(files.includes(`fonts/wicked/${face}.woff2`), face);
   }
   const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));

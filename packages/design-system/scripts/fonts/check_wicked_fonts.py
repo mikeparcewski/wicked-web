@@ -43,8 +43,8 @@ PUA = [0xE000 + i for i in range(6)]
 # SemiBold: with point weights 400 and 600, CSS matching sends 500 to the 400 face. Serif and
 # Script have one face each, which claims every weight so a bold request is never faux-bolded.
 CSS_WEIGHTS = {
-    "WickedSans-Regular": ("Wicked Sans", "100 499"),
-    "WickedSans-SemiBold": ("Wicked Sans", "500 900"),
+    "WickedSansA-Regular": ("Wicked Sans", "100 499"),
+    "WickedSansA-SemiBold": ("Wicked Sans", "500 900"),
     "WickedSerif-Regular": ("Wicked Serif", "100 900"),
     "WickedScript-Regular": ("Wicked Script", "100 900"),
 }

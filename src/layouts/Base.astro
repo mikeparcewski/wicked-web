@@ -2,7 +2,7 @@
 /**
  * Base.astro — the document shell for wickedagile.com
  *
- * Holds the <head> (meta, favicon, global stylesheet) and a no-flash
+ * Holds the <head> (meta, the family favicon, global stylesheet) and a no-flash
  * theme-init script that reads localStorage 'wa-theme-v3' and sets data-theme
  * BEFORE paint: 'dark' = Wicked Dark (the default), 'light' = Wicked Light.
  * The key is new with v3: the v2 Topbar wrote 'wa-theme' on every page load,
@@ -15,14 +15,18 @@
  * texture (radial grid + accent glow) is scoped to #terminal-section,
  * so it travels with the Hero component, not here.
  */
+import '../styles/global.css';
+// The family favicon: the Shoreline mark (fonts-v3, the operator's pick 2026-11-02), ink on a light tab and
+// paper on a dark one. Bundled from the design package, so every site wears the same mark unless it passes
+// its own `favicon`.
+import familyFavicon from '../../packages/design-system/brand/favicon.svg?url';
+
 const {
   title = 'wickedagile — the best code tells a story',
   description = 'Local-first, AI-native developer tools.',
   bodyClass = '',
-  favicon = '/favicon.svg',
+  favicon = familyFavicon,
 } = Astro.props;
-
-import '../styles/global.css';
 ---
 
 <!doctype html>

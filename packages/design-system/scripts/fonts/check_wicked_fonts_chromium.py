@@ -5,8 +5,8 @@ For each stylesheet (default: fonts.css, the consumer entry; fonts/wicked/wicked
 and the base64 source/wicked-fonts/wicked-agile-fonts.css), it renders spans at several weights, waits
 until all four Wicked faces are loaded, and asks the browser (DevTools CSS.getPlatformFontsForNode)
 which face drew each span:
-  * Wicked Sans at 100, 300, 400 and 499 draws WickedSans-Regular; at 500 (--weight-label), 600,
-    700 and 900 it draws WickedSans-SemiBold, and the SemiBold spans are wider than the Regular ones;
+  * Wicked Sans at 100, 300, 400 and 499 draws WickedSansA-Regular; at 500 (--weight-label), 600,
+    700 and 900 it draws WickedSansA-SemiBold, and the SemiBold spans are wider than the Regular ones;
   * Wicked Serif and Wicked Script draw their one face at 100, 400, 500, 700 and 900;
   * within each face, every weight draws the same width and the same pixels as the face's own weight
     (400 or 600), so no weight is synthesised (faux bold) from it.
@@ -15,6 +15,7 @@ which face drew each span:
   <python with playwright> -I scripts/fonts/check_wicked_fonts_chromium.py [stylesheet.css ...]
 Exit status 1 on any failure.
 """
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -30,8 +31,8 @@ DEFAULT_SHEETS = [
 # family -> sample text, {face: (its own weight, [weights that must draw with it])}
 FACES = {
     "Wicked Sans": ("Labels render SemiBold 0123", {
-        "WickedSans-Regular": (400, [100, 300, 400, 499]),
-        "WickedSans-SemiBold": (600, [500, 600, 700, 900]),
+        "WickedSansA-Regular": (400, [100, 300, 400, 499]),
+        "WickedSansA-SemiBold": (600, [500, 600, 700, 900]),
     }),
     "Wicked Serif": ("WICKED AGILE 0123", {"WickedSerif-Regular": (400, [100, 400, 500, 700, 900])}),
     "Wicked Script": ("WICKED AGILE 0123", {"WickedScript-Regular": (400, [100, 400, 500, 700, 900])}),
@@ -84,7 +85,9 @@ def check(browser, css):
         def used_face(sid):
             node = cdp.send("DOM.querySelector", {"nodeId": root, "selector": f"#{sid}"})["nodeId"]
             fonts = cdp.send("CSS.getPlatformFontsForNode", {"nodeId": node})["fonts"]
-            return [f.get("postScriptName") or f["familyName"] for f in fonts]
+            # A variable face (Wicked Sans keeps Inter's opsz axis) is reported per instance, with the axis
+            # values appended to its PostScript name (WickedSansA-Regular_opsz200000 = opsz 32): same face.
+            return [re.sub(r"(_[a-z]{4}[0-9a-f]+)+$", "", f.get("postScriptName") or f["familyName"]) for f in fonts]
 
         def width(sid):
             return page.evaluate(f"document.getElementById('{sid}').getBoundingClientRect().width")

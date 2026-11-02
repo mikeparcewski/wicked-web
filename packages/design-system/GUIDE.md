@@ -25,8 +25,25 @@ values (`from: "studio"`).
 
 ## The mark
 
-The lockup is a cable-stayed mast over a wave horizon, then `WICKED` in a flared serif and
-`agile` in a rounded script. It draws with three tokens:
+**Today (fonts-v3, the operator's pick 2026-11-02):** the **Shoreline** mark (a wave line running in
+over a bank of sand, a low sun above) beside the **Wave W** lettering ("Wicked Agile", "Wicked Studio";
+its W reads as a W and as water). Both are drawn artwork, one colour, `currentColor`:
+
+| File | What | Use |
+|---|---|---|
+| `brand/wicked-agile-wordmark.svg`, `brand/wicked-studio-wordmark.svg` | The lockup, large cut | Headers, from about 14 px caps up (the site Topbar and footer: 15.5 px caps) |
+| `brand/wicked-agile-wordmark-small.svg`, `brand/wicked-studio-wordmark-small.svg` | The lockup, small cut (looser spacing, a heavier mark) | About 11 px caps (studio's sidebar) |
+| `brand/shoreline.svg`, `brand/shoreline-large.svg` | The mark alone: small cut for 16 to 24 px, large for 32 px and up | Compact headers, app icons |
+| `brand/favicon.svg` | The small-cut mark, ink on a light tab and paper on a dark one (`prefers-color-scheme`) | The favicon (the chrome's `Base.astro` default) |
+
+- Units: the lettering's cap height is 100 units and every lockup's box is 200 tall (from -150), so
+  a lockup at `h` px tall has `h / 2` px caps. Inline it so `currentColor` follows the text colour.
+- Monochrome. The sun may take `--accent-wicked` as a spark on a dark ground only (on light the yellow
+  reads at 1.3:1); the shipped chrome keeps it ink.
+
+**The v2 lockup** (kept in the package for now, no longer drawn by the chrome): a cable-stayed mast
+over a wave horizon, then `WICKED` in a flared serif and `agile` in a rounded script. It draws with
+three tokens:
 
 | Part | Token | Light | Dark |
 |---|---|---|---|
@@ -94,7 +111,7 @@ appears; it does not colour the UI. One more exception, outside studio's UI: the
 
 | Slot | Token | Face today | Use |
 |---|---|---|---|
-| Sans | `--font-sans` | Wicked Sans 400/600, then Inter | Every UI word, titles included |
+| Sans | `--font-sans` | Wicked Sans 400/600 (v3: an OFL cut of Inter), then Inter | Every UI word, titles included |
 | Display | `--font-display` (`--font-serif`) | Wicked Serif, then Marcellus | Display sizes and brand moments only. UI titles are Sans |
 | Script | `--font-script` | Wicked Script, then Dancing Script | Brand moments only, never UI text |
 | Mono | `--font-mono` | JetBrains Mono | Code, ids, paths, data |
