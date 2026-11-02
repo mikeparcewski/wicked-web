@@ -3,7 +3,7 @@
 
 Inter's variable font instanced at 400 and 600 with its optical-size axis kept (opsz 14-32); the
 signature alternates frozen into the cmap (ss01 open digits, cv05 tailed l, cv08 serifed I, cv10, and
-tabular figures by default); the UI glyphs Inter lacks drawn from its own parts (check, times, and the
+tabular figures by default on the digits only); the UI glyphs Inter lacks drawn from its own parts (check, times, and the
 <= >= != +- marks); the six v2 brand icons carried at U+E000-U+E005; renamed "Wicked Sans" (Inter declares
 no Reserved Font Name); subset to Latin-1, Latin Extended-A and the UI symbols; woff2 + ttf.
 The result is a Modified Version under the SIL OFL 1.1: licenses/LICENSE-WickedSans.txt.
@@ -30,7 +30,10 @@ INTER = pathlib.Path(sys.argv[1]); ICONS = pathlib.Path(sys.argv[2]); OUT = path
 
 DIRS = {
     "A": dict(label="Inter cut", keep={"opsz": (14, 32)}, pin={},
-              freeze=["tnum", "ss01", "cv05", "cv08", "cv10"], upstream="Inter 4.1 (rsms/inter)"),
+              freeze=["tnum", "ss01", "cv05", "cv08", "cv10"], upstream="Inter 4.1 (rsms/inter)",
+              # tabular figures by default, the digits only: Inter's tnum also maps the hyphen (to a 0.65 em
+              # figure-width dash, so "re-derives" reads "re - derives"), the space and punctuation.
+              tnum_chars="0123456789"),
 }
 WEIGHTS = {400: "Regular", 600: "SemiBold"}
 UNICODES = ([*range(0x20, 0x7F), *range(0xA0, 0x180), 0x131, 0x152, 0x153, 0x2C6, 0x2DA, 0x2DC, *range(0x2000, 0x2070),
@@ -66,8 +69,9 @@ def single_maps(font, tag, only_chars=None):
     return m
 
 
-def freeze(font, feats):
-    """Freeze features into the cmap. Order: stylistic alternates on the base glyph first, then tnum on the result;
+def freeze(font, feats, tnum_chars=None):
+    """Freeze features into the cmap. Order: stylistic alternates on the base glyph first, then tnum on the result
+    (only on tnum_chars when given: Inter's tnum also makes the hyphen, space and punctuation tabular);
     if tnum has no form for an alternate (Geist one.ss09, Onest alt_1), the alternate is re-centred into the
     tabular advance by tabularize()."""
     cmap_tables = [t for t in font["cmap"].tables if t.isUnicode()]
@@ -81,7 +85,7 @@ def freeze(font, feats):
             h = g
             for m in styl:
                 h = m.get(h, h)
-            if tn:
+            if tn and (tnum_chars is None or chr(u) in tnum_chars):
                 if h in tn:
                     h = tn[h]
                 elif g in tn and h != g:
@@ -312,7 +316,7 @@ def build(did, D):
         buf = io.BytesIO(); f.save(buf); buf.seek(0); f = TTFont(buf, lazy=False)
         if "gvar" in f:
             f["gvar"].variations = {k: f["gvar"].variations[k] for k in f.getGlyphOrder()}
-        n_frozen = freeze(f, D["freeze"])
+        n_frozen = freeze(f, D["freeze"], D.get("tnum_chars"))
         added = add_missing(f, D.get('redraw', ''))
         carry_icons(f)
         rename(f, did, D, weight)

@@ -139,7 +139,9 @@ subsets. Inter and JetBrains Mono are the same files studio already self-hosts.
 Since 2026-11-02 (fonts-v3, the operator's pick) Wicked Sans is a cut of Inter 4.1, made by
 `scripts/fonts/build_wicked_sans.py`: Inter's variable font instanced at 400 and 600 with the optical
 size axis kept (opsz 14 to 32), the alternates that make it ours frozen into the cmap (open digits, a
-tailed `l`, a serifed `I`, tabular figures by default), the UI glyphs Inter lacks drawn from its own
+tailed `l`, a serifed `I`, tabular figures by default on the ten digits only: Inter's `tnum` also maps
+the hyphen to a 0.65 em figure-width dash, and the space and punctuation, which the fonts-v3 specimen
+build froze too), the UI glyphs Inter lacks drawn from its own
 parts (check, times, the comparison marks), the six brand icons carried at U+E000 to U+E005, renamed,
 and subset to Latin-1, Latin Extended-A and the UI symbols. It is a Modified Version under the SIL OFL
 1.1 (`licenses/LICENSE-WickedSans.txt`); Inter declares no Reserved Font Name. The files are

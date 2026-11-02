@@ -217,7 +217,10 @@ const PLANES = FAMILY_PLANES.map((p) => ({
   .same-garden .sg-head{ margin-bottom:8px; }
   .same-garden .sg-blurb{ font-size: var(--text-caption); line-height:1.4; margin-top:4px; }
   .same-garden .sg-card-body{ padding:7px 10px 5px; }
-  .same-garden .sg-card-foot{ padding:5px 10px 6px; }
+  /* Wicked Sans A (the Inter cut, 2026-11-02) sets wider than v2, so a blurb that fitted on one line takes two:
+     the one-line eyebrow and the card foot give that line back (600 -> 582 px at 1280x660 under the bar) */
+  .same-garden .sg-eyebrow{ line-height:1.3; }
+  .same-garden .sg-card-foot{ padding:4px 10px 5px; }
   .same-garden .sg-plane{ padding:6px 12px; }
   .same-garden .sg-contract{ padding:1px 4px 1px 28px; }
   /* the v3 labels are 12px (the scale's caption), up from 9.6-11.8px: give the height back here */
