@@ -12,6 +12,7 @@
  * Media (the play button and its phone-menu row) links wicked bits (BITS in data/family.js).
  */
 import { BITS, GH, PLANES } from '../data/family.js';
+import Wordmark from './Wordmark.astro';
 
 const {
   pkg = '',
@@ -29,16 +30,9 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar__inner">
-    <a href="https://wickedagile.com" class="wordmark" aria-label="wickedagile">
-      <!-- the brand mark (packages/design-system/brand/wicked-agile-lockup.svg, its mast + wave + spark),
-           drawn in the guide's three tokens so it follows the theme -->
-      <svg class="wordmark-mark" viewBox="0 0 36 40" width="22" height="24" aria-hidden="true">
-        <path d="M 18 2 L 4 38 L 32 38 Z" fill="none" stroke="var(--ink-primary)" stroke-width="2"/>
-        <line x1="18" y1="2" x2="18" y2="38" stroke="var(--ink-primary)" stroke-width="1.5"/>
-        <path d="M 0 38 Q 10 31 18 38 T 36 38" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round"/>
-        <polygon points="18,0 22,7 14,7" fill="var(--accent-wicked)"/>
-      </svg>
-      <span class="wordmark-name"><span class="wk">wicked</span> <span class="ag">agile</span></span>
+    <a href="https://wickedagile.com" class="wordmark" aria-label="Wicked Agile">
+      <!-- the lockup (Shoreline mark + Wave W lettering, packages/design-system/brand/), in currentColor -->
+      <Wordmark />
     </a>
     {pkg && (
       <span class="topbar-pkg">
@@ -109,12 +103,8 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 /* TOPBAR */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--topbar-h);background:color-mix(in oklab,var(--surface-base) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline-strong)}
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 clamp(16px,4vw,28px);max-width:1240px;margin:0 auto}
-.wordmark{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
-/* the wordmark is the one place Wicked Serif is set (--font-wordmark), capitalised like studio's "Wicked Studio" */
-.wordmark-name{font-family:var(--font-wordmark);font-size:var(--text-section);font-weight:var(--weight-regular);text-transform:capitalize;font-synthesis:none;white-space:nowrap}
-.wordmark-mark{display:block;flex-shrink:0;overflow:visible}
-.wordmark .wk{color:var(--ink)}
-.wordmark .ag{color:var(--ink)}
+/* the wordmark is drawn, not set: the Wordmark lockup (SVG, currentColor = the ink) at the site-header size */
+.wordmark{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none}
 /* secondary header: "<logo> / <package>" in the text face. margin-right:auto
    keeps logo+pkg grouped on the left and pushes the nav to the right. */
 .topbar-pkg{display:inline-flex;align-items:center;gap:8px;margin-left:7px;margin-right:auto;font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-body);color:var(--muted)}

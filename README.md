@@ -31,7 +31,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: the GitHub Pages project URL until bits.wickedagile.com has DNS) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
+  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
   one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
   the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
@@ -39,21 +39,25 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
   sandbox, rules; not seat, run, floor, steering), and never contradicts the engine's own honesty
   labels ("reduced assurance", "approved by default, not verified").
 
-- `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, favicon, global stylesheet, no-flash theme init, `<slot/>`.
+- `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, the family favicon, global stylesheet, no-flash theme init, `<slot/>`.
 - `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + the Media link (wicked bits) + theme toggle.
 - `wicked-web/components/Footer.astro` — family footer (one link column per plane, a Media column, the latest-bit promo card, brand block, strip).
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
 - `wicked-web/styles/tokens.css`, `wicked-web/styles/global.css` — the family token names (aliases onto the design package, which `tokens.css` imports itself, so either file works alone) + the type scale + global background grid. `npm run test:chrome` checks them.
 - `wicked-web/scripts/scroll-wheel.js` — wheel-to-snap streamliner.
-- `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand lockup and icons, and the self-hosted faces: the brand's Wicked Sans, Serif and Script, then their OFL fallbacks with their licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide. Licences: `packages/design-system/LICENSE` (code MIT, the fallback faces OFL 1.1, and the brand marks and Wicked faces, `LicenseRef-wicked-brand-marks`, have no licence granted yet).
+- `wicked-web/design/*` — **the wicked design system** (`packages/design-system`, package name `wicked-design`, not on npm yet): tokens as CSS custom properties for light and dark from one source plus a JSON export, the brand marks (the Shoreline + Wave W lockups, the favicon, the v2 lockup and icons), and the self-hosted faces: Wicked Sans (an OFL cut of Inter), the brand's Wicked Serif and Script, then their OFL fallbacks with their licences. `import 'wicked-web/design/index.css'` loads faces and tokens. Its README says how studio, the sites, wicked-interactive and plugins consume it; its GUIDE.md is the design guide. Licences: `packages/design-system/LICENSE` (code MIT; Wicked Sans and the fallback faces OFL 1.1; the brand marks and Wicked Serif and Script, `LicenseRef-wicked-brand-marks`, have no licence granted yet).
 
 Design language (v3, 2026-11-01): the sites wear studio's approved look. The chrome's
 `tokens.css` (and so `global.css`) imports the design package (`packages/design-system/index.css`, by a relative path so
 it resolves through the sites' dev alias and from the installed package alike), so every site gets:
 
 - **Faces, self-hosted** (Vite bundles the woff2 with the site; no font CDN): Wicked Sans (400/600,
-  tabular digits) for every word, Inter drawing the characters Wicked Sans lacks, Wicked Serif for the
-  wordmark only (`--font-wordmark`), JetBrains Mono for code only.
+  tabular digits; since 2026-11-02 the fonts-v3 cut of Inter, OFL) for every word, Inter drawing the
+  characters Wicked Sans lacks, JetBrains Mono for code only.
+- **Marks** (fonts-v3, 2026-11-02): the Topbar and the footer draw the Wicked Agile lockup, the Shoreline
+  mark beside the Wave W lettering (`components/Wordmark.astro`, inline SVG in `currentColor`); `Base`'s
+  default favicon is the Shoreline mark (`packages/design-system/brand/favicon.svg`, bundled by Vite).
+  A site that passes its own `favicon` keeps it.
 - **Themes:** Wicked Dark (the default) and Wicked Light, the monochrome synthesis: neutral grounds,
   near-black / near-white ink and actions, colour only where it means something (the four `--plane-*`
   hues, status). Signal yellow is only the spark in the brand mark.
@@ -68,7 +72,7 @@ it resolves through the sites' dev alias and from the installed package alike), 
 Component props worth knowing:
 - `Topbar`: `pkg` (secondary "<logo> / <pkg>" label, omit on the umbrella site) · `repo` (GitHub-icon link → that page's repo).
 - `Footer`: `repo` (GitHub-chiclet link → that page's repo).
-- `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default `/favicon.svg`; pass a base-aware path on sites under a project base — see gotchas).
+- `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default: the family's Shoreline mark, `packages/design-system/brand/favicon.svg`, bundled by Vite so it resolves under a project base too; pass `favicon` only to override it, with a base-aware path on a site under a project base — see gotchas).
 - `SameGarden`: `current` (this site's package name).
 
 ## Use it (per site)
@@ -139,8 +143,9 @@ So a shared change isn't "live everywhere" until every consuming site is re-pinn
 - **Shared components must be plain CSS on the family tokens** (`var(--canvas)`, `var(--ink)`, …) with a scoped `<style is:global>` — never Tailwind classes — so they also render on the plain-Astro sites.
 - **Self-contained widths**: don't rely on a global `.wrap`; sites with their own token CSS don't define one. Footer scopes its own `.footer .wrap`.
 - **CI Node version**: Astro 6 and later need **Node ≥ 22** in the Pages workflow (every family site is on Astro 7). Symptom if wrong: "Node.js 20 is not supported by Astro".
-- **Sites under a project base** (e.g. garden at `/wicked-garden/`): pass a base-aware `favicon` to `Base`, computed in the site's frontmatter:
+- **Favicons**: `Base` bundles the family's Shoreline favicon, so a site needs no `public/favicon.svg` and no
+  `favicon` prop, under a project base too (Vite prefixes the base). To override it on a site under a project
+  base, compute the path in the site's frontmatter:
   ```astro
   const favicon = `${import.meta.env.BASE_URL}/favicon.svg`.replace(/\/{2,}/g, "/");
   ```
-  Sites at the domain root can omit it (default `/favicon.svg`). Each site needs a real `public/favicon.svg` (the shared Base references it).

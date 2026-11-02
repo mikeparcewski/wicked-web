@@ -2,11 +2,12 @@
 """
 Wicked Agile 3-Font Suite Compiler (v2)
 =======================================
-Draws and compiles the three brand typefaces with fontTools, entirely in code:
+Draws and compiles the brand display typefaces with fontTools, entirely in code:
 
-  1. Wicked Sans   Regular (400) + SemiBold (600): chamfered nautical utility sans,
-                   built for UI text: real lowercase, ten distinct tabular digits,
-                   UI punctuation and symbols, Inter-like vertical metrics.
+  1. Wicked Sans   v2 is RETIRED (2026-11-02): the shipped Wicked Sans is the v3 cut of Inter
+                   (fonts/wicked/WickedSansA-*.woff2, OFL, built by build_wicked_sans.py). Its
+                   v2 drawing code below is kept because Serif and Script share its digit and
+                   punctuation drawers, but no v2 Sans file is written.
   2. Wicked Serif  Regular: high-contrast thorn & wave display serif (caps + small caps).
   3. Wicked Script Regular: 14-degree coastal brush display script (caps + small caps).
 
@@ -16,9 +17,10 @@ The six brand icons live in the Private Use Area (U+E000-U+E005) of every face,
 so @ # $ % ^ & are real characters.
 
 Outputs (written to the current directory):
-  <Face>.otf, <Face>.ttf, <Face>.woff2  per face
+  <Face>.otf, <Face>.ttf, <Face>.woff2  per drawn face (Serif, Script)
   wicked-agile-fonts.css            @font-face rules with the woff2 inlined as base64
   wicked-agile-fonts-selfhost.css   @font-face rules with url('./<Face>.woff2')
+Both stylesheets also declare the shipped Wicked Sans (read from <package>/fonts/wicked/, not drawn).
 
 Run inside an empty output folder, then copy the outputs into the package
 (see "Rebuilding the Wicked faces" in packages/design-system/README.md):
@@ -2066,10 +2068,15 @@ def compile_face(family_name, ps_prefix, style_key, style_name, weight, params):
 # (--weight-label) would render Regular. The ranges split Wicked Sans at 500: 100-499 is Regular,
 # 500-900 SemiBold. Serif and Script have one face each, so it claims every weight: a bold request
 # matches the face itself instead of being synthesised (faux bold) from it.
+# Wicked Sans is not drawn here any more: the shipped faces (the v3 Inter cut) are read as they are.
+PACKAGE = Path(__file__).resolve().parents[2]
+PREBUILT = [
+    # family, CSS weight range, face (file stem in fonts/wicked/)
+    ("Wicked Sans", "100 499", "WickedSansA-Regular"),
+    ("Wicked Sans", "500 900", "WickedSansA-SemiBold"),
+]
 FACES = [
     # family, ps prefix, style key, style name, OS/2 weight, CSS weight range, params
-    ("Wicked Sans", "WickedSans", "sans", "Regular", 400, "100 499", SANS_WEIGHTS[400]),
-    ("Wicked Sans", "WickedSans", "sans", "SemiBold", 600, "500 900", SANS_WEIGHTS[600]),
     ("Wicked Serif", "WickedSerif", "serif", "Regular", 400, "100 900", SERIF_PARAMS),
     ("Wicked Script", "WickedScript", "script", "Regular", 400, "100 900", SCRIPT_PARAMS),
 ]
@@ -2089,7 +2096,8 @@ def font_face_rule(family, css_weights, src):
 
 def main():
     print("Building Wicked Agile 3-Font Suite (v2)...")
-    built = []
+    built = [(family, css_weights, face, (PACKAGE / "fonts" / "wicked" / f"{face}.woff2").read_bytes())
+             for family, css_weights, face in PREBUILT]
     for family, prefix, style_key, style_name, weight, css_weights, params in FACES:
         print(f"\n--- {family} {style_name} ({weight}) ---")
         face, woff2 = compile_face(family, prefix, style_key, style_name, weight, params)

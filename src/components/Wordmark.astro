@@ -1,0 +1,34 @@
+---
+/**
+ * Wordmark.astro — the wicked lockup: the Shoreline mark beside the Wave W lettering
+ * (packages/design-system/brand/wicked-agile-wordmark.svg; fonts-v3 recommendation 1, the operator's
+ * pick 2026-11-02). Inline SVG drawn in currentColor, so it follows the theme and costs no request.
+ * Decorative here (aria-hidden): the link or block around it carries the name.
+ *
+ * Props:
+ *   cap   — cap height in px (default 15.5, the specimen's site header); the SVG is 2x the cap tall
+ *           (its box holds the mark above the caps and the g's descender below), width from its viewBox.
+ *   class — an extra class on the <svg>.
+ */
+import header from '../../packages/design-system/brand/wicked-agile-wordmark.svg?raw';
+import display from '../../packages/design-system/brand/wicked-agile-wordmark-display.svg?raw';
+
+const { cap = 15.5, class: cls = '' } = Astro.props;
+// The mark's small cut (heavier strokes) while it renders at 24 px or less, as the specimen draws it:
+// the mark is 132 units against a 100-unit cap, so that is up to 18.18 px caps.
+const lockup = (132 * cap) / 100 <= 24 ? header : display;
+const [, , vbW, vbH] = /viewBox="([^"]+)"/.exec(lockup)[1].split(' ').map(Number);
+const k = cap / 100; // the artwork's cap height is 100 units
+const svg = lockup
+  .replace(/<!--[\s\S]*?-->\s*/g, '')
+  .replace(/<title>[\s\S]*?<\/title>/, '')
+  .replace(/ role="img" aria-label="[^"]*"/, '')
+  .replace('<svg ', `<svg class="wordmark-lockup${cls ? ` ${cls}` : ''}" width="${(vbW * k).toFixed(1)}" height="${(vbH * k).toFixed(1)}" aria-hidden="true" focusable="false" `)
+  .trim();
+---
+
+<Fragment set:html={svg} />
+
+<style is:global>
+.wordmark-lockup{display:block;flex-shrink:0;overflow:visible}
+</style>

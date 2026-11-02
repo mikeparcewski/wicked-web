@@ -19,7 +19,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("check_wicked_fonts", PACKAGE / "scripts" / "fonts" / "check_wicked_fonts.py")
 checker = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(checker)
-SANS_TTF = PACKAGE / "source" / "wicked-fonts" / "WickedSans-Regular.ttf"
+SANS_TTF = PACKAGE / "source" / "wicked-fonts" / "WickedSansA-Regular.ttf"
 
 
 SHEETS = [PACKAGE / "fonts" / "wicked" / "wicked-agile-fonts-selfhost.css",
@@ -41,13 +41,13 @@ class CheckWickedFonts(unittest.TestCase):
     def mutated(self, change):
         font = TTFont(SANS_TTF)
         change(font, font.getBestCmap())
-        path = Path(self.tmp.name) / "WickedSans-Regular.ttf"
+        path = Path(self.tmp.name) / "WickedSansA-Regular.ttf"
         font.save(path)
         return path
 
     def test_every_shipped_face_passes(self):
         files = [p for folder in checker.DEFAULT_FOLDERS for p in sorted(folder.iterdir()) if p.suffix in {".woff2", ".otf", ".ttf"}]
-        self.assertEqual(len(files), 12)
+        self.assertEqual(len(files), 10)   # fonts/wicked: 4 woff2; source: Sans ttf x2, Serif and Script otf + ttf
         for path in files:
             ok, out = run_check(path)
             self.assertTrue(ok, out)
@@ -68,7 +68,7 @@ class CheckWickedFonts(unittest.TestCase):
         for sheet in SHEETS:
             ok, out = run_check(sheet, checker.check_css)
             self.assertTrue(ok, out)
-            self.assertIn("WickedSans-Regular 100 499, WickedSans-SemiBold 500 900, "
+            self.assertIn("WickedSansA-Regular 100 499, WickedSansA-SemiBold 500 900, "
                           "WickedSerif-Regular 100 900, WickedScript-Regular 100 900", out)
 
     def test_point_weights_fail(self):
@@ -79,8 +79,8 @@ class CheckWickedFonts(unittest.TestCase):
                 r"font-weight: ([0-9 ]+);", lambda m: f"font-weight: {points[m.group(1)]};", css))
             ok, out = run_check(broken, checker.check_css)
             self.assertFalse(ok, out)
-            self.assertIn("WickedSans-Regular: font-weight '400', expected '100 499'", out)
-            self.assertIn("WickedSans-SemiBold: font-weight '600', expected '500 900'", out)
+            self.assertIn("WickedSansA-Regular: font-weight '400', expected '100 499'", out)
+            self.assertIn("WickedSansA-SemiBold: font-weight '600', expected '500 900'", out)
             self.assertIn("WickedSerif-Regular: font-weight '400', expected '100 900'", out)
 
     def test_a_missing_or_duplicated_face_fails(self):
@@ -91,16 +91,16 @@ class CheckWickedFonts(unittest.TestCase):
             missing = self.sheet(sheet, lambda css: "\n\n".join(r for i, r in enumerate(rules) if i != 2))
             ok, out = run_check(missing, checker.check_css)
             self.assertFalse(ok, out)
-            self.assertIn("WickedSans-SemiBold: declared 0 times, expected once", out)
+            self.assertIn("WickedSansA-SemiBold: declared 0 times, expected once", out)
             # A commented-out rule is not declared.
             commented = self.sheet(sheet, lambda css: re.sub(r"(@font-face \{.*?\})", r"/* \1 */", css, count=1, flags=re.S))
             ok, out = run_check(commented, checker.check_css)
             self.assertFalse(ok, out)
-            self.assertIn("WickedSans-Regular: declared 0 times, expected once", out)
+            self.assertIn("WickedSansA-Regular: declared 0 times, expected once", out)
             doubled = self.sheet(sheet, lambda css: css + "\n" + rules[1])
             ok, out = run_check(doubled, checker.check_css)
             self.assertFalse(ok, out)
-            self.assertIn("WickedSans-Regular: declared 2 times, expected once", out)
+            self.assertIn("WickedSansA-Regular: declared 2 times, expected once", out)
 
     def test_wrong_family_fails(self):
         for sheet in SHEETS:
@@ -113,7 +113,7 @@ class CheckWickedFonts(unittest.TestCase):
         moved = self.sheet(SHEETS[0], lambda css: css)          # a copy, with no woff2 next to it
         ok, out = run_check(moved, checker.check_css)
         self.assertFalse(ok, out)
-        self.assertIn("WickedSans-Regular: WickedSans-Regular.woff2 is not next to wicked-agile-fonts-selfhost.css", out)
+        self.assertIn("WickedSansA-Regular: WickedSansA-Regular.woff2 is not next to wicked-agile-fonts-selfhost.css", out)
 
     def test_collapsed_letters_fail(self):
         def collapse(font, cmap):
@@ -149,6 +149,36 @@ class CheckWickedFonts(unittest.TestCase):
         ok, out = run_check(self.mutated(empty))
         self.assertFalse(ok)
         self.assertIn("empty outline (no area) U+0051", out)
+
+    def test_a_brand_icon_in_wicked_sans_fails(self):
+        # Wicked Sans is OFL: a brand icon inside it would be under the OFL.
+        def add_icon(font, cmap):
+            for table in font["cmap"].tables:
+                if table.isUnicode():
+                    table.cmap[0xE000] = cmap[ord("Q")]
+        ok, out = run_check(self.mutated(add_icon))
+        self.assertFalse(ok)
+        self.assertIn("brand icon U+E000 in an OFL face", out)
+
+    def test_wicked_serif_without_its_icons_fails(self):
+        font = TTFont(PACKAGE / "source" / "wicked-fonts" / "WickedSerif-Regular.ttf")
+        for table in font["cmap"].tables:
+            if table.isUnicode():
+                table.cmap.pop(0xE003, None)
+        path = Path(self.tmp.name) / "WickedSerif-Regular.ttf"
+        font.save(path)
+        ok, out = run_check(path)
+        self.assertFalse(ok)
+        self.assertIn("missing icon U+E003", out)
+
+    def test_a_figure_width_hyphen_fails(self):
+        # What freezing all of Inter's tnum did: the hyphen took the digits' advance.
+        def tabular_hyphen(font, cmap):
+            adv, lsb = font["hmtx"][cmap[ord("-")]]
+            font["hmtx"][cmap[ord("-")]] = (font["hmtx"][cmap[ord("0")]][0], lsb)
+        ok, out = run_check(self.mutated(tabular_hyphen))
+        self.assertFalse(ok)
+        self.assertIn("the hyphen is figure-width", out)
 
     def test_proportional_digits_fail(self):
         def widen(font, cmap):

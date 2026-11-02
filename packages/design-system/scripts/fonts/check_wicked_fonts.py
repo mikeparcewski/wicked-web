@@ -8,7 +8,9 @@ source/wicked-fonts):
   * each cmap glyph's outline is hashed with its left edge moved to x=0, so the same shape
     at a different side bearing still counts as the same; digits, a-z and A-Z must all be
     distinct, and any other required characters that share an outline are reported;
-  * the ten digits share one advance width (tabular figures);
+  * the ten digits share one advance width (tabular figures), and in Wicked Sans the hyphen does not
+    (a figure-width hyphen reads as a spaced dash);
+  * the six brand icons (U+E000-U+E005) are in Wicked Serif and Script, and NOT in Wicked Sans (OFL);
   * vertical metrics and the OS/2 weight class are printed.
 And every folder has a stylesheet (*.css), and each one declares each Wicked face exactly once, under its
 family, with the CSS weight range in CSS_WEIGHTS (a face is named by its url() file, or by the
@@ -38,13 +40,16 @@ REQUIRED = (
 MUST_BE_DISTINCT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 EXTRA = "↑↓−°"
 PUA = [0xE000 + i for i in range(6)]
+# The six brand icons live in the owner's faces only. Wicked Sans is OFL (a cut of Inter): carrying them
+# there would put them under the OFL, so it must NOT have them.
+PUA_FACES = ("WickedSerif-", "WickedScript-")
 
 # face -> (family, CSS font-weight). Wicked Sans splits at 500 so a 500 (--weight-label) gets
 # SemiBold: with point weights 400 and 600, CSS matching sends 500 to the 400 face. Serif and
 # Script have one face each, which claims every weight so a bold request is never faux-bolded.
 CSS_WEIGHTS = {
-    "WickedSans-Regular": ("Wicked Sans", "100 499"),
-    "WickedSans-SemiBold": ("Wicked Sans", "500 900"),
+    "WickedSansA-Regular": ("Wicked Sans", "100 499"),
+    "WickedSansA-SemiBold": ("Wicked Sans", "500 900"),
     "WickedSerif-Regular": ("Wicked Serif", "100 900"),
     "WickedScript-Regular": ("Wicked Script", "100 900"),
 }
@@ -80,9 +85,14 @@ def check(path):
             fails.append(f"empty outline (no area) U+{cp:04X} {ch!r}")
             continue
         hashes[ch] = h
-    for cp in PUA:
-        if cp not in cmap or outline_hash(font, cmap[cp]) is None:
-            fails.append(f"missing icon U+{cp:04X}")
+    if Path(path).name.startswith(PUA_FACES):
+        for cp in PUA:
+            if cp not in cmap or outline_hash(font, cmap[cp]) is None:
+                fails.append(f"missing icon U+{cp:04X}")
+    else:
+        for cp in PUA:
+            if cp in cmap:
+                fails.append(f"brand icon U+{cp:04X} in an OFL face")
 
     by_hash = {}
     for ch, h in hashes.items():
@@ -98,6 +108,12 @@ def check(path):
     digit_adv = {hmtx[cmap[ord(d)]][0] for d in "0123456789" if ord(d) in cmap}
     if len(digit_adv) != 1:
         fails.append(f"digits are not tabular: advances {sorted(digit_adv)}")
+    # Wicked Sans (the Inter cut) is tabular on the digits only. Inter's tnum also maps the hyphen to a
+    # figure-width dash, which reads as a spaced dash in a word ("wicked - crew"): keep it proportional.
+    if Path(path).name.startswith("WickedSansA-") and len(digit_adv) == 1 and ord("-") in cmap:
+        hyphen = hmtx[cmap[ord("-")]][0]
+        if hyphen > 0.8 * next(iter(digit_adv)):
+            fails.append(f"the hyphen is figure-width ({hyphen} of {next(iter(digit_adv))}): tabular figures are for digits only")
 
     os2, hhea = font["OS/2"], font["hhea"]
     name = font["name"].getDebugName(4)

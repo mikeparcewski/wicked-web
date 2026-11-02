@@ -40,7 +40,7 @@ test('every family alias points at a token the package or tokens.css defines', (
   }
 });
 
-test("the type scale is studio's, unlayered, with the wordmark serif on its own token", () => {
+test("the type scale is studio's, unlayered, with the serif on its own token", () => {
   const css = noComments(TOKENS);
   // The scale must sit in a TOP-LEVEL rule (depth 1 inside its own braces), not inside @layer base:
   // unlayered is what makes it hold over the package's older --text-title whatever a Tailwind site's layer order.
@@ -59,7 +59,45 @@ test("the type scale is studio's, unlayered, with the wordmark serif on its own 
   assert.equal([...css.matchAll(/--tracking-[a-z-]+:/g)].length, 1);
   assert.match(unlayered, /--font-wordmark:'Wicked Serif'/);
   assert.match(unlayered, /--font-display:var\(--font-sans\)/);
-  assert.match(read('src/components/Topbar.astro'), /\.wordmark-name\{font-family:var\(--font-wordmark\)/);
+});
+
+test('the brand: the Wordmark lockup in the Topbar and the Footer, the Shoreline favicon in Base, the Wicked Sans A faces', () => {
+  const brand = (f) => read(`packages/design-system/brand/${f}`);
+  // the lockups are the fonts-v3 artwork at the specimen's geometry (cap 100 units in a -150..50 box; mark 132
+  // + gap 30 beside large lettering, 140 + 36 beside small), drawn in currentColor, no text, no fixed colour
+  const geometry = { 'wicked-agile-wordmark.svg': [978.3, 170.3, '3.0'], 'wicked-agile-wordmark-display.svg': [978.3, 170.3, '2.3'],
+    'wicked-agile-wordmark-small.svg': [1029.5, 184.7, '3.0'], 'wicked-studio-wordmark.svg': [1065.5, 170.3, '3.0'],
+    'wicked-studio-wordmark-display.svg': [1065.5, 170.3, '2.3'], 'wicked-studio-wordmark-small.svg': [1120.4, 184.7, '3.0'] };
+  for (const [f, [width, letterX, markStroke]] of Object.entries(geometry)) {
+    const svg = brand(f);
+    assert.match(svg, new RegExp(`<svg [^>]*viewBox="0 -150 ${width} 200"`), `${f}: box`);
+    assert.match(svg, new RegExp(`<path transform="translate\\(${letterX} 0\\)" fill="currentColor" d="M[^"]{2000,}"/>`), `${f}: the lettering, placed`);
+    assert.match(svg, new RegExp(`stroke="currentColor" stroke-width="${markStroke.replace('.', '\\.')}"`), `${f}: the mark's cut`);
+    assert.doesNotMatch(svg, /<text|font-family|#[0-9a-f]{3,6}\b/i, `${f}: drawn, not set, and no fixed colour`);
+  }
+  // the chrome draws it at the specimen's header size: 15.5 px caps, so the mark's small cut (<= 24 px)
+  const wm = read('src/components/Wordmark.astro');
+  assert.match(wm, /import header from '\.\.\/\.\.\/packages\/design-system\/brand\/wicked-agile-wordmark\.svg\?raw';/);
+  assert.match(wm, /const \{ cap = 15\.5, /);
+  assert.match(wm, /const lockup = \(132 \* cap\) \/ 100 <= 24 \? header : display;/);
+  assert.match(wm, /width="\$\{\(vbW \* k\)\.toFixed\(1\)\}" height="\$\{\(vbH \* k\)\.toFixed\(1\)\}" aria-hidden="true"/);
+  // the Topbar's link and the Footer's brand block both draw it, and the link names it
+  const top = read('src/components/Topbar.astro');
+  const foot = read('src/components/Footer.astro');
+  assert.match(top, /<a href="https:\/\/wickedagile\.com" class="wordmark" aria-label="Wicked Agile">\s*(<!--[\s\S]*?-->\s*)?<Wordmark \/>/);
+  assert.match(foot, /<div class="footer-brand-block">\s*<a class="footer-wordmark" href="https:\/\/wickedagile\.com" aria-label="Wicked Agile"><Wordmark \/><\/a>/);
+  assert.doesNotMatch(top, /wordmark-name|var\(--font-wordmark\)|polygon points/, 'no serif text wordmark, no sailboat');
+  // the favicon is the Shoreline mark, bundled from the package; a site may still pass its own
+  assert.match(read('src/layouts/Base.astro'), /import familyFavicon from '\.\.\/\.\.\/packages\/design-system\/brand\/favicon\.svg\?url';[\s\S]*favicon = familyFavicon,/);
+  const fav = brand('favicon.svg');
+  assert.match(fav, /prefers-color-scheme:dark/, 'ink on light tabs, paper on dark ones');
+  assert.equal([...fav.matchAll(/<path /g)].length, 2, 'the wave line and the sand bank');
+  assert.match(fav, /<circle /, 'and the low sun');
+  // the text face is Wicked Sans A (an OFL cut of Inter) under the family name the tokens already use
+  const faces = read('packages/design-system/fonts/wicked/wicked-agile-fonts-selfhost.css');
+  assert.match(faces, /font-family: 'Wicked Sans';\s*src: url\('\.\/WickedSansA-Regular\.woff2'\)/);
+  assert.match(faces, /font-family: 'Wicked Sans';\s*src: url\('\.\/WickedSansA-SemiBold\.woff2'\)/);
+  assert.match(read('packages/design-system/licenses/LICENSE-WickedSans.txt'), /Inter Project Authors[\s\S]*SIL OPEN FONT LICENSE Version 1\.1/);
 });
 
 test('chrome CSS uses the scale only: no raw size, weight or tracking, no uppercase, no mono', () => {
