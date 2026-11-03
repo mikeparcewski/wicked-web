@@ -294,7 +294,7 @@ test('product sites: with neither new prop, the Topbar renders bc5ca29\'s markup
   assert.doesNotMatch(foot, /variant|byline/);
   // and no two-site rule reaches the product markup: every rule after the product CSS is scoped to the two sites' classes
   const css = noComments(styleOf(top));
-  const fam = css.slice(css.indexOf(':root:has(.topbar--family)'));
+  const fam = css.slice(css.indexOf('.topbar--family{--topbar-h'));   // the whole two-site block, from its first rule
   assert.ok(fam.length > 500, 'the two-site block is there');
   for (const m of fam.matchAll(/([^{}]+)\{[^{}]*\}/g)) {
     const sel = m[1].replace(/@media[^{]*\{/, '').trim();

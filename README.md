@@ -115,7 +115,9 @@ neither new prop and renders the same header markup as before (`test/chrome.test
 - **One grid**: the bar's inner box is the company site's content wrap, 1600 px wide and 32 px in
   (16 px at 760 px and below), published on the page as `--family-max` and `--family-gutter` for the
   sites' own wraps (`max-width: var(--family-max); padding: 0 var(--family-gutter)`), so the lockup and
-  the content edges line up at every width.
+  the content edges line up at every width. The bar sets them on itself; the page learns them (and the
+  56 px `--topbar-h`) through `:root:has(.topbar--family)`, so on a browser without `:has()` a site that
+  must line up there declares the same values on its own root.
 - **Selectors** (for the sites' e2e): `header.topbar.topbar--family`, the lockup `a.wordmark` (agile) or
   `nav.crumbs` with `.crumb` links (labs), `#nav.family-nav` holding `a.family-sec` (section links),
   `.family-sep` and `a.family-ic` (each with `.family-label` and `.family-tag` for its menu row),
