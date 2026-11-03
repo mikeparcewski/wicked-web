@@ -231,14 +231,14 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 
 /* ── THE TWO SITES (here="agile" | "labs", DES-SITES-V2 §3.4) ───────────────────────────────────────
    Every rule is scoped to .topbar--family, so a product site's header is untouched. The bar is 56 px, not
-   64 (the sites' frames are built on 56), and the root learns it so a page's offsets follow. One grid for
-   the bar and the content: the bar's inner box is the company site's content wrap (1600 px, 32 px in;
-   16 px on phones), published as --family-max and --family-gutter for the sites' own wraps (the bar's own rule
-   stands apart from the :root:has() one, so a browser without :has() still draws the bar right). The icon links
-   and the theme switch are the product bar's .icon-btn; the path is its .crumbs. */
-.topbar--family{--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
-:root:has(.topbar--family){--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
-.topbar--family .topbar__inner{justify-content:flex-start;gap:12px;max-width:var(--family-max);padding:0 var(--family-gutter)}
+   64 (the sites' frames are built on 56), and the root learns it so a page's offsets follow (the bar's own
+   rule stands apart from the :root:has() one, so a browser without :has() still draws the bar right). One
+   grid for the family: the bar keeps the product bar's inner box (.topbar__inner, 1240 px with its gutters),
+   so the lockup sits where it does on every product site. The icon links and the theme switch are the
+   product bar's .icon-btn; the path is its .crumbs. */
+.topbar--family{--topbar-h:56px}
+:root:has(.topbar--family){--topbar-h:56px}
+.topbar--family .topbar__inner{justify-content:flex-start;gap:12px}
 .topbar--family .topbar__inner>.wordmark{margin-right:auto}
 .family-nav{display:flex;align-items:center;gap:2px}
 .family-sec{color:var(--muted);font-family: var(--font-sans);font-size: var(--text-body);text-decoration:none;white-space:nowrap;padding:8px 10px;border-radius:6px;transition:color .15s,background .15s}
@@ -274,8 +274,6 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
   .topbar--family:not(.js) .family-nav{min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
 }
 @media(max-width:760px){
-  .topbar--family{--family-gutter:var(--space-4)}
-  :root:has(.topbar--family){--family-gutter:var(--space-4)}
   .topbar--family .topbar__inner{gap:8px}
   .topbar--family:not(.js) .family-sec{padding:8px 6px}
   .topbar--family:not(.js) .family-ic{margin-left:4px}

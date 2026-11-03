@@ -355,14 +355,18 @@ test("the two sites' bar: the lockups, the section links before the divider, fou
   // then the theme switch and the menu button, which controls the nav
   assert.match(bar, /<\/nav>\s*<button class="icon-btn family-btn" type="button" id="themeBtn" aria-label="Toggle theme">[\s\S]*?<\/button>\s*<button class="icon-btn menu-btn family-btn" type="button" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="nav">/);
   assert.doesNotMatch(bar, /wickedlabs\.ai|bits\.wickedagile\.com|data-tip|mobileMenu/);
-  // 56 px, and the root learns it; one grid with the company site's wrap; the menu below 1024 px, as the script's media query
+  // 56 px, and the root learns it; the menu below 1024 px, as the script's media query
   const css = noComments(styleOf(read('src/components/Topbar.astro')));
   // the bar's own rule stands apart from the :root:has() one: a browser without :has() drops only that rule
-  assert.match(css, /(^|\})\s*\.topbar--family\{--topbar-h:56px;--family-max:1600px;--family-gutter:var\(--space-8\)\}/);
-  assert.match(css, /\}\s*:root:has\(\.topbar--family\)\{--topbar-h:56px;--family-max:1600px;--family-gutter:var\(--space-8\)\}/);
+  assert.match(css, /(^|\})\s*\.topbar--family\{--topbar-h:56px\}/);
+  assert.match(css, /\}\s*:root:has\(\.topbar--family\)\{--topbar-h:56px\}/);
   assert.doesNotMatch(css, /:has\([^)]*\)[^{}]*,|,[^{}]*:has\(/, 'no :has() grouped with another selector');
-  assert.match(css, /\.topbar--family \.topbar__inner\{[^}]*max-width:var\(--family-max\);padding:0 var\(--family-gutter\)\}/);
-  assert.match(css, /@media\(max-width:760px\)\{\s*\.topbar--family\{--family-gutter:var\(--space-4\)\}\s*:root:has\(\.topbar--family\)\{--family-gutter:var\(--space-4\)\}/);
+  // one grid for the family: the two sites' bar keeps the product bar's inner box (1240 px, its gutters), so
+  // the lockup sits where it does on every product site; nothing in the two-site block re-sizes or re-pads it
+  assert.match(css, /\.topbar__inner\{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 clamp\(16px,4vw,28px\);max-width:1240px;margin:0 auto\}/);
+  const famBlock = css.slice(css.indexOf('.topbar--family{--topbar-h'));
+  for (const m of famBlock.matchAll(/\.topbar--family \.topbar__inner\{([^}]*)\}/g)) assert.doesNotMatch(m[1], /max-width|padding|margin/, m[0]);
+  assert.doesNotMatch(css, /--family-max|--family-gutter/, 'no separate two-site grid');
   assert.match(css, /@media\(max-width:1023px\)\{\s*\.topbar--family\.js \.family-nav\{display:none\}/);
   assert.match(read('src/scripts/topbar-family.js'), /window\.matchMedia\('\(min-width: 1024px\)'\)/);
   // without script: no theme switch, no menu; below 1024 px the section links stay in the bar and the icons go
