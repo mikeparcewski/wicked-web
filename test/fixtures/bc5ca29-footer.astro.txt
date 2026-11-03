@@ -1,0 +1,43 @@
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-main">
+      <div class="footer-brand-block">
+        <a class="footer-wordmark" href="https://wickedagile.com" aria-label="Wicked Agile"><Wordmark /></a>
+        <p class="footer-title">wicked<br><span class="footer-accent">good.</span></p>
+        <p class="footer-desc">The plan is a hypothesis.<br>The work is the evidence.</p>
+        <div class="footer-cta">
+          <a href={repo} target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">Medium ↗</a>
+        </div>
+      </div>
+      <div class="footer-cols">
+        {PLANES.map((p) => (
+          <div style={`--plane:var(--plane-${p.key})`}>
+            <span class="kicker footer-col-head">{p.name}</span>
+            <ul class="footer-links">
+              {p.products.filter((s) => s.hasSite).map((s) => (
+                <li><a href={s.href}>{s.short} <span class="ext">↗</span></a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div>
+          <span class="kicker footer-col-head">Media</span>
+          <ul class="footer-links">
+            <li><a href={BITS}>bits <span class="ext">↗</span></a></li>
+          </ul>
+        </div>
+        <a class="footer-promo" href={LATEST_BIT.href}>
+          <span class="footer-promo-kicker">Latest on wicked bits</span>
+          <span class="footer-promo-title">{LATEST_BIT.title}</span>
+          <span class="footer-promo-line">{LATEST_BIT.line}</span>
+          <span class="footer-promo-cta">Play it →</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-strip">
+      <span>{TAGLINE}</span>
+      <span>Made by Mike</span>
+    </div>
+  </div>
+</footer>

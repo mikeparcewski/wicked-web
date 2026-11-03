@@ -5,7 +5,8 @@
  *
  * Consumers (keep this list current when you add one):
  *   - this repo: components/Topbar.astro (the product path's product link,
- *     the Wicked Labs and Media links), components/Footer.astro (one link column per plane, the
+ *     the Wicked Labs and Media links; on the two sites, `href` for the lab's product
+ *     page), components/Footer.astro (one link column per plane, the
  *     Media column and the latest-bit promo card),
  *     components/SameGarden.astro (the four-plane map)
  *   - wickedagile: src/components/Shipped.astro (`layers` / `capstone` /
@@ -30,6 +31,37 @@
 
 export const GH = 'https://github.com/mikeparcewski';
 
+/** Wicked Labs: the lab page. The Topbar's flask button and its phone-menu row link LAB, and so
+ *  does the "labs" crumb of a product site's path ("Wicked Agile / labs / wicked-crew"). LAB is the
+ *  one place the address lives. */
+export const LAB = 'https://wickedlabs.ai/';
+
+/** The lab switch (DES-SITES-V2 §8, §9 step 7). false: every href is today's (the product sites,
+ *  the repos). true: the tier-aware lab hrefs, where the product sites redirect to: studio, crew,
+ *  garden and estate go to their lab page, interactive to studio's (it is surfaced through studio),
+ *  core and bus to the lab's under-the-hood strip, the installer to its start command; and SITES
+ *  becomes the two sites. One switch, flipped in the redirect step, not before. */
+export const LAB_HREFS = false;
+
+/** Every family member's address: [today's, the lab's]. */
+const HREFS = {
+  'wicked-studio': ['https://ws.wickedagile.com', `${LAB}studio/`],
+  'wicked-crew': ['https://wc.wickedagile.com', `${LAB}crew/`],
+  'wicked-garden': ['https://wg.wickedagile.com', `${LAB}garden/`],
+  'wicked-estate': ['https://we.wickedagile.com', `${LAB}estate/`],
+  'wicked-interactive': [`${GH}/wicked-interactive`, `${LAB}studio/`],
+  'wicked-core': [`${GH}/wicked-core`, `${LAB}#components`],
+  'wicked-bus': [`${GH}/wicked-bus`, `${LAB}#components`],
+  'wicked-installer': [`${GH}/wicked-installer`, `${LAB}#start`],
+};
+
+/** A family member's address by package name, as the switch says (or as `lab` says, for tests and
+ *  previews); `undefined` when it is not in the family. */
+export function href(name, lab = LAB_HREFS) {
+  const h = HREFS[name];
+  return h ? h[lab ? 1 : 0] : undefined;
+}
+
 /** The family one-liner: what the whole platform does, in three sentences. */
 export const FAMILY_LINE = 'Your coding agents do the work. A different agent checks it against your rules. You get the evidence.';
 
@@ -48,7 +80,7 @@ export const PLANES = [
     products: [
       {
         name: 'wicked-studio', short: 'studio', kind: 'the surface', tag: 'where you direct agents', lang: 'TS',
-        href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
+        href: href('wicked-studio'), repo: `${GH}/wicked-studio`, hasSite: true,
         screenshot: '/screenshots/wicked-studio.png',
         blurb: 'The ADE (agentic development environment) for running a team of coding agents: start a job with a chat, watch them work in sandboxes, answer what needs you.',
         desc: 'The ADE (agentic development environment) for running a team of coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents page; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away.',
@@ -67,7 +99,7 @@ export const PLANES = [
     products: [
       {
         name: 'wicked-crew', short: 'crew', kind: 'the control plane', tag: 'runs and checks jobs', lang: 'TS',
-        href: 'https://wc.wickedagile.com', repo: `${GH}/wicked-crew`, hasSite: true,
+        href: href('wicked-crew'), repo: `${GH}/wicked-crew`, hasSite: true,
         screenshot: '/screenshots/wicked-crew.png',
         blurb: 'Runs your agents in sandboxes. By default a different agent reviews the work, and feature and bug-fix jobs are acceptance-tested before delivery, or say why not.',
         desc: 'Runs the jobs studio starts, with your coding agents in sandboxes that see placeholders, not your keys (a Claude subscription’s sign-in token is the one exception). By default a different agent reviews the work against your rules; when only the builder could review it, the job stops unless you launch it as “reduced assurance”, which is labelled everywhere. Feature, bug-fix, migration, MCP-server and editor-plugin jobs pass acceptance testing before delivery unless waived or skipped, which is labelled. Gates report the checks that actually ran, and an unverified pass is labelled.',
@@ -86,7 +118,7 @@ export const PLANES = [
     products: [
       {
         name: 'wicked-garden', short: 'garden', kind: 'the catalog', tag: 'skills and tools', lang: 'JS',
-        href: 'https://wg.wickedagile.com', repo: `${GH}/wicked-garden`, hasSite: true,
+        href: href('wicked-garden'), repo: `${GH}/wicked-garden`, hasSite: true,
         screenshot: '/screenshots/wicked-garden.png',
         blurb: 'The skills your coding agent can’t build alone: proof from evidence, graph-aware refactors, 40 QE specialists.',
         desc: 'The skills your coding agent can’t build alone. A proof gate re-checks “done” from evidence, in your agent, in CI or in a crew job. Graph-aware search and refactors see links grep can’t, 40 QE specialists test the work, and a review panel of your other agents weighs in when a decision is disputed (a same-family fallback is labelled). Open to your own skill packs.',
@@ -105,14 +137,14 @@ export const PLANES = [
     products: [
       {
         name: 'wicked-estate', short: 'estate', kind: 'the record', tag: 'what agents know', lang: 'RS',
-        href: 'https://we.wickedagile.com', repo: `${GH}/wicked-estate`, hasSite: true,
+        href: href('wicked-estate'), repo: `${GH}/wicked-estate`, hasSite: true,
         screenshot: '/screenshots/wicked-estate.png',
         blurb: 'What your agents know about your system: a code graph, memory and knowledge in a local CLI and MCP server.',
         desc: 'What your agents know about your system. A code graph over 114 languages (depth varies by language) shows what breaks if you change something, including the event and command links grep never sees. Memory (what happened, what you told it) and knowledge (what it learned from your code and docs) stay separate and cited. A local CLI and MCP server your agents can query.',
       },
       {
         name: 'wicked-interactive', short: 'interactive', kind: 'the document engine', tag: 'documents', lang: 'JS',
-        href: `${GH}/wicked-interactive`, repo: `${GH}/wicked-interactive`, hasSite: false,
+        href: href('wicked-interactive'), repo: `${GH}/wicked-interactive`, hasSite: false,
         blurb: 'The engine behind the docs, decks and captioned demo recordings studio produces. You use it through studio.',
         desc: 'The document engine: docs with version history, HTML/PDF/PPTX export, and captioned screen recordings of your app (no voice-over). crew runs it for you and studio is where you use it, so you never visit it directly.',
       },
@@ -130,8 +162,17 @@ export function product(name) {
   return PRODUCTS.find((s) => s.name === name);
 }
 
-/** The products that have a site to visit — the nav, footer and preview set. */
-export const SITES = PRODUCTS.filter((s) => s.hasSite);
+/** The sites to visit: today the products that have a site (the nav, footer and preview set); with
+ *  LAB_HREFS, the two sites, the company and the lab. */
+export function sitesFor(lab = LAB_HREFS) {
+  return lab
+    ? [
+      { name: 'wickedagile', short: 'Wicked Agile', href: 'https://wickedagile.com/', hasSite: true },
+      { name: 'wickedlabs', short: 'Wicked Labs', href: LAB, hasSite: true },
+    ]
+    : PRODUCTS.filter((s) => s.hasSite).map((s) => ({ ...s, href: href(s.name, false) }));
+}
+export const SITES = sitesFor();
 
 /** The family strip line every footer carries. */
 export const TAGLINE = 'One surface · one control plane · one catalog · one record';
@@ -143,7 +184,3 @@ export const TAGLINE = 'One surface · one control plane · one catalog · one r
 export const BITS = 'https://bits.wickedagile.com/';
 export const LATEST_BIT = { title: 'The Work: the one-shift factory', line: 'Job in. Crew out. A playable scrolling factory.', href: `${BITS}the-work-factory/` };
 
-/** Wicked Labs: the lab page. The Topbar's flask button and its phone-menu row link LAB, and so
- *  does the "labs" crumb of a product site's path ("Wicked Agile / labs / wicked-crew"). LAB is the
- *  one place the address lives. */
-export const LAB = 'https://wickedlabs.ai/';

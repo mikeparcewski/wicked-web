@@ -31,7 +31,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it), and `LAB` (Wicked Labs: `https://wickedlabs.ai/`). Topbar, Footer and SameGarden render from it, and the apex
+  site; see `LAB_HREFS` below), `product(name)`, `href(name, lab)`, `sitesFor(lab)`, `FAMILY_LINE`, `TAGLINE`, Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it), and `LAB` (Wicked Labs: `https://wickedlabs.ai/`). Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
   one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
   the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
@@ -70,8 +70,66 @@ it resolves through the sites' dev alias and from the installed package alike), 
   `--plane-*` and `--font-sans|mono` are the package's own.
 
 Component props worth knowing:
-- `Topbar`: `pkg` (the product's package name: the lockup becomes the path "Wicked Agile / labs / <pkg>", and the last crumb links the product's site from the family manifest; omit it on the umbrella site, which keeps the lockup alone) · `repo` (GitHub-icon link → that page's repo).
+- `Topbar`: `pkg` (the product's package name: the lockup becomes the path "Wicked Agile / labs / <pkg>", and the last crumb links the product's site from the family manifest; omit it on the umbrella site, which keeps the lockup alone) · `repo` (GitHub-icon link → that page's repo) · `here` and `sections` (the two sites, below).
 - `Footer`: `repo` (GitHub-chiclet link → that page's repo).
+
+### The two sites: wickedagile.com and wickedlabs.ai (DES-SITES-V2 §3.4)
+
+One header on both sites, identical apart from the lockup and the lab's section links; the footer is the
+family `Footer`, as on every site (the operator, 2026-11-03), with the site's `repo`. A product site passes
+neither new prop and renders the same header markup as before (`test/chrome.test.mjs` pins it to bc5ca29's).
+
+```astro
+<!-- wickedagile.com: the Wicked Agile logo, to the page top -->
+<Topbar here="agile" repo="https://github.com/mikeparcewski/wickedagile" />
+
+<!-- wickedlabs.ai: "Wicked Agile / labs", labs the current page -->
+<Topbar here="labs" repo="https://github.com/mikeparcewski/wickedlabs" sections={[
+  { href: '#follow', label: 'Follow a job' }, { href: '#components', label: 'Components' }, { href: '#changes', label: 'Releases' },
+]} />
+
+<!-- the lab's crew page: "Wicked Agile / labs / wicked-crew", the product current -->
+<Topbar here="labs" pkg="wicked-crew" repo="https://github.com/mikeparcewski/wickedlabs" sections={labSections} />
+
+<Footer repo="https://github.com/mikeparcewski/wickedlabs" />
+```
+
+- **`here`** (`'agile'` | `'labs'`) switches to the two-site bar: 56 px tall (`--topbar-h` is 56px on the
+  page, so offsets that read it follow), from 1024 px one row of the section links, a divider, the four
+  round icon links (the flask to the lab, wicked bits, Medium, GitHub) and the theme switch; below
+  1024 px the section links and the labelled icon links go into the menu (the theme switch, then the
+  menu button). With `pkg`, `here="labs"` is the lab's page for that product (studio, crew, garden or
+  estate; the crumb links `LAB` + the product's id). Anything else fails the build.
+- **`sections`** (`[{ href, label }]`): the lab's own section links, before the divider. wickedagile.com's
+  header carries none (the operator, 2026-11-03), so `here="agile"` with `sections` fails the build.
+- **The Topbar owns the header's behaviour**: the theme switch; the menu (focus moves to its first link
+  on open; Escape closes it and puts focus back on its button; a click outside, or focus leaving the
+  header, closes it); following a `#section` link moves focus to that section; a layout change that
+  hides the focused control hands focus to a visible stand-in (the menu button, or the theme switch).
+  A site must not add its own handlers for `#nav`, `#menuBtn` or `#themeBtn`. A site with its own
+  Escape handler should ignore an Escape whose target is inside `header.topbar` (the menu's own).
+- **Without script** there is no menu: the theme switch and the menu button hide; below 1024 px the lab's
+  section links stay in the bar and its icon links give way (the lab is its own "labs" crumb, and the
+  footer carries wicked bits, Medium and GitHub), while wickedagile.com keeps its four icon links in the bar.
+  On a narrow window the lockup keeps its size and the links scroll sideways in their row.
+- **One grid**: the bar's inner box is the company site's content wrap, 1600 px wide and 32 px in
+  (16 px at 760 px and below), published on the page as `--family-max` and `--family-gutter` for the
+  sites' own wraps (`max-width: var(--family-max); padding: 0 var(--family-gutter)`), so the lockup and
+  the content edges line up at every width. The bar sets them on itself; the page learns them (and the
+  56 px `--topbar-h`) through `:root:has(.topbar--family)`, so on a browser without `:has()` a site that
+  must line up there declares the same values on its own root.
+- **Selectors** (for the sites' e2e): `header.topbar.topbar--family`, the lockup `a.wordmark` (agile) or
+  `nav.crumbs` with `.crumb` links (labs), `#nav.family-nav` holding `a.family-sec` (section links),
+  `.family-sep` and `a.family-ic` (each with `.family-label` and `.family-tag` for its menu row),
+  `#themeBtn`, `#menuBtn` (`aria-controls="nav"`, `aria-expanded`).
+- **Tokens** (the design package): `--accent-wicked-line` and `--accent-wicked-deep`, the gold for lines,
+  rings and small graphic fills (map marks, dots, the Work checkbox), never text: the signal yellow on
+  dark, #9a7600 and #7a5d00 on light, each 3:1 on every surface (`scripts/contrast.mjs`).
+- **`LAB_HREFS`** (`data/family.js`, `false`): while false, every href is today's (the product sites, the
+  repos). Flipped in the redirect step (DES-SITES-V2 §9 step 7), not before: studio, crew, garden and
+  estate link `LAB` + their id, interactive studio's page (it is surfaced through studio), core and bus
+  the lab's `#components`, the installer `#start`, and `SITES` becomes the two sites.
+  `href(name, lab)` and `sitesFor(lab)` give either answer for previews and tests.
 - `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default: the family's Shoreline mark, `packages/design-system/brand/favicon.svg`, bundled by Vite so it resolves under a project base too; pass `favicon` only to override it, with a base-aware path on a site under a project base — see gotchas).
 - `SameGarden`: `current` (this site's package name).
 

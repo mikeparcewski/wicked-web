@@ -1,0 +1,48 @@
+<header class="topbar">
+  <div class="topbar__inner">
+    {pkg ? (
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="https://wickedagile.com/" class="wordmark" aria-label="Wicked Agile"><Wordmark /></a></li>
+          <li><span class="crumb-sep" aria-hidden="true">/</span><a href={LAB} class="crumb">labs</a></li>
+          <li><span class="crumb-sep" aria-hidden="true">/</span><a href={home} class="crumb" aria-current={atHome ? 'page' : undefined}>{pkg}</a></li>
+        </ol>
+      </nav>
+    ) : (
+      <a href="https://wickedagile.com" class="wordmark" aria-label="Wicked Agile">
+        <!-- the lockup (Shoreline mark + Wave W lettering, packages/design-system/brand/), in currentColor -->
+        <Wordmark />
+      </a>
+    )}
+    <nav class="nav" aria-label="Links">
+      <a href={LAB} class="icon-btn nav-inline" aria-label="Wicked Labs" data-tip="wicked labs">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FLASK_GLYPH}></svg>
+      </a>
+      <a href={BITS} class="icon-btn nav-inline" aria-label="Media: wicked bits" data-tip="media">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d={PLAY_GLYPH_PATH}/></svg>
+      </a>
+      <a href="https://medium.com/@mike.parcewski" class="icon-btn nav-inline" target="_blank" rel="noopener" aria-label="Medium" data-tip="writing">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d={MEDIUM_GLYPH_PATH}/></svg>
+      </a>
+      <a class="icon-btn nav-inline" href={repo} target="_blank" rel="noopener" aria-label="GitHub" data-tip="github">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d={GITHUB_GLYPH_PATH}/></svg>
+      </a>
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme" data-tip="toggle theme">
+        <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg class="menu-ic menu-ic--bars" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg class="menu-ic menu-ic--x" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- MOBILE MENU — the expand version of the nav, phones only -->
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Menu" hidden>
+    <a href={LAB} class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FLASK_GLYPH}></svg>Wicked Labs</span> <span class="dropdown-tag">lab ↗</span></a>
+    <div class="dropdown-divider"></div>
+    <a href={BITS} class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d={PLAY_GLYPH_PATH}/></svg>wicked bits</span> <span class="dropdown-tag">media ↗</span></a>
+    <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={MEDIUM_GLYPH_PATH}/></svg>Medium</span> <span class="dropdown-tag">writing ↗</span></a>
+    <a href={repo} target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d={GITHUB_GLYPH_PATH}/></svg>GitHub</span> <span class="dropdown-tag">this repo ↗</span></a>
+  </nav>
+</header>
