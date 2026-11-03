@@ -5,8 +5,9 @@
  *
  * Consumers (keep this list current when you add one):
  *   - this repo: components/Topbar.astro (the product path's product link,
- *     the Wicked Labs and Media links), components/Footer.astro (one link column per plane, the
- *     Media column and the latest-bit promo card),
+ *     the Wicked Labs and Media links; on the two sites, `href` for the lab's product
+ *     page), components/Footer.astro (one link column per plane, the
+ *     Media column and the latest-bit promo card; the byline's lab and bits links),
  *     components/SameGarden.astro (the four-plane map)
  *   - wickedagile: src/components/Shipped.astro (`layers` / `capstone` /
  *     `packages`) and src/scripts/data.js (`FEATURED`)

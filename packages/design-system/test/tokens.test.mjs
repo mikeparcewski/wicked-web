@@ -311,3 +311,17 @@ test('the specimen shows a selection with its check, progress with its value, a 
   assert.doesNotMatch(spec, /text-decoration:\s*line-through/);
   assert.doesNotMatch(spec, /<h[1-3] class="serif"/);
 });
+
+test("the sites' gold line tokens: the signal yellow on dark, a darker gold on light, 3:1 on every surface, never text", () => {
+  // DES-SITES-V2: lines, rings and small graphic fills (map marks, dots, the Work checkbox), never text
+  for (const [n, light] of [['accent-wicked-line', '#9a7600'], ['accent-wicked-deep', '#7a5d00']]) {
+    assert.equal(resolve(src, n, 'light'), light, n);
+    assert.equal(resolve(src, n, 'dark'), resolve(src, 'accent-wicked', 'dark'), `${n}: dark is the signal yellow`);
+    assert.equal(src.tokens[n].group, 'brand');
+    const rows = audit(src).filter((r) => r.fg === n);
+    assert.deepEqual([...new Set(rows.map((r) => r.theme))].sort(), ['dark', 'light']);
+    assert.ok(rows.length >= 12 && rows.every((r) => r.min === 3 && r.ok), `${n} holds 3:1 on every surface, both themes`);
+    assert.match(css, new RegExp(`--${n}: ${light};`), `${n} in dist/tokens.css (light)`);
+    assert.match(css, new RegExp(`--${n}: var\\(--accent-wicked\\);`), `${n} in dist/tokens.css (dark)`);
+  }
+});
