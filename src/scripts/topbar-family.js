@@ -1,15 +1,14 @@
 /* The two sites' header (Topbar here="agile" | "labs"): the menu below 1024 px. Inlined by Topbar.astro right
    after the header, after the theme script it shares with the product sites. Plain ES5 with no regex literals,
    like the rest of the inline chrome.
-   - Without script the header stays as the HTML draws it: the section links in the bar, the theme and menu
+   - Without script the header stays as the HTML draws it: the icon links in the bar, the theme and menu
      buttons hidden. This script marks the header `js`, which turns the menu layout on.
    - The menu button opens the menu and moves focus to its first link. Escape closes it and puts focus back on
      the button; so does following a link that opens a new tab, or a modified click (the page stays). A click
      outside the header, or focus leaving the header (also by way of the browser's own controls), closes it.
-   - Following one of the page's own section links (#id) in this tab moves focus to that section.
-   - A layout change that hides the focused control hands focus to a visible stand-in (a section link hidden by
-     the menu: the menu button; the menu button hidden on a desktop: the theme switch), and the menu closes
-     once the bar holds its links again. */
+   - A layout change that hides the focused control hands focus to a visible stand-in (a link hidden by the
+     menu: the menu button; the menu button hidden on a desktop: the theme switch), and the menu closes once
+     the bar holds its links again. */
 (function () {
   'use strict';
   var bar = document.querySelector('header.topbar--family');
@@ -37,17 +36,6 @@
     /* a modified click opens the link elsewhere (a new tab or window): this page stays where it is */
     var elsewhere = a.getAttribute('target') === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
     if (isOpen()) setOpen(false, elsewhere);
-    var href = a.getAttribute('href') || '';
-    if (!elsewhere && !e.defaultPrevented && href.charAt(0) === '#' && href.length > 1) {
-      setTimeout(function () {
-        var id;
-        try { id = decodeURIComponent(href.slice(1)); } catch (x) { return; }
-        var to = document.getElementById(id);
-        if (!to) return;
-        if (!to.hasAttribute('tabindex')) to.setAttribute('tabindex', '-1');
-        to.focus({ preventScroll: true });
-      }, 0);
-    }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && isOpen()) setOpen(false, true);

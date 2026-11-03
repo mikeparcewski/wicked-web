@@ -278,7 +278,7 @@ test('studio is the ADE, spelled out on first use; no studio line says "IDE for 
   assert.doesNotMatch(read('src/data/family.js'), /IDE for running/);
 });
 
-/* ── The two sites (DES-SITES-V2 §3.4, §9.1 B1): Topbar here/sections, LAB_HREFS ── */
+/* ── The two sites (DES-SITES-V2 §3.4, §9.1 B1): Topbar here, LAB_HREFS ── */
 
 const fixture = (f) => read(`test/fixtures/${f}`).replace(/\n$/, '');
 
@@ -320,30 +320,30 @@ function topbarProps(fam, props) {
   try { return vm.runInNewContext(`${block}; labPage`, { Astro: { props }, href: fam.href, LAB: fam.LAB, GH: fam.GH, JSON }); } catch (e) { return `throws: ${e.message}`; }
 }
 
-test("Topbar props: here is 'agile' or 'labs'; agile carries no section links (the operator, 2026-11-03); the lab's product pages", async () => {
+test("Topbar props: here is 'agile' or 'labs'; the lab's product pages; no sections prop (the operator, 2026-11-03)", async () => {
   const fam = await import('../src/data/family.js');
-  const sections = [{ href: '#follow', label: 'Follow a job' }];
   assert.equal(topbarProps(fam, {}), '', 'a product site or the apex: no two-site bar');
   assert.equal(topbarProps(fam, { pkg: 'wicked-crew' }), '');
   assert.equal(topbarProps(fam, { here: 'agile' }), '');
-  assert.equal(topbarProps(fam, { here: 'labs', sections }), '');
-  assert.match(topbarProps(fam, { here: 'agile', sections }), /^throws: Topbar: here='agile' has no section links/, 'agile with section links fails the build');
+  assert.equal(topbarProps(fam, { here: 'labs' }), '');
   assert.match(topbarProps(fam, { here: 'home' }), /^throws: Topbar: here is 'agile' or 'labs'/);
-  assert.match(topbarProps(fam, { sections }), /^throws: Topbar: sections are the two sites'/);
-  assert.match(topbarProps(fam, { here: 'labs', sections: [{ href: '#x' }] }), /^throws: Topbar: sections is an array of \{ href, label \}/);
   assert.match(topbarProps(fam, { here: 'agile', pkg: 'wicked-crew' }), /^throws: Topbar: here='agile' has no product path/);
-  for (const id of ['studio', 'crew', 'garden', 'estate']) assert.equal(topbarProps(fam, { here: 'labs', pkg: `wicked-${id}`, sections }), `${fam.LAB}${id}/`, `the lab's ${id} page`);
+  for (const id of ['studio', 'crew', 'garden', 'estate']) assert.equal(topbarProps(fam, { here: 'labs', pkg: `wicked-${id}` }), `${fam.LAB}${id}/`, `the lab's ${id} page`);
   for (const pkg of ['wicked-interactive', 'wicked-core', 'wicked-bus', 'wicked-installer']) assert.match(topbarProps(fam, { here: 'labs', pkg }), /^throws: Topbar: the lab has no page for/, pkg);
   assert.match(topbarProps(fam, { here: 'labs', pkg: 'wicked-nope' }), /^throws: Topbar: wicked-nope is not in the family/);
 });
 
-test("the two sites' bar: the lockups, the section links before the divider, four icon links, the theme switch, the menu", () => {
-  const bar = familyBar(read('src/components/Topbar.astro'));
+test("the two sites' bar: the lockups, four icon links and no section links, the theme switch, the menu", () => {
+  const top = read('src/components/Topbar.astro');
+  const bar = familyBar(top);
+  // neither site's header carries section links (the operator, 2026-11-03): no prop, no markup, no rules
+  assert.doesNotMatch(top, /sections|family-sec|family-sep/);
   // agile: the logo to the page top; labs: "Wicked Agile / labs" (labs current), "/ <pkg>" on the lab's product page (the product current)
   assert.match(bar, /\{here === 'agile' \? \(\s*<a href="#top" class="wordmark" aria-label="Wicked Agile, home"><Wordmark \/><\/a>\s*\) : \(\s*<nav class="crumbs" aria-label="Breadcrumb">\s*<ol>\s*<li><a href="https:\/\/wickedagile\.com\/" class="wordmark" aria-label="Wicked Agile"><Wordmark \/><\/a><\/li>\s*<li><span class="crumb-sep" aria-hidden="true">\/<\/span><a href=\{LAB\} class="crumb" aria-current=\{pkg \? undefined : 'page'\}>labs<\/a><\/li>\s*\{pkg && <li><span class="crumb-sep" aria-hidden="true">\/<\/span><a href=\{labPage\} class="crumb" aria-current="page">\{pkg\}<\/a><\/li>\}\s*<\/ol>\s*<\/nav>\s*\)\}/);
-  // one nav: the section links, the divider only when there are any, then the four icon links (bar and menu are the same links)
+  // one nav: the four icon links and nothing else (bar and menu are the same links)
   const nav = /<nav class="family-nav" id="nav" aria-label="Main">([\s\S]*?)<\/nav>/.exec(bar)[1];
-  assert.match(nav, /^\s*\{sections\.map\(\(s\) => <a class="family-sec" href=\{s\.href\}>\{s\.label\}<\/a>\)\}\s*\{sections\.length > 0 && <span class="family-sep" aria-hidden="true"><\/span>\}/);
+  assert.match(nav, /^\s*<a class="icon-btn family-ic" href=\{LAB\}/);
+  assert.equal(nav.match(/<a /g).length, 4);
   const icons = [...nav.matchAll(/<a class="icon-btn family-ic" href=(\{[A-Za-z]+\}|"[^"]+")([^>]*)>([\s\S]*?)<\/a>/g)];
   assert.deepEqual(icons.map((m) => m[1]), ['{LAB}', '{BITS}', '"https://medium.com/@mike.parcewski"', '{repo}']);
   assert.deepEqual(icons.map((m) => /aria-label="([^"]+)"/.exec(m[2])[1]), ['Wicked Labs', 'Media: wicked bits (opens in a new tab)', 'Medium (opens in a new tab)', 'GitHub (opens in a new tab)']);
@@ -369,10 +369,9 @@ test("the two sites' bar: the lockups, the section links before the divider, fou
   assert.doesNotMatch(css, /--family-max|--family-gutter/, 'no separate two-site grid');
   assert.match(css, /@media\(max-width:1023px\)\{\s*\.topbar--family\.js \.family-nav\{display:none\}/);
   assert.match(read('src/scripts/topbar-family.js'), /window\.matchMedia\('\(min-width: 1024px\)'\)/);
-  // without script: no theme switch, no menu; below 1024 px the section links stay in the bar and the icons go
+  // without script: no theme switch, no menu; both sites keep their four icon links in the bar
   assert.match(css, /\.topbar--family:not\(\.js\) \.family-btn\{display:none\}/);
-  assert.match(css, /\.topbar--family:not\(\.js\) \.family-sep\{display:none\}\s*\.topbar--family:not\(\.js\) \.family-nav:has\(\.family-sec\) \.family-ic\{display:none\}/, "the lab's icons give way to its section links");
-  assert.doesNotMatch(css, /\.topbar--family:not\(\.js\) \.family-(sec|nav)\{display:none/, 'the section links (and agile\'s icons) stay in the bar');
+  assert.doesNotMatch(css, /\.topbar--family:not\(\.js\)[^{}]*\.family-(ic|nav)\{display:none/, 'the icon links stay in the bar');
   // a narrow window without script: the lockup keeps its size, the links scroll sideways in their row
   assert.match(css, /\.topbar--family:not\(\.js\) \.crumbs,\.topbar--family:not\(\.js\) \.crumbs li\{flex-shrink:0\}/);
   assert.match(css, /\.topbar--family:not\(\.js\) \.family-nav\{min-width:0;overflow-x:auto;/);
@@ -381,8 +380,7 @@ test("the two sites' bar: the lockups, the section links before the divider, fou
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.topbar--family\.js \.family-nav\.open\{animation:none\}\}/);
 });
 
-/** A small DOM for the two sites' bar script: the bar (lockup, nav of 2 section links and 2 icon links, theme, menu
- *  button) and one control outside it. Visibility follows the CSS: the nav's links show on a desktop or in the open
+/** A small DOM for the two sites' bar script: the bar (lockup, nav of 2 icon links, theme, menu button) and one control outside it. Visibility follows the CSS: the nav's links show on a desktop or in the open
  *  menu, the menu button below 1024 px. The browser's focus fixup is modelled: a hidden focused control drops focus to the body. */
 function familyPage() {
   const L = new Map();
@@ -400,8 +398,8 @@ function familyPage() {
     return e;
   };
   const doc = el('document', '#document', null), body = el('body', 'BODY', doc), bar = el('bar', 'HEADER', body), nav = el('nav', 'NAV', bar);
-  const sec = el('sec', 'A', nav, { href: '#components' }), sec2 = el('sec2', 'A', nav, { href: '#changes' }), lab = el('lab', 'A', nav, { href: 'https://wickedlabs.ai/' }), bits = el('bits', 'A', nav, { href: 'https://bits.wickedagile.com/', target: '_blank' });
-  const theme = el('themeBtn', 'BUTTON', bar), btn = el('menuBtn', 'BUTTON', bar, { 'aria-expanded': 'false' }), outside = el('outside', 'BUTTON', body), section = el('components', 'SECTION', body);
+  const lab = el('lab', 'A', nav, { href: 'https://wickedlabs.ai/' }), bits = el('bits', 'A', nav, { href: 'https://bits.wickedagile.com/', target: '_blank' });
+  const theme = el('themeBtn', 'BUTTON', bar), btn = el('menuBtn', 'BUTTON', bar, { 'aria-expanded': 'false' }), outside = el('outside', 'BUTTON', body);
   page.shown = (e) => (e === btn ? !wide : nav.contains(e) && e !== nav ? wide || nav.cls.has('open') : true);
   const fire = (target, type, ev) => { for (let x = target; x; x = x.parent) for (const fn of L.get(`${x.id}:${type}`) || []) fn({ target, ...ev }); };
   page.focus = (e) => { const prev = active; active = e; if (prev && bar.contains(prev) && !bar.contains(e)) for (const fn of L.get('bar:focusout') || []) fn({ target: prev, relatedTarget: e, currentTarget: bar }); fire(e, 'focusin', {}); };
@@ -411,11 +409,11 @@ function familyPage() {
   page.key = (key) => fire(doc, 'keydown', { key });
   let onChange = null;
   page.resize = (toWide) => { wide = toWide; if (active && !page.shown(active)) active = body; onChange && onChange(); };
-  Object.assign(page, { bar, nav, sec, sec2, lab, bits, theme, btn, outside, section, body, active: () => active, open: () => [nav.cls.has('open'), btn.getAttribute('aria-expanded')] });
-  const byId = { nav, menuBtn: btn, themeBtn: theme, components: section };
+  Object.assign(page, { bar, nav, lab, bits, theme, btn, outside, body, active: () => active, open: () => [nav.cls.has('open'), btn.getAttribute('aria-expanded')] });
+  const byId = { nav, menuBtn: btn, themeBtn: theme };
   const document = { querySelector: (q) => (q === 'header.topbar--family' ? bar : null), getElementById: (id) => byId[id] ?? null, body,
     get activeElement() { return active; }, addEventListener: doc.addEventListener };
-  nav.querySelector = (q) => (q === 'a' ? sec : null);
+  nav.querySelector = (q) => (q === 'a' ? lab : null);
   const window = { matchMedia: () => ({ get matches() { return wide; }, addEventListener: (t, fn) => { onChange = fn; } }) };
   vm.runInNewContext(read('src/scripts/topbar-family.js'), { document, window, setTimeout: (f) => timers.push(f), decodeURIComponent });
   return page;
@@ -426,7 +424,7 @@ test("the two sites' menu: focus moves in; Escape, a click outside or focus leav
   assert.ok(p.bar.cls.has('js'), 'the script marks the bar, which turns the menu layout on');
   p.click(p.btn);
   assert.deepEqual(p.open(), [true, 'true']);
-  assert.equal(p.active(), p.sec, 'opening the menu moves focus to its first link');
+  assert.equal(p.active(), p.lab, 'opening the menu moves focus to its first link');
   p.key('Escape');
   assert.deepEqual(p.open(), [false, 'false']);
   assert.equal(p.active(), p.btn, 'Escape puts focus back on the menu button');
@@ -443,15 +441,10 @@ test("the two sites' menu: focus moves in; Escape, a click outside or focus leav
   assert.equal(p.active(), p.btn, 'following a new-tab link closes the menu and leaves focus on its button');
   p.click(p.btn); p.click(p.lab);
   assert.deepEqual(p.open(), [false, 'false'], 'following a same-tab link closes the menu');
-  p.click(p.btn); p.click(p.sec);
-  assert.deepEqual(p.open(), [false, 'false']);
-  assert.equal(p.active(), p.section, 'a section link moves focus to its section');
-  assert.equal(p.section.getAttribute('tabindex'), '-1');
-  // a modified click (cmd/ctrl/shift) opens the section elsewhere: this page's focus does not jump to it
-  p = familyPage(); p.click(p.btn); p.click(p.sec, { metaKey: true });
+  // a modified click (cmd/ctrl/shift) opens the link elsewhere: the page stays, focus on the menu button
+  p = familyPage(); p.click(p.btn); p.click(p.lab, { metaKey: true });
   assert.deepEqual(p.open(), [false, 'false']);
   assert.equal(p.active(), p.btn, 'a modified click closes the menu like a new-tab link, focus on its button');
-  assert.equal(p.section.getAttribute('tabindex'), null, 'and the section is not focused in this tab');
   // focus that leaves by way of the browser's own controls and comes back elsewhere closes the menu
   p = familyPage(); p.click(p.btn); p.toBrowser();
   assert.deepEqual(p.open(), [true, 'true'], 'in the browser controls the menu stays (nothing else has focus)');
@@ -460,13 +453,13 @@ test("the two sites' menu: focus moves in; Escape, a click outside or focus leav
   p.key('Escape');
   assert.equal(p.active(), p.outside, 'and a later Escape leaves focus where it is');
   // layout changes
-  p = familyPage(); p.resize(true); p.sec.focus(); p.resize(false);
-  assert.equal(p.active(), p.btn, 'desktop -> tablet: the focused section link hides, focus goes to the menu button');
+  p = familyPage(); p.resize(true); p.lab.focus(); p.resize(false);
+  assert.equal(p.active(), p.btn, 'desktop -> tablet: the focused icon link hides, focus goes to the menu button');
   p.click(p.btn); p.resize(true);
   assert.deepEqual(p.open(), [false, 'false'], 'the menu closes once the bar holds the links again');
   p = familyPage(); p.btn.focus(); p.resize(true);
   assert.equal(p.active(), p.theme, 'tablet -> desktop: the menu button hides, focus goes to the theme switch');
-  p = familyPage(); p.resize(true); p.sec.focus(); p.click(p.body); p.resize(false);
+  p = familyPage(); p.resize(true); p.lab.focus(); p.click(p.body); p.resize(false);
   assert.equal(p.active(), p.body, 'after a click away from the header, a layout change does not pull focus back into it');
 });
 
@@ -474,7 +467,8 @@ test("README: the two sites' example is valid Astro (comments outside the compon
   const ex = /```astro\n(<!-- wickedagile\.com[\s\S]*?)```/.exec(read('README.md'))[1];
   for (const tag of ex.matchAll(/<(Topbar|Footer)\b[\s\S]*?\/>/g)) assert.doesNotMatch(tag[0], /<!--/, tag[0].slice(0, 60));
   assert.match(ex, /<Topbar here="agile" repo="[^"]+" \/>/);
-  assert.doesNotMatch(ex, /variant|sections=\{\[[^\]]*\]\}[^/]*here="agile"/);
+  assert.match(ex, /<Topbar here="labs" repo="[^"]+" \/>/);
+  assert.doesNotMatch(ex, /variant|sections/);
 });
 
 test('LAB_HREFS: false on main, so every href is today\'s; flipped, the tier-aware lab hrefs and the two sites', async () => {
