@@ -71,21 +71,27 @@ it resolves through the sites' dev alias and from the installed package alike), 
 
 Component props worth knowing:
 - `Topbar`: `pkg` (the product's package name: the lockup becomes the path "Wicked Agile / labs / <pkg>", and the last crumb links the product's site from the family manifest; omit it on the umbrella site, which keeps the lockup alone) · `repo` (GitHub-icon link → that page's repo) · `here` and `sections` (the two sites, below).
-- `Footer`: `repo` (GitHub-chiclet link → that page's repo) · `variant="byline"` (the two sites, below).
+- `Footer`: `repo` (GitHub-chiclet link → that page's repo).
 
 ### The two sites: wickedagile.com and wickedlabs.ai (DES-SITES-V2 §3.4)
 
-One header and one footer on both sites, identical apart from the lockup and the lab's section links.
-A product site passes neither new prop and renders the same header and footer markup as before
-(`test/chrome.test.mjs` pins it to bc5ca29's).
+One header on both sites, identical apart from the lockup and the lab's section links; the footer is the
+family `Footer`, as on every site (the operator, 2026-11-03), with the site's `repo`. A product site passes
+neither new prop and renders the same header markup as before (`test/chrome.test.mjs` pins it to bc5ca29's).
 
 ```astro
-<Topbar here="agile" />                                   <!-- wickedagile.com: the Wicked Agile logo, to the page top -->
-<Topbar here="labs" sections={[                           <!-- wickedlabs.ai: "Wicked Agile / labs", labs the current page -->
+<!-- wickedagile.com: the Wicked Agile logo, to the page top -->
+<Topbar here="agile" repo="https://github.com/mikeparcewski/wickedagile" />
+
+<!-- wickedlabs.ai: "Wicked Agile / labs", labs the current page -->
+<Topbar here="labs" repo="https://github.com/mikeparcewski/wickedlabs" sections={[
   { href: '#follow', label: 'Follow a job' }, { href: '#components', label: 'Components' }, { href: '#changes', label: 'Releases' },
 ]} />
-<Topbar here="labs" pkg="wicked-crew" sections={…} />     <!-- the lab's crew page: "Wicked Agile / labs / wicked-crew", the product current -->
-<Footer variant="byline" />
+
+<!-- the lab's crew page: "Wicked Agile / labs / wicked-crew", the product current -->
+<Topbar here="labs" pkg="wicked-crew" repo="https://github.com/mikeparcewski/wickedlabs" sections={labSections} />
+
+<Footer repo="https://github.com/mikeparcewski/wickedlabs" />
 ```
 
 - **`here`** (`'agile'` | `'labs'`) switches to the two-site bar: 56 px tall (`--topbar-h` is 56px on the
@@ -102,8 +108,10 @@ A product site passes neither new prop and renders the same header and footer ma
   hides the focused control hands focus to a visible stand-in (the menu button, or the theme switch).
   A site must not add its own handlers for `#nav`, `#menuBtn` or `#themeBtn`. A site with its own
   Escape handler should ignore an Escape whose target is inside `header.topbar` (the menu's own).
-- **Without script** the section links stay in the bar, the theme switch and the menu button hide, and
-  the byline footer adds the lab and wicked bits links (below 1024 px the header has no icons).
+- **Without script** there is no menu: the theme switch and the menu button hide; below 1024 px the lab's
+  section links stay in the bar and its icon links give way (the lab is its own "labs" crumb, and the
+  footer carries wicked bits, Medium and GitHub), while wickedagile.com keeps its four icon links in the bar.
+  On a narrow window the lockup keeps its size and the links scroll sideways in their row.
 - **One grid**: the bar's inner box is the company site's content wrap, 1600 px wide and 32 px in
   (16 px at 760 px and below), published on the page as `--family-max` and `--family-gutter` for the
   sites' own wraps (`max-width: var(--family-max); padding: 0 var(--family-gutter)`), so the lockup and
@@ -111,10 +119,7 @@ A product site passes neither new prop and renders the same header and footer ma
 - **Selectors** (for the sites' e2e): `header.topbar.topbar--family`, the lockup `a.wordmark` (agile) or
   `nav.crumbs` with `.crumb` links (labs), `#nav.family-nav` holding `a.family-sec` (section links),
   `.family-sep` and `a.family-ic` (each with `.family-label` and `.family-tag` for its menu row),
-  `#themeBtn`, `#menuBtn` (`aria-controls="nav"`, `aria-expanded`); the footer `footer.family-byline`.
-- **`Footer variant="byline"`**: one line, "Wicked Agile · by Mike Parcewski", Medium ↗ and GitHub ↗ (both
-  open a new tab and say so to screen readers); a phone drops "Wicked Agile ·". A plain `<footer>`: it is
-  the page's contentinfo where the site puts it at the top level.
+  `#themeBtn`, `#menuBtn` (`aria-controls="nav"`, `aria-expanded`).
 - **Tokens** (the design package): `--accent-wicked-line` and `--accent-wicked-deep`, the gold for lines,
   rings and small graphic fills (map marks, dots, the Work checkbox), never text: the signal yellow on
   dark, #9a7600 and #7a5d00 on light, each 3:1 on every surface (`scripts/contrast.mjs`).

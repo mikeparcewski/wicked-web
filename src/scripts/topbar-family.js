@@ -4,9 +4,9 @@
    - Without script the header stays as the HTML draws it: the section links in the bar, the theme and menu
      buttons hidden. This script marks the header `js`, which turns the menu layout on.
    - The menu button opens the menu and moves focus to its first link. Escape closes it and puts focus back on
-     the button; so does following a link that opens a new tab (the page stays). A click outside the header, or
-     focus leaving the header, closes it.
-   - Following one of the page's own section links (#id) moves focus to that section.
+     the button; so does following a link that opens a new tab, or a modified click (the page stays). A click
+     outside the header, or focus leaving the header (also by way of the browser's own controls), closes it.
+   - Following one of the page's own section links (#id) in this tab moves focus to that section.
    - A layout change that hides the focused control hands focus to a visible stand-in (a section link hidden by
      the menu: the menu button; the menu button hidden on a desktop: the theme switch), and the menu closes
      once the bar holds its links again. */
@@ -34,11 +34,15 @@
   nav.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a') : null;
     if (!a) return;
-    if (isOpen()) setOpen(false, a.getAttribute('target') === '_blank');
+    /* a modified click opens the link elsewhere (a new tab or window): this page stays where it is */
+    var elsewhere = a.getAttribute('target') === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+    if (isOpen()) setOpen(false, elsewhere);
     var href = a.getAttribute('href') || '';
-    if (href.charAt(0) === '#' && href.length > 1) {
+    if (!elsewhere && !e.defaultPrevented && href.charAt(0) === '#' && href.length > 1) {
       setTimeout(function () {
-        var to = document.getElementById(decodeURIComponent(href.slice(1)));
+        var id;
+        try { id = decodeURIComponent(href.slice(1)); } catch (x) { return; }
+        var to = document.getElementById(id);
         if (!to) return;
         if (!to.hasAttribute('tabindex')) to.setAttribute('tabindex', '-1');
         to.focus({ preventScroll: true });
@@ -58,7 +62,12 @@
      body before any change event runs, so the stand-in is found from here (cleared once focus, or a press, lands
      outside the header) */
   var last = null;
-  document.addEventListener('focusin', function (e) { last = bar.contains(e.target) ? e.target : null; });
+  document.addEventListener('focusin', function (e) {
+    var inBar = bar.contains(e.target);
+    last = inBar ? e.target : null;
+    /* focus that left the header for the browser's controls (no related target) and came back elsewhere */
+    if (!inBar && isOpen()) setOpen(false, false);
+  });
   document.addEventListener('pointerdown', function (e) { if (!bar.contains(e.target)) last = null; });
   var wide = window.matchMedia ? window.matchMedia('(min-width: 1024px)') : null;
   function onLayout() {

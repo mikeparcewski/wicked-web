@@ -5,39 +5,21 @@
  * works on sites that don't define a global .wrap.
  *
  * Props (per-site):
- *   repo    — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
- *   variant — 'byline' on the two sites (DES-SITES-V2 §3.4): one line, "Wicked Agile · by Mike
- *             Parcewski", Medium ↗ and GitHub ↗ (a phone drops the "Wicked Agile ·"). A plain
- *             <footer>: the page's contentinfo where the site puts it at the top level. Without
- *             script it also carries the lab and wicked bits, which the header's menu holds.
- *             Omit it on the product sites, which keep the footer below unchanged.
+ *   repo — GitHub URL the footer's "GitHub ↗" chiclet points at (this page's repo).
  *
  * The brand block opens with the Wordmark lockup (the same one as the Topbar).
  * After the plane columns: a Media column (wicked bits) and a promo card for the
  * latest bit, both from data/family.js (BITS, LATEST_BIT).
  */
-import { BITS, GH, LAB, LATEST_BIT, PLANES, TAGLINE } from '../data/family.js';
+import { BITS, GH, LATEST_BIT, PLANES, TAGLINE } from '../data/family.js';
 import Wordmark from './Wordmark.astro';
 
 const {
   repo = GH,
-  variant = '',
 } = Astro.props;
-if (!['', 'byline'].includes(variant)) throw new Error(`Footer: variant is 'byline' or omitted, not ${JSON.stringify(variant)}`);
-/* the byline footer's own no-script switch: its lab and bits links show until this marks it .js */
-const BYLINE_JS = "document.querySelectorAll('footer.family-byline').forEach(function(f){f.classList.add('js')});";
 ---
 
 <!-- FOOTER -->
-{variant === 'byline' ? (
-  <footer class="family-byline">
-    <span><span class="byline-pre">Wicked Agile · </span>by Mike Parcewski</span>
-    <a class="byline-nojs" href={LAB}>Wicked Labs</a>
-    <a class="byline-nojs" href={BITS} target="_blank" rel="noopener">wicked bits ↗<span class="byline-sr"> (opens in a new tab)</span></a>
-    <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">Medium ↗<span class="byline-sr"> (opens in a new tab)</span></a>
-    <a href={repo} target="_blank" rel="noopener">GitHub ↗<span class="byline-sr"> (opens in a new tab)</span></a>
-  </footer>
-) : (
 <footer class="footer">
   <div class="wrap">
     <div class="footer-main">
@@ -80,7 +62,7 @@ const BYLINE_JS = "document.querySelectorAll('footer.family-byline').forEach(fun
       <span>Made by Mike</span>
     </div>
   </div>
-</footer>)}{variant === 'byline' && <script is:inline set:html={BYLINE_JS}></script>}
+</footer>
 
 <style is:global>
 /* FOOTER */
@@ -148,16 +130,5 @@ const BYLINE_JS = "document.querySelectorAll('footer.family-byline').forEach(fun
   /* the promo card stacks: its "Play it →" drops under the line */
   .footer-promo{min-width:0;grid-template-columns:minmax(0,1fr)}
   .footer-promo-cta{grid-column:1;grid-row:auto;margin-top:8px}
-}
-
-/* THE BYLINE (variant="byline", the two sites): its own class names, so no product-site rule meets it */
-.family-byline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding:16px 20px 0;border-top:1px solid var(--hairline);font-family: var(--font-sans);font-size: var(--text-body);color:var(--faint)}
-.family-byline a{color:var(--muted);text-decoration:none;transition:color .15s}
-.family-byline a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-.family-byline.js .byline-nojs{display:none}
-.byline-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-@media(max-width:760px){
-  .family-byline{gap:4px 16px;padding:8px 4px 0;font-size: var(--text-caption)}
-  .byline-pre{display:none}
 }
 </style>

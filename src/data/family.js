@@ -7,7 +7,7 @@
  *   - this repo: components/Topbar.astro (the product path's product link,
  *     the Wicked Labs and Media links; on the two sites, `href` for the lab's product
  *     page), components/Footer.astro (one link column per plane, the
- *     Media column and the latest-bit promo card; the byline's lab and bits links),
+ *     Media column and the latest-bit promo card),
  *     components/SameGarden.astro (the four-plane map)
  *   - wickedagile: src/components/Shipped.astro (`layers` / `capstone` /
  *     `packages`) and src/scripts/data.js (`FEATURED`)
@@ -170,7 +170,7 @@ export function sitesFor(lab = LAB_HREFS) {
       { name: 'wickedagile', short: 'Wicked Agile', href: 'https://wickedagile.com/', hasSite: true },
       { name: 'wickedlabs', short: 'Wicked Labs', href: LAB, hasSite: true },
     ]
-    : PRODUCTS.filter((s) => s.hasSite);
+    : PRODUCTS.filter((s) => s.hasSite).map((s) => ({ ...s, href: href(s.name, false) }));
 }
 export const SITES = sitesFor();
 

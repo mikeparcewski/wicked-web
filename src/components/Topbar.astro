@@ -233,9 +233,11 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
    Every rule is scoped to .topbar--family, so a product site's header is untouched. The bar is 56 px, not
    64 (the sites' frames are built on 56), and the root learns it so a page's offsets follow. One grid for
    the bar and the content: the bar's inner box is the company site's content wrap (1600 px, 32 px in;
-   16 px on phones), published as --family-max and --family-gutter for the sites' own wraps. The icon links
+   16 px on phones), published as --family-max and --family-gutter for the sites' own wraps (the bar's own rule
+   stands apart from the :root:has() one, so a browser without :has() still draws the bar right). The icon links
    and the theme switch are the product bar's .icon-btn; the path is its .crumbs. */
-:root:has(.topbar--family),.topbar--family{--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
+.topbar--family{--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
+:root:has(.topbar--family){--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
 .topbar--family .topbar__inner{justify-content:flex-start;gap:12px;max-width:var(--family-max);padding:0 var(--family-gutter)}
 .topbar--family .topbar__inner>.wordmark{margin-right:auto}
 .family-nav{display:flex;align-items:center;gap:2px}
@@ -247,8 +249,7 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 .family-ic:first-child,.family-sep+.family-ic{margin-left:0}
 .family-label,.family-tag{display:none}
 .family-glyph{display:inline-block;width:.95em;height:.95em;opacity:.82;flex-shrink:0}
-/* without script there is no theme switch and no menu: the section links stay in the bar (and the icons
-   wait in the byline footer); the script marks the bar .js */
+/* without script there is no theme switch and no menu; the script marks the bar .js */
 .topbar--family:not(.js) .family-btn{display:none}
 /* below a laptop the section links and the icons, labelled, go into the menu; the theme switch, then the
    menu button, as on the product bar */
@@ -263,18 +264,27 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
   .topbar--family .family-nav.open .family-ic>svg{display:none}
   .topbar--family .family-nav.open .family-label{display:inline-flex;align-items:center;gap:.5em;min-width:0;white-space:nowrap}
   .topbar--family .family-nav.open .family-tag{display:inline;font-weight: var(--weight-regular);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
-  .topbar--family:not(.js) .family-ic,.topbar--family:not(.js) .family-sep{display:none}
-  .topbar--family:not(.js) .family-nav:not(:has(.family-sec)){display:none}
+  /* without script: the lab's section links stay in the bar and its icons give way (the lab is its own
+     crumb; the footer carries bits, Medium and GitHub); wickedagile.com, with no section links, keeps its
+     four icon links in the bar */
+  .topbar--family:not(.js) .family-sep{display:none}
+  .topbar--family:not(.js) .family-nav:has(.family-sec) .family-ic{display:none}
+  /* and on a narrow window the lockup keeps its size while the links scroll sideways in their own row */
+  .topbar--family:not(.js) .crumbs,.topbar--family:not(.js) .crumbs li{flex-shrink:0}
+  .topbar--family:not(.js) .family-nav{min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
 }
 @media(max-width:760px){
-  :root:has(.topbar--family),.topbar--family{--family-gutter:var(--space-4)}
+  .topbar--family{--family-gutter:var(--space-4)}
+  :root:has(.topbar--family){--family-gutter:var(--space-4)}
   .topbar--family .topbar__inner{gap:8px}
   .topbar--family:not(.js) .family-sec{padding:8px 6px}
+  .topbar--family:not(.js) .family-ic{margin-left:4px}
+  .topbar--family:not(.js) .family-ic:first-child{margin-left:0}
   /* the lockup and the path's links are 44 px tall tap targets (wicked-web#58) */
   .topbar--family .wordmark{min-height:44px}
   .topbar--family .crumb{line-height:44px}
 }
-@media(prefers-reduced-motion:reduce){.topbar--family .family-nav.open{animation:none}}
+@media(prefers-reduced-motion:reduce){.topbar--family.js .family-nav.open{animation:none}}
 </style>
 
 <script is:inline>

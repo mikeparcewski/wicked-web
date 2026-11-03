@@ -278,20 +278,20 @@ test('studio is the ADE, spelled out on first use; no studio line says "IDE for 
   assert.doesNotMatch(read('src/data/family.js'), /IDE for running/);
 });
 
-/* ── The two sites (DES-SITES-V2 §3.4, §9.1 B1): Topbar here/sections, Footer variant="byline", LAB_HREFS ── */
+/* ── The two sites (DES-SITES-V2 §3.4, §9.1 B1): Topbar here/sections, LAB_HREFS ── */
 
 const fixture = (f) => read(`test/fixtures/${f}`).replace(/\n$/, '');
 
-test('product sites: with neither new prop, the Topbar and the Footer render bc5ca29\'s markup, verbatim', () => {
+test('product sites: with neither new prop, the Topbar renders bc5ca29\'s markup, verbatim; the Footer is bc5ca29\'s', () => {
   const top = read('src/components/Topbar.astro');
   const foot = read('src/components/Footer.astro');
   // the product bar is the else branch of `here`, byte for byte bc5ca29's header; its script is bc5ca29's, emitted for both
   assert.equal(productBar(top), fixture('bc5ca29-topbar-product.astro.txt'));
   assert.match(top, /<!-- TOPBAR -->\n\{here \? \(\n/);
   assert.ok(top.includes(`\n${fixture('bc5ca29-topbar-script.astro.txt')}{here && <script is:inline set:html={FAMILY_JS}></script>}\n`), 'the product script is unchanged and the family script rides only with here');
-  // the default footer is the else branch of `variant`, byte for byte bc5ca29's
-  assert.ok(foot.includes(`) : (\n${fixture('bc5ca29-footer.astro.txt')})}{variant === 'byline' && <script is:inline set:html={BYLINE_JS}></script>}`));
-  assert.match(foot, /<!-- FOOTER -->\n\{variant === 'byline' \? \(\n/);
+  // the footer is the family Footer on every site, the two included (the operator, 2026-11-03): bc5ca29's markup, no variant
+  assert.ok(foot.includes(`<!-- FOOTER -->\n${fixture('bc5ca29-footer.astro.txt')}\n`));
+  assert.doesNotMatch(foot, /variant|byline/);
   // and no two-site rule reaches the product markup: every rule after the product CSS is scoped to the two sites' classes
   const css = noComments(styleOf(top));
   const fam = css.slice(css.indexOf(':root:has(.topbar--family)'));
@@ -300,11 +300,6 @@ test('product sites: with neither new prop, the Topbar and the Footer render bc5
     const sel = m[1].replace(/@media[^{]*\{/, '').trim();
     if (!sel) continue;
     for (const one of sel.split(',')) assert.match(one, /topbar--family|\.family-/, `unscoped two-site rule: ${one.trim()}`);
-  }
-  const bylineCss = noComments(styleOf(foot)).slice(noComments(styleOf(foot)).indexOf('.family-byline{'));
-  for (const m of bylineCss.matchAll(/([^{}]+)\{[^{}]*\}/g)) {
-    const sel = m[1].replace(/@media[^{]*\{/, '').trim();
-    if (sel) for (const one of sel.split(',')) assert.match(one, /family-byline|\.byline-/, `unscoped byline rule: ${one.trim()}`);
   }
 });
 
@@ -362,15 +357,24 @@ test("the two sites' bar: the lockups, the section links before the divider, fou
   assert.doesNotMatch(bar, /wickedlabs\.ai|bits\.wickedagile\.com|data-tip|mobileMenu/);
   // 56 px, and the root learns it; one grid with the company site's wrap; the menu below 1024 px, as the script's media query
   const css = noComments(styleOf(read('src/components/Topbar.astro')));
-  assert.match(css, /:root:has\(\.topbar--family\),\.topbar--family\{--topbar-h:56px;--family-max:1600px;--family-gutter:var\(--space-8\)\}/);
+  // the bar's own rule stands apart from the :root:has() one: a browser without :has() drops only that rule
+  assert.match(css, /(^|\})\s*\.topbar--family\{--topbar-h:56px;--family-max:1600px;--family-gutter:var\(--space-8\)\}/);
+  assert.match(css, /\}\s*:root:has\(\.topbar--family\)\{--topbar-h:56px;--family-max:1600px;--family-gutter:var\(--space-8\)\}/);
+  assert.doesNotMatch(css, /:has\([^)]*\)[^{}]*,|,[^{}]*:has\(/, 'no :has() grouped with another selector');
   assert.match(css, /\.topbar--family \.topbar__inner\{[^}]*max-width:var\(--family-max\);padding:0 var\(--family-gutter\)\}/);
-  assert.match(css, /@media\(max-width:760px\)\{\s*:root:has\(\.topbar--family\),\.topbar--family\{--family-gutter:var\(--space-4\)\}/);
+  assert.match(css, /@media\(max-width:760px\)\{\s*\.topbar--family\{--family-gutter:var\(--space-4\)\}\s*:root:has\(\.topbar--family\)\{--family-gutter:var\(--space-4\)\}/);
   assert.match(css, /@media\(max-width:1023px\)\{\s*\.topbar--family\.js \.family-nav\{display:none\}/);
   assert.match(read('src/scripts/topbar-family.js'), /window\.matchMedia\('\(min-width: 1024px\)'\)/);
   // without script: no theme switch, no menu; below 1024 px the section links stay in the bar and the icons go
   assert.match(css, /\.topbar--family:not\(\.js\) \.family-btn\{display:none\}/);
-  assert.match(css, /\.topbar--family:not\(\.js\) \.family-ic,\.topbar--family:not\(\.js\) \.family-sep\{display:none\}/);
-  assert.doesNotMatch(css, /\.topbar--family:not\(\.js\) \.family-sec\{display:none/);
+  assert.match(css, /\.topbar--family:not\(\.js\) \.family-sep\{display:none\}\s*\.topbar--family:not\(\.js\) \.family-nav:has\(\.family-sec\) \.family-ic\{display:none\}/, "the lab's icons give way to its section links");
+  assert.doesNotMatch(css, /\.topbar--family:not\(\.js\) \.family-(sec|nav)\{display:none/, 'the section links (and agile\'s icons) stay in the bar');
+  // a narrow window without script: the lockup keeps its size, the links scroll sideways in their row
+  assert.match(css, /\.topbar--family:not\(\.js\) \.crumbs,\.topbar--family:not\(\.js\) \.crumbs li\{flex-shrink:0\}/);
+  assert.match(css, /\.topbar--family:not\(\.js\) \.family-nav\{min-width:0;overflow-x:auto;/);
+  // reduced motion stops the menu's entrance, at the specificity of the rule that starts it
+  assert.match(css, /\.topbar--family\.js \.family-nav\.open\{display:flex;[^}]*animation:mm-in/);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.topbar--family\.js \.family-nav\.open\{animation:none\}\}/);
 });
 
 /** A small DOM for the two sites' bar script: the bar (lockup, nav of 2 section links and 2 icon links, theme, menu
@@ -397,7 +401,9 @@ function familyPage() {
   page.shown = (e) => (e === btn ? !wide : nav.contains(e) && e !== nav ? wide || nav.cls.has('open') : true);
   const fire = (target, type, ev) => { for (let x = target; x; x = x.parent) for (const fn of L.get(`${x.id}:${type}`) || []) fn({ target, ...ev }); };
   page.focus = (e) => { const prev = active; active = e; if (prev && bar.contains(prev) && !bar.contains(e)) for (const fn of L.get('bar:focusout') || []) fn({ target: prev, relatedTarget: e, currentTarget: bar }); fire(e, 'focusin', {}); };
-  page.click = (e) => { fire(e, 'pointerdown', {}); fire(e, 'click', {}); timers.splice(0).forEach((f) => f()); };
+  page.click = (e, mods = {}) => { fire(e, 'pointerdown', {}); fire(e, 'click', mods); timers.splice(0).forEach((f) => f()); };
+  /* Shift+Tab past the first control into the browser's own controls: focus leaves with no related target */
+  page.toBrowser = () => { const prev = active; active = null; if (prev && bar.contains(prev)) for (const fn of L.get('bar:focusout') || []) fn({ target: prev, relatedTarget: null, currentTarget: bar }); };
   page.key = (key) => fire(doc, 'keydown', { key });
   let onChange = null;
   page.resize = (toWide) => { wide = toWide; if (active && !page.shown(active)) active = body; onChange && onChange(); };
@@ -437,6 +443,18 @@ test("the two sites' menu: focus moves in; Escape, a click outside or focus leav
   assert.deepEqual(p.open(), [false, 'false']);
   assert.equal(p.active(), p.section, 'a section link moves focus to its section');
   assert.equal(p.section.getAttribute('tabindex'), '-1');
+  // a modified click (cmd/ctrl/shift) opens the section elsewhere: this page's focus does not jump to it
+  p = familyPage(); p.click(p.btn); p.click(p.sec, { metaKey: true });
+  assert.deepEqual(p.open(), [false, 'false']);
+  assert.equal(p.active(), p.btn, 'a modified click closes the menu like a new-tab link, focus on its button');
+  assert.equal(p.section.getAttribute('tabindex'), null, 'and the section is not focused in this tab');
+  // focus that leaves by way of the browser's own controls and comes back elsewhere closes the menu
+  p = familyPage(); p.click(p.btn); p.toBrowser();
+  assert.deepEqual(p.open(), [true, 'true'], 'in the browser controls the menu stays (nothing else has focus)');
+  p.outside.focus();
+  assert.deepEqual(p.open(), [false, 'false'], 'focus coming back outside the header closes it');
+  p.key('Escape');
+  assert.equal(p.active(), p.outside, 'and a later Escape leaves focus where it is');
   // layout changes
   p = familyPage(); p.resize(true); p.sec.focus(); p.resize(false);
   assert.equal(p.active(), p.btn, 'desktop -> tablet: the focused section link hides, focus goes to the menu button');
@@ -448,29 +466,11 @@ test("the two sites' menu: focus moves in; Escape, a click outside or focus leav
   assert.equal(p.active(), p.body, 'after a click away from the header, a layout change does not pull focus back into it');
 });
 
-test('the byline footer: "Wicked Agile · by Mike Parcewski", Medium ↗, GitHub ↗; without script, the lab and wicked bits too', () => {
-  const foot = read('src/components/Footer.astro');
-  const by = /<footer class="family-byline">([\s\S]*?)<\/footer>/.exec(foot)[1];
-  assert.match(by, /^\s*<span><span class="byline-pre">Wicked Agile · <\/span>by Mike Parcewski<\/span>/);
-  const links = [...by.matchAll(/<a ([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => [m[1], m[2]]);
-  assert.deepEqual(links.map(([a]) => /href=(\{[A-Za-z]+\}|"[^"]+")/.exec(a)[1]), ['{LAB}', '{BITS}', '"https://medium.com/@mike.parcewski"', '{repo}']);
-  assert.deepEqual(links.map(([a]) => /class="byline-nojs"/.test(a)), [true, true, false, false], 'the lab and bits wait in the footer for a page without script');
-  for (const [a, text] of links.slice(1)) {
-    assert.match(a, /target="_blank" rel="noopener"/);
-    assert.match(text, /↗<span class="byline-sr"> \(opens in a new tab\)<\/span>$/);
-  }
-  assert.doesNotMatch(links[0][0], /target=/, 'the lab stays in the tab (no ↗)');
-  assert.doesNotMatch(foot, /<footer class="family-byline"[^>]*role=/, 'a plain footer: the page decides whether it is the contentinfo');
-  const css = noComments(styleOf(foot));
-  assert.match(css, /\.family-byline\.js \.byline-nojs\{display:none\}/);
-  assert.match(css, /@media\(max-width:760px\)\{[^}]*\}\s*\.byline-pre\{display:none\}/, 'a phone drops "Wicked Agile ·"');
-  // the inline switch marks the byline .js; a wrong variant fails the build
-  const js = /const BYLINE_JS = "([^"]+)";/.exec(foot)[1];
-  const f = { cls: new Set() };
-  vm.runInNewContext(js, { document: { querySelectorAll: (q) => (q === 'footer.family-byline' ? [{ classList: { add: (c) => f.cls.add(c) } }] : []) } });
-  assert.ok(f.cls.has('js'));
-  const check = /if \(!\['', 'byline'\]\.includes\(variant\)\) throw [^\n]*\n/.exec(foot)[0];
-  assert.throws(() => vm.runInNewContext(`const variant = 'compact'; ${check}`, { JSON }), /Footer: variant is 'byline' or omitted/);
+test("README: the two sites' example is valid Astro (comments outside the component tags)", () => {
+  const ex = /```astro\n(<!-- wickedagile\.com[\s\S]*?)```/.exec(read('README.md'))[1];
+  for (const tag of ex.matchAll(/<(Topbar|Footer)\b[\s\S]*?\/>/g)) assert.doesNotMatch(tag[0], /<!--/, tag[0].slice(0, 60));
+  assert.match(ex, /<Topbar here="agile" repo="[^"]+" \/>/);
+  assert.doesNotMatch(ex, /variant|sections=\{\[[^\]]*\]\}[^/]*here="agile"/);
 });
 
 test('LAB_HREFS: false on main, so every href is today\'s; flipped, the tier-aware lab hrefs and the two sites', async () => {
@@ -497,8 +497,10 @@ test('LAB_HREFS: false on main, so every href is today\'s; flipped, the tier-awa
     assert.deepEqual([on.href('wicked-core'), on.href('wicked-bus'), on.href('wicked-installer')], [`${lab}#components`, `${lab}#components`, `${lab}#start`]);
     assert.deepEqual(on.SITES.map((s) => [s.name, s.href]), [['wickedagile', 'https://wickedagile.com/'], ['wickedlabs', lab]], 'SITES becomes the two sites');
     assert.equal(on.product('wicked-crew').href, `${lab}crew/`, "a product site's path crumb follows the switch");
+    assert.deepEqual(on.sitesFor(false).map((s) => [s.name, s.href]), off.SITES.map((s) => [s.name, s.href]), 'the explicit form overrides the switch');
   } finally { rmSync(tmp, { force: true }); }
   // the explicit form, for previews and tests, agrees with the module
   assert.equal(off.href('wicked-crew', true), `${lab}crew/`);
   assert.deepEqual(off.sitesFor(true).map((s) => s.href), ['https://wickedagile.com/', lab]);
+  assert.deepEqual(off.sitesFor(false).map((s) => s.href), off.SITES.map((s) => s.href));
 });
