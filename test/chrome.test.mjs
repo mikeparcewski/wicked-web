@@ -130,8 +130,7 @@ function runPage(script, { theme = null, stored = null } = {}) {
   const listeners = {};
   const el = (id) => ({ id, innerHTML: '', attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, getAttribute(k) { return this.attrs[k] ?? null; },
     addEventListener(t, fn) { listeners[`${id}:${t}`] = fn; } });
-  const els = { themeBtn: el('themeBtn'), themeIcon: el('themeIcon'), projectsBtn: el('projectsBtn'), projectsMenu: el('projectsMenu'),
-    menuBtn: el('menuBtn'), mobileMenu: el('mobileMenu') };
+  const els = { themeBtn: el('themeBtn'), themeIcon: el('themeIcon'), menuBtn: el('menuBtn'), mobileMenu: el('mobileMenu') };
   const meta = el('meta');
   const store = new Map(stored ? [['wa-theme-v3', stored]] : []);
   const writes = [];
@@ -196,4 +195,76 @@ test('Media: the Topbar and the Footer link wicked bits, and the promo card rend
   for (const bit of ['href={LATEST_BIT.href}', '{LATEST_BIT.title}', '{LATEST_BIT.line}', 'Play it →']) assert.ok(foot.includes(bit), bit);
   // the manifest is the one place the address lives
   assert.doesNotMatch(top + foot, /bits\.wickedagile\.com|wicked-bits/);
+});
+
+test('Wicked Labs: the flask is one link to the lab, on the desktop and in the phone menu; the Experiments menu is gone', async () => {
+  const fam = await import('../src/data/family.js');
+  assert.equal(fam.LAB, 'https://wickedlabs.ai/');
+  const top = read('src/components/Topbar.astro');
+  // the desktop icon: a plain link with the other icons' box and tooltip, the flask glyph inside
+  assert.match(top, /<a href=\{LAB\} class="icon-btn nav-inline" aria-label="Wicked Labs" data-tip="wicked labs">\s*<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor"[^>]*aria-hidden="true" set:html=\{FLASK_GLYPH\}><\/svg>\s*<\/a>/);
+  // the phone menu: one Wicked Labs row first, then the divider and the media/writing/repo rows
+  const menu = /<nav class="mobile-menu"[^>]*>([\s\S]*?)<\/nav>/.exec(top)[1];
+  assert.match(menu, /^\s*<a href=\{LAB\} class="mm-item"><span class="mm-label"><svg class="mm-glyph"[^>]*set:html=\{FLASK_GLYPH\}><\/svg>Wicked Labs<\/span>/);
+  assert.equal([...menu.matchAll(/<a /g)].length, 4, 'Wicked Labs, wicked bits, Medium, GitHub');
+  assert.equal([...top.matchAll(/href=\{LAB\}/g)].length, 3, 'the flask, its phone row and the path\'s labs crumb');
+  // the menu, its button and its script are gone outright, with no fallback
+  assert.doesNotMatch(top, /projectsBtn|projectsMenu|aria-haspopup|dropdown-menu|dropdown-wrap|dropdown-plane|dropdown-item|dropdown-kicker|mm-plane|dp-(head|dot|note)|di-(label|tag)|Experiments|Browse the experiment|PLANES/);
+  assert.doesNotMatch(top, /wickedlabs\.ai/, 'the manifest is the one place the address lives');
+  // the header's three landmarks are named: the path (product sites), the icon links, the phone menu
+  assert.match(top, /<nav class="nav" aria-label="Links">/);
+  assert.match(top, /<nav class="mobile-menu" id="mobileMenu" aria-label="Menu" hidden>/);
+  // no dead CSS and no unstyled markup: every class the markup uses has a rule, and every rule's class is used
+  // (menu-ic only groups the two menu icons, which are styled by their modifiers)
+  const markup = top.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/g, '');
+  const used = new Set([...markup.matchAll(/class="([^"{]+)"/g)].flatMap((m) => m[1].split(/\s+/)));
+  const styled = new Set([...noComments(styleOf(top)).matchAll(/\.([a-z][a-z0-9_-]*)/g)].map((m) => m[1]));
+  assert.deepEqual([...used].filter((c) => !styled.has(c) && c !== 'menu-ic'), [], 'used but unstyled');
+  assert.deepEqual([...styled].filter((c) => !used.has(c)), [], 'styled but unused');
+});
+
+test('the product path: Wicked Agile / labs / <pkg>, three links; phones keep the mark; the apex keeps the lockup', async () => {
+  const fam = await import('../src/data/family.js');
+  const top = read('src/components/Topbar.astro');
+  // with pkg: a Breadcrumb nav of three links, the slashes decorative; without it, today's lockup link alone
+  assert.match(top, /\{pkg \? \(\s*<nav class="crumbs" aria-label="Breadcrumb">\s*<ol>\s*<li><a href="https:\/\/wickedagile\.com\/" class="wordmark" aria-label="Wicked Agile"><Wordmark \/><\/a><\/li>\s*<li><span class="crumb-sep" aria-hidden="true">\/<\/span><a href=\{LAB\} class="crumb">labs<\/a><\/li>\s*<li><span class="crumb-sep" aria-hidden="true">\/<\/span><a href=\{home\} class="crumb" aria-current=\{atHome \? 'page' : undefined\}>\{pkg\}<\/a><\/li>\s*<\/ol>\s*<\/nav>\s*\) : \(\s*<a href="https:\/\/wickedagile\.com" class="wordmark" aria-label="Wicked Agile">\s*<!--[\s\S]*?-->\s*<Wordmark \/>\s*<\/a>\s*\)\}/);
+  // the product crumb's target and aria-current, run from the frontmatter itself
+  const logic = /const site = product\(pkg\);[\s\S]*?const atHome = [^\n]*\n/.exec(top)[0];
+  const run = (pkg, url) => [...vm.runInNewContext(`${logic}; [home, atHome]`, { product: fam.product, pkg, URL, Astro: { url: new URL(url) } })];
+  const sites = { 'wicked-studio': 'https://ws.wickedagile.com', 'wicked-crew': 'https://wc.wickedagile.com', 'wicked-garden': 'https://wg.wickedagile.com', 'wicked-estate': 'https://we.wickedagile.com' };
+  for (const [pkg, href] of Object.entries(sites)) {
+    assert.deepEqual(run(pkg, `${href}/`), [href, true], `${pkg}: its site's home, the current page there`);
+    assert.deepEqual(run(pkg, `${href}/article/`), [href, false], `${pkg}: not the current page on another page`);
+  }
+  assert.deepEqual(run('bits', 'https://bits.wickedagile.com/'), ['/', true], 'a pkg with no family site links its own root');
+  assert.deepEqual(run('wicked-interactive', 'https://wi.wickedagile.com/x/'), ['/', false]);
+  // phones: the path stays (no rule hides it) and the lockup is clipped to its mark. The clip must fall in the
+  // artwork's gap: right of the mark (its group, scaled) and left of the lettering (translated), at the 15.5 px cap.
+  const css = noComments(styleOf(top));
+  assert.doesNotMatch(css, /\.crumbs?[^{]*\{[^}]*display:\s*none/, 'the path is never hidden');
+  const clip = /@media\(max-width:560px\)\{\.crumbs \.wordmark\{width:(\d+(?:\.\d+)?)px;overflow:hidden\}\}/.exec(css);
+  assert.ok(clip, 'phones clip the lockup to the mark');
+  const svg = read('packages/design-system/brand/wicked-agile-wordmark.svg');
+  const xs = (d) => d.split(/(?=[A-Za-z])/).flatMap((seg) => {
+    const n = (seg.slice(1).match(/-?\d*\.?\d+/g) || []).map(Number);
+    return seg[0] === 'H' ? n : seg[0] === 'V' || seg[0] === 'Z' ? [] : n.filter((_, i) => i % 2 === 0);
+  });
+  const k = 15.5 / 100;
+  const scale = Number(/<g transform="translate\([^)]*\) scale\(([\d.]+)\)">/.exec(svg)[1]);
+  const mark = /<g fill="none"[\s\S]*?<\/g><circle cx="([\d.]+)" cy="[\d.]+" r="([\d.]+)"/.exec(svg);
+  const markX = Math.max(...[...mark[0].matchAll(/ d="([^"]+)"/g)].flatMap((m) => xs(m[1])).map((x) => x + 0.75), Number(mark[1]) + Number(mark[2]));
+  const letter = /<path transform="translate\(([\d.]+) 0\)" fill="currentColor" d="([^"]+)"/.exec(svg);
+  const letterX = Number(letter[1]) + Math.min(...xs(letter[2]));
+  const [markRight, letterLeft, w] = [markX * scale * k, letterX * k, Number(clip[1])];
+  assert.ok(markRight + 1 < w && w < letterLeft - 1, `the clip (${w}px) sits between the mark (${markRight.toFixed(1)}px) and the lettering (${letterLeft.toFixed(1)}px)`);
+});
+
+test('studio is the ADE, spelled out on first use; no studio line says "IDE for running"', async () => {
+  const fam = await import('../src/data/family.js');
+  const studio = fam.product('wicked-studio');
+  for (const k of ['blurb', 'desc']) {
+    assert.ok(studio[k].startsWith('The ADE (agentic development environment) for running a team of coding agents'), `studio.${k}`);
+  }
+  for (const [k, v] of Object.entries(studio)) if (typeof v === 'string') assert.doesNotMatch(v, /IDE for running/, `studio.${k}`);
+  assert.doesNotMatch(read('src/data/family.js'), /IDE for running/);
 });

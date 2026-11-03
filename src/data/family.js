@@ -4,8 +4,8 @@
  * each one lives, and the one-line claim each surface makes about it.
  *
  * Consumers (keep this list current when you add one):
- *   - this repo: components/Topbar.astro (plane dropdown + mobile menu, the
- *     Media link), components/Footer.astro (one link column per plane, the
+ *   - this repo: components/Topbar.astro (the product path's product link,
+ *     the Wicked Labs and Media links), components/Footer.astro (one link column per plane, the
  *     Media column and the latest-bit promo card),
  *     components/SameGarden.astro (the four-plane map)
  *   - wickedagile: src/components/Shipped.astro (`layers` / `capstone` /
@@ -50,8 +50,8 @@ export const PLANES = [
         name: 'wicked-studio', short: 'studio', kind: 'the surface', tag: 'where you direct agents', lang: 'TS',
         href: 'https://ws.wickedagile.com', repo: `${GH}/wicked-studio`, hasSite: true,
         screenshot: '/screenshots/wicked-studio.png',
-        blurb: 'The IDE for running a team of coding agents: start a job with a chat, watch them work in sandboxes, answer what needs you.',
-        desc: 'The IDE for running a team of coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents page; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away.',
+        blurb: 'The ADE (agentic development environment) for running a team of coding agents: start a job with a chat, watch them work in sandboxes, answer what needs you.',
+        desc: 'The ADE (agentic development environment) for running a team of coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents page; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away.',
       },
     ],
   },
@@ -142,3 +142,8 @@ export const TAGLINE = 'One surface · one control plane · one catalog · one r
  *  the address lives: bits.wickedagile.com (the bits site's custom domain, served at its root). */
 export const BITS = 'https://bits.wickedagile.com/';
 export const LATEST_BIT = { title: 'The Work: the one-shift factory', line: 'Job in. Crew out. A playable scrolling factory.', href: `${BITS}the-work-factory/` };
+
+/** Wicked Labs: the lab page. The Topbar's flask button and its phone-menu row link LAB, and so
+ *  does the "labs" crumb of a product site's path ("Wicked Agile / labs / wicked-crew"). LAB is the
+ *  one place the address lives. */
+export const LAB = 'https://wickedlabs.ai/';

@@ -31,7 +31,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
 
 - `wicked-web/data/family.js` — **the family metadata manifest**: `PLANES` (key, name, hue, role,
   the contract on the seam below it, and its products), `PRODUCTS` (flat), `SITES` (products with a
-  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, and Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it). Topbar, Footer and SameGarden render from it, and the apex
+  site), `product(name)`, `FAMILY_LINE`, `TAGLINE`, Media: `BITS` (wicked bits: `https://bits.wickedagile.com/`) and `LATEST_BIT` (the footer's promo card; posting the next bit is a one-line change to it), and `LAB` (Wicked Labs: `https://wickedlabs.ai/`). Topbar, Footer and SameGarden render from it, and the apex
   site imports it for its stack, mobile list and preview pane, so a product's name, link, plane and
   one-line claim change in one place. `FAMILY_LINE` is the family one-liner ("Your coding agents do
   the work. A different agent checks it against your rules. You get the evidence."). Copy rule: a
@@ -40,7 +40,7 @@ Exports (raw Astro/CSS source; the consuming site compiles them):
   labels ("reduced assurance", "approved by default, not verified").
 
 - `wicked-web/layouts/Base.astro` — document shell: `<head>`, fonts, the family favicon, global stylesheet, no-flash theme init, `<slot/>`.
-- `wicked-web/components/Topbar.astro` — fixed nav header + the four-plane ecosystem dropdown + the Media link (wicked bits) + theme toggle.
+- `wicked-web/components/Topbar.astro` — fixed nav header: on a product site the path "Wicked Agile / labs / wicked-<product>" (three links: wickedagile.com, the lab, the product's site; phones keep the mark, "labs" and the product), the Wicked Labs link (the flask), the Media link (wicked bits), Medium, GitHub + theme toggle; on phones the links fold into a menu.
 - `wicked-web/components/Footer.astro` — family footer (one link column per plane, a Media column, the latest-bit promo card, brand block, strip).
 - `wicked-web/components/SameGarden.astro` — THE four-plane map: plane bands with the contracts named on the seams; hover/focus a plane and its role + contracts light up (CSS-only, keyboard-accessible, reduced-motion safe). Pass `current="wicked-<name>"`; that product's card becomes a "you are here" marker so a site never promotes itself.
 - `wicked-web/styles/tokens.css`, `wicked-web/styles/global.css` — the family token names (aliases onto the design package, which `tokens.css` imports itself, so either file works alone) + the type scale + global background grid. `npm run test:chrome` checks them.
@@ -70,7 +70,7 @@ it resolves through the sites' dev alias and from the installed package alike), 
   `--plane-*` and `--font-sans|mono` are the package's own.
 
 Component props worth knowing:
-- `Topbar`: `pkg` (secondary "<logo> / <pkg>" label, omit on the umbrella site) · `repo` (GitHub-icon link → that page's repo).
+- `Topbar`: `pkg` (the product's package name: the lockup becomes the path "Wicked Agile / labs / <pkg>", and the last crumb links the product's site from the family manifest; omit it on the umbrella site, which keeps the lockup alone) · `repo` (GitHub-icon link → that page's repo).
 - `Footer`: `repo` (GitHub-chiclet link → that page's repo).
 - `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default: the family's Shoreline mark, `packages/design-system/brand/favicon.svg`, bundled by Vite so it resolves under a project base too; pass `favicon` only to override it, with a base-aware path on a site under a project base — see gotchas).
 - `SameGarden`: `current` (this site's package name).
@@ -131,7 +131,7 @@ So a shared change isn't "live everywhere" until every consuming site is re-pinn
 
 ## Adding a new family site
 
-1. Add the product to its plane's `products` in `src/data/family.js` with every field its neighbours carry: `name`, `short`, `kind`, `tag`, `lang`, `href`, `repo`, `hasSite: true`, `screenshot`, `blurb`, `desc` (Topbar reads `short` and `tag`, Footer `short`, SameGarden `kind` and `blurb`, the apex `desc`, `lang` and `screenshot`). Topbar, Footer and SameGarden all render from that manifest, so the nav, the footer column and every site's four-plane map pick it up (its own card becomes "you are here" via `current`).
+1. Add the product to its plane's `products` in `src/data/family.js` with every field its neighbours carry: `name`, `short`, `kind`, `tag`, `lang`, `href`, `repo`, `hasSite: true`, `screenshot`, `blurb`, `desc` (Topbar reads `name`, `hasSite` and `href` for the last crumb of the site's own product path, Footer `short`, SameGarden `kind` and `blurb`, the apex `desc`, `lang` and `screenshot`). Footer and SameGarden render from that manifest, so the footer column and every site's four-plane map pick it up (its own card becomes "you are here" via `current`), and its own Topbar's path links its site. The header lists no products: its flask links the lab.
 2. New site consumes the shared `Base`/`Topbar`/`Footer`/`SameGarden` and passes `pkg`/`repo`/`current`.
 3. To show it on the apex's stack, add it to the apex's presentation map (`PRESENT` in `Shipped.astro`, plus `FEATURED` in `src/scripts/data.js` and a screenshot), then re-pin `wicked-web` there.
 

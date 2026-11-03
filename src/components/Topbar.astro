@@ -1,17 +1,20 @@
 ---
 /**
  * Topbar.astro — fixed nav header. Canonical for the wicked-* family.
- * CSS is is:global so the class names survive and the dropdown / theme
+ * CSS is is:global so the class names survive and the menu / theme
  * scripts still match.
  *
  * Props (per-site):
- *   pkg  — secondary header shown as "<logo> / <pkg>" in jetbrains-mono
- *          (e.g. "wicked-garden"). Omit on the umbrella site.
+ *   pkg  — this product's package name (e.g. "wicked-garden"). With it the lockup becomes the
+ *          product path "Wicked Agile / labs / <pkg>", three links: wickedagile.com, the lab
+ *          (LAB) and this product's site (its family manifest href; '/' when the manifest lists
+ *          no site for it). Omit it on the umbrella site, which keeps the lockup alone.
  *   repo — GitHub URL the header's GitHub icon points at (this page's repo).
  *
- * Media (the play button and its phone-menu row) links wicked bits (BITS in data/family.js).
+ * Wicked Labs (the flask button and its phone-menu row) links the lab (LAB in data/family.js);
+ * Media (the play button and its phone-menu row) links wicked bits (BITS).
  */
-import { BITS, GH, PLANES } from '../data/family.js';
+import { BITS, GH, LAB, product } from '../data/family.js';
 import Wordmark from './Wordmark.astro';
 
 const {
@@ -24,44 +27,38 @@ const {
 const MEDIUM_GLYPH_PATH = 'M19.938 5.686L18.651 6.92a.376.376 0 0 0-.143.362v9.067a.376.376 0 0 0 .143.361l1.257 1.234v.271h-6.322v-.27l1.302-1.265c.128-.128.128-.165.128-.36V8.99l-3.62 9.195h-.49L6.69 8.99v6.163a.85.85 0 0 0 .233.707l1.694 2.054v.271H3.815v-.27L5.51 15.86a.82.82 0 0 0 .218-.707V8.027a.624.624 0 0 0-.203-.527L4.019 5.686v-.27h4.674l3.613 7.923 3.176-7.924h4.456v.271z';
 /* the play glyph: Media (wicked bits), on the desktop button and the mobile-menu row */
 const PLAY_GLYPH_PATH = 'M4 2.2v9.6a.5.5 0 0 0 .76.43l7.7-4.8a.5.5 0 0 0 0-.86l-7.7-4.8A.5.5 0 0 0 4 2.2z';
+/* the lab flask: Wicked Labs, on the desktop button and the mobile-menu row (stroked, so set as inner markup) */
+const FLASK_GLYPH = '<path d="M5 1.5h4"/><path d="M6 1.5V5.8L2.4 11.8A1 1 0 0 0 3.3 13.2h7.4A1 1 0 0 0 11.6 11.8L8 5.8V1.5"/><circle cx="6.2" cy="9.8" r=".5" fill="currentColor" stroke="none"/><circle cx="8.2" cy="11.4" r=".45" fill="currentColor" stroke="none"/>';
 const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z';
+
+/* The product path's last crumb: this product's site home. It is the current page only on that home
+   (aria-current), not on the site's other pages (crew's article page). */
+const site = product(pkg);
+const home = site?.hasSite ? site.href : '/';
+const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 ---
 
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar__inner">
-    <a href="https://wickedagile.com" class="wordmark" aria-label="Wicked Agile">
-      <!-- the lockup (Shoreline mark + Wave W lettering, packages/design-system/brand/), in currentColor -->
-      <Wordmark />
-    </a>
-    {pkg && (
-      <span class="topbar-pkg">
-        <span class="topbar-pkg-sep" aria-hidden="true">/</span>{pkg}
-      </span>
+    {pkg ? (
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="https://wickedagile.com/" class="wordmark" aria-label="Wicked Agile"><Wordmark /></a></li>
+          <li><span class="crumb-sep" aria-hidden="true">/</span><a href={LAB} class="crumb">labs</a></li>
+          <li><span class="crumb-sep" aria-hidden="true">/</span><a href={home} class="crumb" aria-current={atHome ? 'page' : undefined}>{pkg}</a></li>
+        </ol>
+      </nav>
+    ) : (
+      <a href="https://wickedagile.com" class="wordmark" aria-label="Wicked Agile">
+        <!-- the lockup (Shoreline mark + Wave W lettering, packages/design-system/brand/), in currentColor -->
+        <Wordmark />
+      </a>
     )}
-    <nav class="nav">
-      <div class="dropdown-wrap nav-inline" data-tip="the experiment">
-        <button class="icon-btn" id="projectsBtn" aria-label="Browse the experiment" aria-expanded="false" aria-haspopup="true">
-          <!-- lab flask — the experiment icon -->
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 1.5h4"/>
-            <path d="M6 1.5V5.8L2.4 11.8A1 1 0 0 0 3.3 13.2h7.4A1 1 0 0 0 11.6 11.8L8 5.8V1.5"/>
-            <circle cx="6.2" cy="9.8" r=".5" fill="currentColor" stroke="none"/>
-            <circle cx="8.2" cy="11.4" r=".45" fill="currentColor" stroke="none"/>
-          </svg>
-        </button>
-        <div class="dropdown-menu" id="projectsMenu" hidden>
-          <span class="dropdown-kicker">The Experiments</span>
-          {PLANES.map((p) => (
-            <div class="dropdown-plane" style={`--plane:var(--plane-${p.key})`}>
-              <span class="dp-head"><span class="dp-dot" aria-hidden="true"></span>{p.name} <span class="dp-note">{p.note}</span></span>
-              {p.products.filter((s) => s.hasSite).map((s) => (
-                <a href={s.href} class="dropdown-item"><span class="di-label">{s.short} <span class="di-tag">{s.tag}</span></span><span class="dropdown-tag">site ↗</span></a>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+    <nav class="nav" aria-label="Links">
+      <a href={LAB} class="icon-btn nav-inline" aria-label="Wicked Labs" data-tip="wicked labs">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FLASK_GLYPH}></svg>
+      </a>
       <a href={BITS} class="icon-btn nav-inline" aria-label="Media: wicked bits" data-tip="media">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d={PLAY_GLYPH_PATH}/></svg>
       </a>
@@ -82,16 +79,8 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
   </div>
 
   <!-- MOBILE MENU — the expand version of the nav, phones only -->
-  <nav class="mobile-menu" id="mobileMenu" aria-label="the wicked experiment" hidden>
-    <span class="dropdown-kicker">The Experiments</span>
-    {PLANES.map((p) => (
-      <>
-        <span class="mm-plane" style={`--plane:var(--plane-${p.key})`}><span class="dp-dot" aria-hidden="true"></span>{p.name}</span>
-        {p.products.filter((s) => s.hasSite).map((s) => (
-          <a href={s.href} class="mm-item"><span class="mm-label">{s.short} <span class="di-tag">{s.tag}</span></span><span class="dropdown-tag">site ↗</span></a>
-        ))}
-      </>
-    ))}
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Menu" hidden>
+    <a href={LAB} class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FLASK_GLYPH}></svg>Wicked Labs</span> <span class="dropdown-tag">lab ↗</span></a>
     <div class="dropdown-divider"></div>
     <a href={BITS} class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d={PLAY_GLYPH_PATH}/></svg>wicked bits</span> <span class="dropdown-tag">media ↗</span></a>
     <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={MEDIUM_GLYPH_PATH}/></svg>Medium</span> <span class="dropdown-tag">writing ↗</span></a>
@@ -105,11 +94,24 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 clamp(16px,4vw,28px);max-width:1240px;margin:0 auto}
 /* the wordmark is drawn, not set: the Wordmark lockup (SVG, currentColor = the ink) at the site-header size */
 .wordmark{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none}
-/* secondary header: "<logo> / <package>" in the text face. margin-right:auto
-   keeps logo+pkg grouped on the left and pushes the nav to the right. */
-.topbar-pkg{display:inline-flex;align-items:center;gap:8px;margin-left:7px;margin-right:auto;font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-body);color:var(--muted)}
-.topbar-pkg-sep{color:var(--faint);font-weight: var(--weight-regular)}
-@media(max-width:560px){.topbar-pkg{display:none}}
+/* the product path (product sites): "Wicked Agile / labs / <package>", three links in the text face.
+   margin-right:auto keeps it grouped on the left and pushes the nav to the right; the product name
+   is the one crumb that shrinks (ellipsis), so a long name can never push the icons (padding-right
+   keeps a gap before them even then). */
+.crumbs{margin-right:auto;min-width:0;padding-right:12px}
+.crumbs ol{display:flex;align-items:center;gap:8px;margin:0;padding:0;list-style:none;min-width:0}
+.crumbs li{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.crumbs li:last-child{flex-shrink:1;min-width:0}
+.crumbs .wordmark{flex-shrink:0;border-radius:4px;transition:opacity .15s}
+.crumbs .wordmark:hover{opacity:.72}
+.crumb-sep{font-family: var(--font-sans);font-weight: var(--weight-regular);font-size: var(--text-body);color:var(--faint)}
+.crumb{font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-body);color:var(--muted);text-decoration:none;white-space:nowrap;border-radius:4px;transition:color .15s}
+.crumb:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.crumbs li:last-child .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* phones: the full lockup + path + icons no longer fit, so the lockup keeps only its mark (the SVG
+   clipped in the gap between the mark, which ends at 124 of its units, and the lettering, which
+   starts at 166: 19.2 and 25.7 px at the header's 15.5 px cap). The link and its name stay. */
+@media(max-width:560px){.crumbs .wordmark{width:22px;overflow:hidden}}
 .nav{display:flex;align-items:center;gap:12px}
 [data-tip]{position:relative}
 [data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface-overlay);color:var(--ink);font-family: var(--font-sans);font-size: var(--text-caption);white-space:nowrap;padding:4px 9px;border-radius:5px;border:1px solid var(--hairline-strong);pointer-events:none;opacity:0;transition:opacity .18s;z-index:300}
@@ -117,48 +119,24 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
 .icon-btn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;border:1px solid var(--hairline-strong);color:var(--ink);background:transparent;cursor:pointer;text-decoration:none;transition:border-color .25s var(--ease),color .25s var(--ease),background .25s var(--ease);padding:0;font-size:inherit;text-transform:none;flex-shrink:0}
 .icon-btn:hover{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
 .icon-btn svg{display:block}
-.dropdown-wrap{position:relative}
-.dropdown-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:200;min-width:252px;background:var(--surface);border:1px solid var(--hairline-strong);border-radius:12px;padding:6px;box-shadow:0 18px 48px -14px rgba(0,0,0,.7)}
-/* 4 plane groups + 5 product rows can outgrow short viewports;
-   the topbar is fixed, so a clipped menu leaves items unreachable — cap height
-   and scroll inside instead */
-#projectsMenu.dropdown-menu{max-height:calc(100vh - var(--topbar-h) - 24px);overflow-y:auto}
-.dropdown-kicker{display:block;font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);padding:7px 10px 5px}
-/* a PLANE group: a colored head (dot + name + role note), its products beneath.
-   --plane is set inline per group from the shared plane tokens. */
-.dropdown-plane{padding:3px 0 2px;border-top:1px solid var(--hairline)}
-.dropdown-plane:first-of-type{border-top:none}
-.dp-head{display:flex;align-items:center;gap:7px;padding:5px 10px 3px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
-.dp-dot{width:7px;height:7px;border-radius:50%;background:var(--plane,var(--accent));box-shadow:0 0 8px -1px var(--plane,var(--accent));flex-shrink:0}
-.dp-note{margin-left:auto;font-weight: var(--weight-regular);text-transform:none;color:var(--faint)}
-.dropdown-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px 7px 24px;border-radius:6px;color:var(--ink);font-size: var(--text-body);text-decoration:none;transition:background .15s,color .15s}
-.dropdown-item:hover{background:color-mix(in oklab,var(--plane,var(--accent)) 14%,transparent);color:var(--ink)}
-.dropdown-tag{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
-.di-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.di-tag{color:var(--muted);font-family: var(--font-sans);font-weight: var(--weight-regular);font-size: var(--text-caption);}
 .dropdown-divider{height:1px;background:var(--hairline);margin:4px 0}
 
 /* ── MOBILE EXPAND NAV (hamburger) ─────────────────────────────────────────
    Desktop: inline icon cluster (.nav-inline) shows, hamburger + panel hidden.
-   Phones ≤640px: collapse ecosystem/Media/Medium/GitHub behind a hamburger; the
+   Phones ≤640px: collapse Wicked Labs/Media/Medium/GitHub behind a hamburger; the
    theme toggle stays inline. Prevents the right-edge clip on small screens. */
 .menu-btn{display:none}
 .menu-btn .menu-ic--x{display:none}
 .menu-btn[aria-expanded="true"] .menu-ic--bars{display:none}
 .menu-btn[aria-expanded="true"] .menu-ic--x{display:block}
 .mobile-menu{display:none}
-.mobile-menu .dropdown-kicker{padding:11px 12px 6px}
 .mobile-menu .dropdown-divider{margin:6px 10px}
-/* plane group head on mobile — same dot + colored name as the desktop menu */
-.mm-plane{display:flex;align-items:center;gap:8px;padding:10px 12px 2px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:color-mix(in oklab,var(--plane,var(--accent)) 72%,var(--ink))}
-.mm-item{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:11px 12px 11px 27px;border-radius:8px;color:var(--ink);font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-lead);text-decoration:none;transition:background .15s}
+.mm-item{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:11px 12px;border-radius:8px;color:var(--ink);font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-lead);text-decoration:none;transition:background .15s}
 .mm-item:hover,.mm-item:active{background:var(--accent-wash)}
-/* the media/writing/repo rows after the divider sit outside the plane groups — unindent */
-.mobile-menu .dropdown-divider ~ .mm-item{padding-left:12px}
-/* mirror .di-label so a long crew label truncates instead of overflowing the row */
+/* a long label truncates instead of overflowing the row */
 .mm-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Medium row: small inline brand glyph so it reads like the other rows (which
-   carry an identity) instead of a bare word. Sized in em so it tracks the label
+/* each row's small inline glyph (the flask, play, Medium and GitHub marks) so a row
+   reads as an identity instead of a bare word. Sized in em so it tracks the label
    font and scales with any viewport clamp on the row text. */
 .mm-glyph{width:.95em;height:.95em;margin-right:.5em;vertical-align:-.13em;opacity:.82;flex-shrink:0;transition:opacity .15s}
 .mm-item:hover .mm-glyph,.mm-item:active .mm-glyph{opacity:1}
@@ -189,14 +167,6 @@ const GITHUB_GLYPH_PATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.0
   setTheme(init||'dark',false);
   var themeBtn=document.getElementById('themeBtn');
   if(themeBtn)themeBtn.addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark',true)});
-  /* DROPDOWN */
-  (function(){
-    var btn=document.getElementById('projectsBtn'),menu=document.getElementById('projectsMenu');
-    if(!btn||!menu)return;
-    btn.addEventListener('click',function(e){e.stopPropagation();var o=!menu.hidden;menu.hidden=o;btn.setAttribute('aria-expanded',!o)});
-    document.addEventListener('click',function(){menu.hidden=true;btn.setAttribute('aria-expanded','false')});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'){menu.hidden=true;btn.setAttribute('aria-expanded','false')}});
-  })();
 
   /* MOBILE MENU (hamburger expand nav) */
   (function(){
