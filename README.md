@@ -112,12 +112,10 @@ neither new prop and renders the same header markup as before (`test/chrome.test
   section links stay in the bar and its icon links give way (the lab is its own "labs" crumb, and the
   footer carries wicked bits, Medium and GitHub), while wickedagile.com keeps its four icon links in the bar.
   On a narrow window the lockup keeps its size and the links scroll sideways in their row.
-- **One grid**: the bar's inner box is the company site's content wrap, 1600 px wide and 32 px in
-  (16 px at 760 px and below), published on the page as `--family-max` and `--family-gutter` for the
-  sites' own wraps (`max-width: var(--family-max); padding: 0 var(--family-gutter)`), so the lockup and
-  the content edges line up at every width. The bar sets them on itself; the page learns them (and the
-  56 px `--topbar-h`) through `:root:has(.topbar--family)`, so on a browser without `:has()` a site that
-  must line up there declares the same values on its own root.
+- **One grid for the family**: the bar keeps the product bar's inner box (1240 px, `clamp(16px, 4vw, 28px)`
+  in), so the lockup sits where it does on every product site (128 px in at 1440). The bar sets its 56 px
+  `--topbar-h` on itself, and the page learns it through `:root:has(.topbar--family)`; on a browser without
+  `:has()`, a site whose offsets read it declares `--topbar-h: 56px` on its own root.
 - **Selectors** (for the sites' e2e): `header.topbar.topbar--family`, the lockup `a.wordmark` (agile) or
   `nav.crumbs` with `.crumb` links (labs), `#nav.family-nav` holding `a.family-sec` (section links),
   `.family-sep` and `a.family-ic` (each with `.family-label` and `.family-tag` for its menu row),
