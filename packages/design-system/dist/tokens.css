@@ -94,6 +94,8 @@
   --accent-primary: #7fcdff;
   --accent-wicked: #ffda19;
   --accent-wicked-ink: #0d1117;
+  --accent-wicked-line: var(--accent-wicked);
+  --accent-wicked-deep: var(--accent-wicked);
   --status-gate: #c8a5f0;
   --status-gate-dim: #2e2438;
   --status-fail: #ffaaa1;
@@ -156,6 +158,8 @@
     --accent-primary: #1da2d8;
     --accent-wicked: #ffda19;
     --accent-wicked-ink: #0d1117;
+    --accent-wicked-line: #9a7600;
+    --accent-wicked-deep: #7a5d00;
     --status-gate: #6d3e9d;
     --status-gate-dim: #f2ebfa;
     --status-fail: #b3261e;
@@ -219,6 +223,8 @@
   --accent-primary: #1da2d8;
   --accent-wicked: #ffda19;
   --accent-wicked-ink: #0d1117;
+  --accent-wicked-line: #9a7600;
+  --accent-wicked-deep: #7a5d00;
   --status-gate: #6d3e9d;
   --status-gate-dim: #f2ebfa;
   --status-fail: #b3261e;

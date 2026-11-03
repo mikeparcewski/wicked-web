@@ -11,16 +11,42 @@
  *          no site for it). Omit it on the umbrella site, which keeps the lockup alone.
  *   repo — GitHub URL the header's GitHub icon points at (this page's repo).
  *
+ *   here — the two sites (DES-SITES-V2 §3.4): 'agile' (wickedagile.com: the Wicked Agile logo, linking to
+ *          the page top) or 'labs' (the lab, LAB: the path "Wicked Agile / labs", labs the current page;
+ *          with pkg, on the lab's page for that product, "Wicked Agile / labs / <pkg>", the product current).
+ *          It switches to the two-site bar: 56 px tall; from 1024 px one row of the lab's section links and
+ *          a divider, the four icon links and the theme switch; below that the section links and the
+ *          labelled icon links go into the menu. Product sites pass pkg alone and keep their header as is.
+ *   sections — with here='labs': the page's own section links, [{ href, label }], before the icon
+ *          divider. wickedagile.com's header carries none (the operator, 2026-11-03): here='agile' with
+ *          sections fails the build.
+ *
  * Wicked Labs (the flask button and its phone-menu row) links the lab (LAB in data/family.js);
  * Media (the play button and its phone-menu row) links wicked bits (BITS).
  */
-import { BITS, GH, LAB, product } from '../data/family.js';
+import { BITS, GH, LAB, href, product } from '../data/family.js';
 import Wordmark from './Wordmark.astro';
+import FAMILY_JS from '../scripts/topbar-family.js?raw';
 
 const {
   pkg = '',
   repo = GH,
+  here = '',
+  sections = [],
 } = Astro.props;
+
+/* The two sites' props fail the build when they are wrong, rather than drawing a half-right header. */
+if (!['', 'agile', 'labs'].includes(here)) throw new Error(`Topbar: here is 'agile' or 'labs', not ${JSON.stringify(here)}`);
+if (!Array.isArray(sections) || sections.some((s) => !s || typeof s.href !== 'string' || !s.href || typeof s.label !== 'string' || !s.label.trim())) {
+  throw new Error('Topbar: sections is an array of { href, label }');
+}
+if (sections.length && !here) throw new Error("Topbar: sections are the two sites' section links; pass here='agile' or 'labs' with them");
+if (here === 'agile' && pkg) throw new Error("Topbar: here='agile' has no product path; pkg goes with here='labs' or alone");
+if (here === 'agile' && sections.length) throw new Error("Topbar: here='agile' has no section links (the operator, 2026-11-03); sections go with here='labs'");
+/* the lab's page for a product (here='labs' with pkg): studio, crew, garden and estate have one */
+const labPage = here === 'labs' && pkg ? href(pkg, true) : '';
+if (labPage && labPage !== `${LAB}${pkg.startsWith('wicked-') ? pkg.slice(7) : pkg}/`) throw new Error(`Topbar: the lab has no page for ${pkg}`);
+if (here === 'labs' && pkg && !labPage) throw new Error(`Topbar: ${pkg} is not in the family`);
 
 /* Single source for the Medium wordmark glyph — referenced by both the desktop
    icon button and the mobile-menu row so the two paths can't drift. */
@@ -39,6 +65,54 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 ---
 
 <!-- TOPBAR -->
+{here ? (
+  <header class="topbar topbar--family">
+    <div class="topbar__inner">
+      {here === 'agile' ? (
+        <a href="#top" class="wordmark" aria-label="Wicked Agile, home"><Wordmark /></a>
+      ) : (
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="https://wickedagile.com/" class="wordmark" aria-label="Wicked Agile"><Wordmark /></a></li>
+            <li><span class="crumb-sep" aria-hidden="true">/</span><a href={LAB} class="crumb" aria-current={pkg ? undefined : 'page'}>labs</a></li>
+            {pkg && <li><span class="crumb-sep" aria-hidden="true">/</span><a href={labPage} class="crumb" aria-current="page">{pkg}</a></li>}
+          </ol>
+        </nav>
+      )}
+      <nav class="family-nav" id="nav" aria-label="Main">
+        {sections.map((s) => <a class="family-sec" href={s.href}>{s.label}</a>)}
+        {sections.length > 0 && <span class="family-sep" aria-hidden="true"></span>}
+        <a class="icon-btn family-ic" href={LAB} aria-label="Wicked Labs" title="wicked labs">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={FLASK_GLYPH}></svg>
+          <span class="family-label"><svg class="family-glyph" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={FLASK_GLYPH}></svg>Wicked Labs</span>
+          <span class="family-tag">lab</span>
+        </a>
+        <a class="icon-btn family-ic" href={BITS} target="_blank" rel="noopener" aria-label="Media: wicked bits (opens in a new tab)" title="media">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" focusable="false"><path d={PLAY_GLYPH_PATH}/></svg>
+          <span class="family-label"><svg class="family-glyph" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" focusable="false"><path d={PLAY_GLYPH_PATH}/></svg>wicked bits</span>
+          <span class="family-tag">media ↗</span>
+        </a>
+        <a class="icon-btn family-ic" href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener" aria-label="Medium (opens in a new tab)" title="writing">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d={MEDIUM_GLYPH_PATH}/></svg>
+          <span class="family-label"><svg class="family-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d={MEDIUM_GLYPH_PATH}/></svg>Medium</span>
+          <span class="family-tag">writing ↗</span>
+        </a>
+        <a class="icon-btn family-ic" href={repo} target="_blank" rel="noopener" aria-label="GitHub (opens in a new tab)" title="github">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d={GITHUB_GLYPH_PATH}/></svg>
+          <span class="family-label"><svg class="family-glyph" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d={GITHUB_GLYPH_PATH}/></svg>GitHub</span>
+          <span class="family-tag">github ↗</span>
+        </a>
+      </nav>
+      <button class="icon-btn family-btn" type="button" id="themeBtn" aria-label="Toggle theme">
+        <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"></svg>
+      </button>
+      <button class="icon-btn menu-btn family-btn" type="button" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+        <svg class="menu-ic menu-ic--bars" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg class="menu-ic menu-ic--x" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+    </div>
+  </header>
+) : (
 <header class="topbar">
   <div class="topbar__inner">
     {pkg ? (
@@ -87,6 +161,7 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
     <a href={repo} target="_blank" rel="noopener" class="mm-item"><span class="mm-label"><svg class="mm-glyph" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d={GITHUB_GLYPH_PATH}/></svg>GitHub</span> <span class="dropdown-tag">this repo ↗</span></a>
   </nav>
 </header>
+)}
 
 <style is:global>
 /* TOPBAR */
@@ -110,8 +185,12 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 .crumbs li:last-child .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* phones: the full lockup + path + icons no longer fit, so the lockup keeps only its mark (the SVG
    clipped in the gap between the mark, which ends at 124 of its units, and the lettering, which
-   starts at 166: 19.2 and 25.7 px at the header's 15.5 px cap). The link and its name stay. */
-@media(max-width:560px){.crumbs .wordmark{width:22px;overflow:hidden}}
+   starts at 166: 19.2 and 25.7 px at the header's 15.5 px cap), a 24 px wide target. The link and
+   its name stay. */
+@media(max-width:560px){.crumbs .wordmark{width:24px;overflow:hidden}}
+/* phones: the path's links are 44 px tall tap targets (wicked-web#58). line-height, not flex, so the
+   product name keeps its ellipsis. */
+@media(max-width:640px){.crumbs .wordmark{min-height:44px}.crumb{line-height:44px}}
 .nav{display:flex;align-items:center;gap:12px}
 [data-tip]{position:relative}
 [data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface-overlay);color:var(--ink);font-family: var(--font-sans);font-size: var(--text-caption);white-space:nowrap;padding:4px 9px;border-radius:5px;border:1px solid var(--hairline-strong);pointer-events:none;opacity:0;transition:opacity .18s;z-index:300}
@@ -138,7 +217,7 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
 /* each row's small inline glyph (the flask, play, Medium and GitHub marks) so a row
    reads as an identity instead of a bare word. Sized in em so it tracks the label
    font and scales with any viewport clamp on the row text. */
-.mm-glyph{width:.95em;height:.95em;margin-right:.5em;vertical-align:-.13em;opacity:.82;flex-shrink:0;transition:opacity .15s}
+.mm-glyph{display:inline-block;width:.95em;height:.95em;margin-right:.5em;vertical-align:-.13em;opacity:.82;flex-shrink:0;transition:opacity .15s}
 .mm-item:hover .mm-glyph,.mm-item:active .mm-glyph{opacity:1}
 .mm-item .dropdown-tag{font-family: var(--font-sans);font-weight: var(--weight-regular);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
 @keyframes mm-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
@@ -149,6 +228,53 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
   .mobile-menu:not([hidden]){display:block;position:fixed;top:var(--topbar-h);left:0;right:0;z-index:199;background:var(--surface);border-bottom:1px solid var(--hairline-strong);box-shadow:0 18px 48px -14px rgba(0,0,0,.7);padding:8px 14px calc(14px + env(safe-area-inset-bottom));max-height:calc(100svh - var(--topbar-h));overflow-y:auto;animation:mm-in .2s var(--ease)}
 }
 @media(prefers-reduced-motion:reduce){.mobile-menu:not([hidden]){animation:none}}
+
+/* ── THE TWO SITES (here="agile" | "labs", DES-SITES-V2 §3.4) ───────────────────────────────────────
+   Every rule is scoped to .topbar--family, so a product site's header is untouched. The bar is 56 px, not
+   64 (the sites' frames are built on 56), and the root learns it so a page's offsets follow. One grid for
+   the bar and the content: the bar's inner box is the company site's content wrap (1600 px, 32 px in;
+   16 px on phones), published as --family-max and --family-gutter for the sites' own wraps. The icon links
+   and the theme switch are the product bar's .icon-btn; the path is its .crumbs. */
+:root:has(.topbar--family),.topbar--family{--topbar-h:56px;--family-max:1600px;--family-gutter:var(--space-8)}
+.topbar--family .topbar__inner{justify-content:flex-start;gap:12px;max-width:var(--family-max);padding:0 var(--family-gutter)}
+.topbar--family .topbar__inner>.wordmark{margin-right:auto}
+.family-nav{display:flex;align-items:center;gap:2px}
+.family-sec{color:var(--muted);font-family: var(--font-sans);font-size: var(--text-body);text-decoration:none;white-space:nowrap;padding:8px 10px;border-radius:6px;transition:color .15s,background .15s}
+.family-sec:hover{color:var(--ink);background:var(--accent-subtle)}
+.family-sec[aria-current]{color:var(--ink)}
+.family-sep{width:1px;height:20px;background:var(--hairline-strong);margin:0 8px}
+.family-ic{margin-left:10px}
+.family-ic:first-child,.family-sep+.family-ic{margin-left:0}
+.family-label,.family-tag{display:none}
+.family-glyph{display:inline-block;width:.95em;height:.95em;opacity:.82;flex-shrink:0}
+/* without script there is no theme switch and no menu: the section links stay in the bar (and the icons
+   wait in the byline footer); the script marks the bar .js */
+.topbar--family:not(.js) .family-btn{display:none}
+/* below a laptop the section links and the icons, labelled, go into the menu; the theme switch, then the
+   menu button, as on the product bar */
+@media(max-width:1023px){
+  .topbar--family.js .family-nav{display:none}
+  .topbar--family.js .menu-btn{display:inline-grid}
+  .topbar--family.js .family-nav.open{display:flex;position:absolute;top:100%;left:0;right:0;z-index:199;flex-direction:column;align-items:stretch;gap:0;max-height:calc(100svh - var(--topbar-h));overflow-y:auto;overscroll-behavior:contain;padding:8px 14px calc(14px + env(safe-area-inset-bottom));background:var(--surface);border-bottom:1px solid var(--hairline-strong);box-shadow:var(--shadow-overlay);animation:mm-in .2s var(--ease)}
+  .topbar--family .family-nav.open .family-sec,.topbar--family .family-nav.open .family-ic{display:flex;align-items:center;min-height:46px;padding:11px 12px;border-radius:8px;color:var(--ink);font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-lead);background:transparent;transition:background .15s}
+  .topbar--family .family-nav.open .family-ic{justify-content:space-between;gap:12px;width:auto;height:auto;margin:0;border:0}
+  .topbar--family .family-nav.open .family-sec:hover,.topbar--family .family-nav.open .family-ic:hover{background:var(--accent-wash);color:var(--ink)}
+  .topbar--family .family-nav.open .family-sep{display:block;width:auto;height:1px;margin:6px 10px;background:var(--hairline)}
+  .topbar--family .family-nav.open .family-ic>svg{display:none}
+  .topbar--family .family-nav.open .family-label{display:inline-flex;align-items:center;gap:.5em;min-width:0;white-space:nowrap}
+  .topbar--family .family-nav.open .family-tag{display:inline;font-weight: var(--weight-regular);font-size: var(--text-caption);color:var(--faint);flex-shrink:0}
+  .topbar--family:not(.js) .family-ic,.topbar--family:not(.js) .family-sep{display:none}
+  .topbar--family:not(.js) .family-nav:not(:has(.family-sec)){display:none}
+}
+@media(max-width:760px){
+  :root:has(.topbar--family),.topbar--family{--family-gutter:var(--space-4)}
+  .topbar--family .topbar__inner{gap:8px}
+  .topbar--family:not(.js) .family-sec{padding:8px 6px}
+  /* the lockup and the path's links are 44 px tall tap targets (wicked-web#58) */
+  .topbar--family .wordmark{min-height:44px}
+  .topbar--family .crumb{line-height:44px}
+}
+@media(prefers-reduced-motion:reduce){.topbar--family .family-nav.open{animation:none}}
 </style>
 
 <script is:inline>
@@ -180,4 +306,4 @@ const atHome = new URL(home, Astro.url).pathname === Astro.url.pathname;
     window.addEventListener('resize',function(){if(window.innerWidth>640)closeMenu()});
   })();
 })();
-</script>
+</script>{here && <script is:inline set:html={FAMILY_JS}></script>}

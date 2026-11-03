@@ -150,6 +150,9 @@ function runPage(script, { theme = null, stored = null } = {}) {
   return page;
 }
 const inline = (src) => /<script is:inline>([\s\S]*?)<\/script>/.exec(src)[1];
+/** Topbar.astro's two markup branches: the product bar (bc5ca29's markup, verbatim) and the two sites' bar (here). */
+const productBar = (top) => /\) : \(\n(<header class="topbar">[\s\S]*?<\/header>)\n\)\}/.exec(top)[1];
+const familyBar = (top) => /\{here \? \(\n\s*(<header class="topbar topbar--family">[\s\S]*?<\/header>)\n\) : \(/.exec(top)[1];
 
 test('theme: default dark, the stored v3 choice wins, and only a click writes it', () => {
   const base = read('src/layouts/Base.astro');
@@ -186,7 +189,8 @@ test('Media: the Topbar and the Footer link wicked bits, and the promo card rend
   const top = read('src/components/Topbar.astro');
   const foot = read('src/components/Footer.astro');
   // the desktop button and the phone-menu row
-  assert.equal([...top.matchAll(/href=\{BITS\}/g)].length, 2);
+  assert.equal([...productBar(top).matchAll(/href=\{BITS\}/g)].length, 2);
+  assert.equal([...familyBar(top).matchAll(/href=\{BITS\}/g)].length, 1, 'the two sites: one link, the bar and the menu are one nav');
   assert.match(top, /aria-label="Media: wicked bits" data-tip="media"/);
   // the Media column after the plane columns, then the promo card
   const media = foot.indexOf('<span class="kicker footer-col-head">Media</span>');
@@ -207,7 +211,8 @@ test('Wicked Labs: the flask is one link to the lab, on the desktop and in the p
   const menu = /<nav class="mobile-menu"[^>]*>([\s\S]*?)<\/nav>/.exec(top)[1];
   assert.match(menu, /^\s*<a href=\{LAB\} class="mm-item"><span class="mm-label"><svg class="mm-glyph"[^>]*set:html=\{FLASK_GLYPH\}><\/svg>Wicked Labs<\/span>/);
   assert.equal([...menu.matchAll(/<a /g)].length, 4, 'Wicked Labs, wicked bits, Medium, GitHub');
-  assert.equal([...top.matchAll(/href=\{LAB\}/g)].length, 3, 'the flask, its phone row and the path\'s labs crumb');
+  assert.equal([...productBar(top).matchAll(/href=\{LAB\}/g)].length, 3, 'the flask, its phone row and the path\'s labs crumb');
+  assert.equal([...familyBar(top).matchAll(/href=\{LAB\}/g)].length, 2, 'the two sites: the flask (bar and menu are one nav) and the labs crumb');
   // the menu, its button and its script are gone outright, with no fallback
   assert.doesNotMatch(top, /projectsBtn|projectsMenu|aria-haspopup|dropdown-menu|dropdown-wrap|dropdown-plane|dropdown-item|dropdown-kicker|mm-plane|dp-(head|dot|note)|di-(label|tag)|Experiments|Browse the experiment|PLANES/);
   assert.doesNotMatch(top, /wickedlabs\.ai/, 'the manifest is the one place the address lives');
@@ -220,7 +225,11 @@ test('Wicked Labs: the flask is one link to the lab, on the desktop and in the p
   const used = new Set([...markup.matchAll(/class="([^"{]+)"/g)].flatMap((m) => m[1].split(/\s+/)));
   const styled = new Set([...noComments(styleOf(top)).matchAll(/\.([a-z][a-z0-9_-]*)/g)].map((m) => m[1]));
   assert.deepEqual([...used].filter((c) => !styled.has(c) && c !== 'menu-ic'), [], 'used but unstyled');
-  assert.deepEqual([...styled].filter((c) => !used.has(c)), [], 'styled but unused');
+  // the two state classes the two sites' bar script sets: js (script ran) and open (the menu)
+  const famJs = read('src/scripts/topbar-family.js');
+  assert.match(famJs, /bar\.classList\.add\('js'\)/);
+  assert.match(famJs, /nav\.classList\.toggle\('open', open\)/);
+  assert.deepEqual([...styled].filter((c) => !used.has(c) && !['js', 'open'].includes(c)), [], 'styled but unused');
 });
 
 test('the product path: Wicked Agile / labs / <pkg>, three links; phones keep the mark; the apex keeps the lockup', async () => {

@@ -252,6 +252,20 @@
       "from": "web",
       "note": "ink on signal yellow"
     },
+    "accent-wicked-line": {
+      "group": "brand",
+      "light": "#9a7600",
+      "dark": "var(--accent-wicked)",
+      "from": "web",
+      "note": "the gold as a line, a ring or a small graphic fill (map marks, dots, the Work checkbox), never text; light is darker so it holds 3:1 on the light surfaces (the sites' mockups, DES-SITES-V2)"
+    },
+    "accent-wicked-deep": {
+      "group": "brand",
+      "light": "#7a5d00",
+      "dark": "var(--accent-wicked)",
+      "from": "web",
+      "note": "the deeper gold for a thin ring or a dot edge on the light surfaces (the job token, the job dots), never text; dark is the signal yellow"
+    },
     "status-gate": {
       "group": "status",
       "light": "#6d3e9d",

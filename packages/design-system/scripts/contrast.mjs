@@ -53,6 +53,9 @@ export const PAIRS = [
   { fg: 'status-fail-fg', bg: ['status-fail'], min: 4.5, why: 'text on a filled fail' },
   ...['experience', 'control', 'capability', 'foundation'].map((p) => ({ fg: `plane-${p}`, bg: TEXT_SURFACES, min: 4.5, why: 'plane label' })),
   { fg: 'accent-wicked-ink', bg: ['accent-wicked'], min: 4.5, why: 'ink on signal yellow' },
+  // The gold as a line, a ring or a small graphic fill (the sites' map marks, dots, rings, the Work checkbox), never text:
+  // the signal yellow on dark grounds, a darker gold on light ones (DES-SITES-V2).
+  ...['accent-wicked-line', 'accent-wicked-deep'].map((fg) => ({ fg, bg: [...TEXT_SURFACES, 'accent-subtle'], min: 3, why: 'the gold as a line or a small graphic, never text (WCAG 1.4.11)' })),
 ];
 
 export function audit(src) {
