@@ -278,6 +278,23 @@ test('studio is the ADE, spelled out on first use; no studio line says "IDE for 
   assert.doesNotMatch(read('src/data/family.js'), /IDE for running/);
 });
 
+test('release-1104 one-liners: studio builds apps over your data, crew gates the data, estate holds structure but never rows; each blurb fits the map band', async () => {
+  const fam = await import('../src/data/family.js');
+  const p = (n) => fam.product(n);
+  assert.match(p('wicked-studio').blurb, /build apps over your data/);
+  assert.match(p('wicked-studio').desc, /ask a question of your data: its query runs only when you confirm it/);
+  // only a change asked for in the chat is reviewed by another agent; direct edits and undo are the person's own
+  assert.match(p('wicked-studio').desc, /in a chat, where each change you ask for is reviewed by a different agent/);
+  assert.match(p('wicked-crew').blurb, /one read-only gate to your data/);
+  assert.match(p('wicked-crew').desc, /only through one gate, and only in the projects you pick: read-only SQL, a 10-second deadline, at most 200 rows/);
+  assert.match(p('wicked-estate').blurb, /database structure, never rows/);
+  assert.match(p('wicked-estate').desc, /never their rows, and the data shapes you approve/);
+  // the four-plane map (SameGarden) has no vertical slack at 1280x660 (garden's band-fits e2e): no blurb grows past the
+  // longest it held before this release (161 characters), and the two that share the foundation band stay at 107
+  for (const s of fam.PRODUCTS) assert.ok(s.blurb.length <= 161, `${s.name} blurb is ${s.blurb.length} characters`);
+  for (const n of ['wicked-estate', 'wicked-interactive']) assert.ok(p(n).blurb.length <= 107, `${n} blurb is ${p(n).blurb.length} characters`);
+});
+
 /* ── The two sites (DES-SITES-V2 §3.4, §9.1 B1): Topbar here, LAB_HREFS ── */
 
 const fixture = (f) => read(`test/fixtures/${f}`).replace(/\n$/, '');
