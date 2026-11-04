@@ -96,7 +96,7 @@ site's `repo`. A product site passes neither new prop and renders the same heade
   page, so offsets that read it follow), from 1024 px one row of the four round icon links (the flask to
   the lab, wicked bits, Medium, GitHub) and the theme switch; below 1024 px the labelled icon links go
   into the menu (the theme switch, then the menu button). With `pkg`, `here="labs"` is the lab's page for
-  that product (studio, crew, garden or estate; the crumb links `LAB` + the product's id). Anything else fails the build.
+  that product (studio, crew, garden or estate; the crumb links `LAB` + `#/` + the product's id, the lab's hash route). Anything else fails the build.
 - **The Topbar owns the header's behaviour**: the theme switch; the menu (focus moves to its first link
   on open; Escape closes it and puts focus back on its button; a click outside, or focus leaving the
   header, closes it); a layout change that hides the focused control hands focus to a visible stand-in (the
@@ -117,7 +117,7 @@ site's `repo`. A product site passes neither new prop and renders the same heade
   dark, #9a7600 and #7a5d00 on light, each 3:1 on every surface (`scripts/contrast.mjs`).
 - **`LAB_HREFS`** (`data/family.js`, `false`): while false, every href is today's (the product sites, the
   repos). Flipped in the redirect step (DES-SITES-V2 §9 step 7), not before: studio, crew, garden and
-  estate link `LAB` + their id, interactive studio's page (it is surfaced through studio), core and bus
+  estate link their lab page, `LAB` + `#/` + their id (the lab routes by hash; a path under it is a 404), interactive studio's page (it is surfaced through studio), core and bus
   the lab's `#components`, the installer `#start`, and `SITES` becomes the two sites.
   `href(name, lab)` and `sitesFor(lab)` give either answer for previews and tests.
 - `Base`: `title` · `description` · `bodyClass` (e.g. garden's `has-grain`) · `favicon` (default: the family's Shoreline mark, `packages/design-system/brand/favicon.svg`, bundled by Vite so it resolves under a project base too; pass `favicon` only to override it, with a base-aware path on a site under a project base — see gotchas).

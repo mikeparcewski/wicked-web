@@ -328,7 +328,7 @@ test("Topbar props: here is 'agile' or 'labs'; the lab's product pages; no secti
   assert.equal(topbarProps(fam, { here: 'labs' }), '');
   assert.match(topbarProps(fam, { here: 'home' }), /^throws: Topbar: here is 'agile' or 'labs'/);
   assert.match(topbarProps(fam, { here: 'agile', pkg: 'wicked-crew' }), /^throws: Topbar: here='agile' has no product path/);
-  for (const id of ['studio', 'crew', 'garden', 'estate']) assert.equal(topbarProps(fam, { here: 'labs', pkg: `wicked-${id}` }), `${fam.LAB}${id}/`, `the lab's ${id} page`);
+  for (const id of ['studio', 'crew', 'garden', 'estate']) assert.equal(topbarProps(fam, { here: 'labs', pkg: `wicked-${id}` }), `${fam.LAB}#/${id}`, `the lab's ${id} page`);
   for (const pkg of ['wicked-interactive', 'wicked-core', 'wicked-bus', 'wicked-installer']) assert.match(topbarProps(fam, { here: 'labs', pkg }), /^throws: Topbar: the lab has no page for/, pkg);
   assert.match(topbarProps(fam, { here: 'labs', pkg: 'wicked-nope' }), /^throws: Topbar: wicked-nope is not in the family/);
 });
@@ -490,15 +490,21 @@ test('LAB_HREFS: false on main, so every href is today\'s; flipped, the tier-awa
     const on = await import(pathToFileURL(tmp).href);
     assert.equal(on.LAB_HREFS, true);
     assert.deepEqual(Object.fromEntries(on.PRODUCTS.map((s) => [s.name, s.href])), {
-      'wicked-studio': `${lab}studio/`, 'wicked-crew': `${lab}crew/`, 'wicked-garden': `${lab}garden/`, 'wicked-estate': `${lab}estate/`,
-      'wicked-interactive': `${lab}studio/` });
+      'wicked-studio': `${lab}#/studio`, 'wicked-crew': `${lab}#/crew`, 'wicked-garden': `${lab}#/garden`, 'wicked-estate': `${lab}#/estate`,
+      'wicked-interactive': `${lab}#/studio` });
     assert.deepEqual([on.href('wicked-core'), on.href('wicked-bus'), on.href('wicked-installer')], [`${lab}#components`, `${lab}#components`, `${lab}#start`]);
     assert.deepEqual(on.SITES.map((s) => [s.name, s.href]), [['wickedagile', 'https://wickedagile.com/'], ['wickedlabs', lab]], 'SITES becomes the two sites');
-    assert.equal(on.product('wicked-crew').href, `${lab}crew/`, "a product site's path crumb follows the switch");
+    assert.equal(on.product('wicked-crew').href, `${lab}#/crew`, "a product site's path crumb follows the switch");
     assert.deepEqual(on.sitesFor(false).map((s) => [s.name, s.href]), off.SITES.map((s) => [s.name, s.href]), 'the explicit form overrides the switch');
   } finally { rmSync(tmp, { force: true }); }
   // the explicit form, for previews and tests, agrees with the module
-  assert.equal(off.href('wicked-crew', true), `${lab}crew/`);
+  assert.equal(off.href('wicked-crew', true), `${lab}#/crew`);
+  // the lab is one page that routes by hash (wickedlabs.ai/#/crew): a path under it (wickedlabs.ai/crew/) is a 404
+  for (const n of ['wicked-studio', 'wicked-crew', 'wicked-garden', 'wicked-estate', 'wicked-interactive', 'wicked-core', 'wicked-bus', 'wicked-installer']) {
+    const u = new URL(off.href(n, true));
+    assert.equal(u.origin + u.pathname, lab, `${n}: the lab page itself, no path under it`);
+    assert.match(u.hash, /^#\/(studio|crew|garden|estate)$|^#(components|start)$/, `${n}: a lab route or a home-page anchor`);
+  }
   assert.deepEqual(off.sitesFor(true).map((s) => s.href), ['https://wickedagile.com/', lab]);
   assert.deepEqual(off.sitesFor(false).map((s) => s.href), off.SITES.map((s) => s.href));
 });

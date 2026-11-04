@@ -43,13 +43,15 @@ export const LAB = 'https://wickedlabs.ai/';
  *  becomes the two sites. One switch, flipped in the redirect step, not before. */
 export const LAB_HREFS = false;
 
-/** Every family member's address: [today's, the lab's]. */
+/** Every family member's address: [today's, the lab's]. The lab is one page that routes by hash: a product's
+ *  page is `#/<id>` (a path under it, wickedlabs.ai/crew/, is GitHub Pages' 404); `#components` and `#start` are
+ *  anchors on its home page. */
 const HREFS = {
-  'wicked-studio': ['https://ws.wickedagile.com', `${LAB}studio/`],
-  'wicked-crew': ['https://wc.wickedagile.com', `${LAB}crew/`],
-  'wicked-garden': ['https://wg.wickedagile.com', `${LAB}garden/`],
-  'wicked-estate': ['https://we.wickedagile.com', `${LAB}estate/`],
-  'wicked-interactive': [`${GH}/wicked-interactive`, `${LAB}studio/`],
+  'wicked-studio': ['https://ws.wickedagile.com', `${LAB}#/studio`],
+  'wicked-crew': ['https://wc.wickedagile.com', `${LAB}#/crew`],
+  'wicked-garden': ['https://wg.wickedagile.com', `${LAB}#/garden`],
+  'wicked-estate': ['https://we.wickedagile.com', `${LAB}#/estate`],
+  'wicked-interactive': [`${GH}/wicked-interactive`, `${LAB}#/studio`],
   'wicked-core': [`${GH}/wicked-core`, `${LAB}#components`],
   'wicked-bus': [`${GH}/wicked-bus`, `${LAB}#components`],
   'wicked-installer': [`${GH}/wicked-installer`, `${LAB}#start`],
