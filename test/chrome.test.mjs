@@ -283,6 +283,8 @@ test('release-1104 one-liners: studio builds apps over your data, crew gates the
   const p = (n) => fam.product(n);
   assert.match(p('wicked-studio').blurb, /build apps over your data/);
   assert.match(p('wicked-studio').desc, /ask a question of your data: its query runs only when you confirm it/);
+  // only a change asked for in the chat is reviewed by another agent; direct edits and undo are the person's own
+  assert.match(p('wicked-studio').desc, /in a chat, where each change you ask for is reviewed by a different agent/);
   assert.match(p('wicked-crew').blurb, /one read-only gate to your data/);
   assert.match(p('wicked-crew').desc, /only through one gate, and only in the projects you pick: read-only SQL, a 10-second deadline, at most 200 rows/);
   assert.match(p('wicked-estate').blurb, /database structure, never rows/);

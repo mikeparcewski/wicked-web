@@ -85,7 +85,7 @@ export const PLANES = [
         href: href('wicked-studio'), repo: `${GH}/wicked-studio`, hasSite: true,
         screenshot: '/screenshots/wicked-studio.png',
         blurb: 'The ADE (agentic development environment) for running a team of coding agents: start a job with a chat, build apps over your data, answer what needs you.',
-        desc: 'The ADE (agentic development environment) for running a team of coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents page; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away. Build apps and dashboards over your databases in a chat, each change reviewed by a different agent, and ask a question of your data: its query runs only when you confirm it.',
+        desc: 'The ADE (agentic development environment) for running a team of coding agents. Start a job with a chat; it proposes a plan, and nothing starts until you confirm it. Sign your agents in once on the Agents page; they work in sandboxes while you watch, and every decision that matters waits for you with the evidence one click away. Build apps and dashboards over your databases in a chat, where each change you ask for is reviewed by a different agent, and ask a question of your data: its query runs only when you confirm it.',
       },
     ],
   },
