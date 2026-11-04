@@ -36,7 +36,7 @@ if (!['', 'agile', 'labs'].includes(here)) throw new Error(`Topbar: here is 'agi
 if (here === 'agile' && pkg) throw new Error("Topbar: here='agile' has no product path; pkg goes with here='labs' or alone");
 /* the lab's page for a product (here='labs' with pkg): studio, crew, garden and estate have one */
 const labPage = here === 'labs' && pkg ? href(pkg, true) : '';
-if (labPage && labPage !== `${LAB}${pkg.startsWith('wicked-') ? pkg.slice(7) : pkg}/`) throw new Error(`Topbar: the lab has no page for ${pkg}`);
+if (labPage && labPage !== `${LAB}#/${pkg.startsWith('wicked-') ? pkg.slice(7) : pkg}`) throw new Error(`Topbar: the lab has no page for ${pkg}`);
 if (here === 'labs' && pkg && !labPage) throw new Error(`Topbar: ${pkg} is not in the family`);
 
 /* Single source for the Medium wordmark glyph — referenced by both the desktop
