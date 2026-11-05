@@ -117,5 +117,9 @@
      A marketing hero at 28px reads as a heading; this keeps it a hero on desktop and
      lands on --text-title on a phone. var(--text-title) here = strictly on-scale. */
   --text-display:clamp(28px, 2.2vw + 16px, 48px);
+  /* THE SECOND DEVIATION (the operator, 2026-11-05: 'the "wicked good" in the footer should be bigger'): the
+     footer's "wicked good." brand, on every family site. A brand mark, not a heading: 40px on a phone, 60px from
+     1440px up, always above --text-title. The wickedlabs page carries the same value in its static footer copy. */
+  --text-brand:clamp(40px, 2.5vw + 24px, 60px);
 }
 
