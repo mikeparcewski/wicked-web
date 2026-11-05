@@ -536,6 +536,8 @@ test('the footer\'s "wicked good." brand is bigger than a title: --text-brand, 4
   assert.ok(min > title, 'bigger than --text-title even at its smallest');
   assert.equal(at(390), 40, 'a phone');
   assert.equal(at(1440), 60, 'a laptop');
+  assert.equal(max, 60, 'and no bigger: 60 px is the cap');
+  assert.equal(at(1920), 60, 'a wide screen stays at the cap');
   // it sits in the same unlayered :root rule as the scale, so it holds on a Tailwind site too
   assert.ok(css.indexOf('--text-brand:') > css.indexOf('--text-caption:') && css.indexOf('--text-brand:') < css.indexOf('}', css.indexOf('--text-caption:')));
   const foot = noComments(styleOf(read('src/components/Footer.astro')));
