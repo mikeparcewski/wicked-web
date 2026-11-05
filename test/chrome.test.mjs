@@ -525,3 +525,23 @@ test('LAB_HREFS: false on main, so every href is today\'s; flipped, the tier-awa
   assert.deepEqual(off.sitesFor(true).map((s) => s.href), ['https://wickedagile.com/', lab]);
   assert.deepEqual(off.sitesFor(false).map((s) => s.href), off.SITES.map((s) => s.href));
 });
+
+test('the footer\'s "wicked good." brand is bigger than a title: --text-brand, 40 px on a phone to 60 px (the operator, 2026-11-05)', () => {
+  const css = noComments(TOKENS);
+  const m = /--text-brand:clamp\((\d+)px,\s*([\d.]+)vw \+ (\d+)px,\s*(\d+)px\);/.exec(css);
+  assert.ok(m, '--text-brand is a clamp');
+  const [min, vw, base, max] = m.slice(1).map(Number);
+  const title = Number(/--text-title:(\d+)px/.exec(css)[1]);
+  const at = (w) => Math.min(max, Math.max(min, (vw * w) / 100 + base));
+  assert.ok(min > title, 'bigger than --text-title even at its smallest');
+  assert.equal(at(390), 40, 'a phone');
+  assert.equal(at(1440), 60, 'a laptop');
+  assert.equal(max, 60, 'and no bigger: 60 px is the cap');
+  assert.equal(at(1920), 60, 'a wide screen stays at the cap');
+  // it sits in the same unlayered :root rule as the scale, so it holds on a Tailwind site too
+  assert.ok(css.indexOf('--text-brand:') > css.indexOf('--text-caption:') && css.indexOf('--text-brand:') < css.indexOf('}', css.indexOf('--text-caption:')));
+  const foot = noComments(styleOf(read('src/components/Footer.astro')));
+  assert.match(foot, /\.footer-title\{[^}]*font-size: var\(--text-brand\);/);
+  // the markup is still bc5ca29's (the fixture test above): only the size changed
+  assert.ok(read('src/components/Footer.astro').includes('<p class="footer-title">wicked<br><span class="footer-accent">good.</span></p>'));
+});

@@ -63,8 +63,9 @@ it resolves through the sites' dev alias and from the installed package alike), 
   hues, status). The marks are monochrome (the Shoreline + Wave W lockup in `currentColor`).
 - **Type scale** (studio's, `src/styles/tokens.css`): `--text-caption 12`, `--text-body 14`,
   `--text-lead 16`, `--text-section 20`, `--text-title 28`, `--text-code 13`; `--weight-regular 400`,
-  `--weight-strong 600`; `--tracking-title` on page titles only. One flagged extra step,
-  `--text-display` (28 to 48px), is for a landing page's single hero `<h1>`.
+  `--weight-strong 600`; `--tracking-title` on page titles only. Two flagged extra steps:
+  `--text-display` (28 to 48px) is for a landing page's single hero `<h1>`, and `--text-brand`
+  (40 to 60px) is for the footer's "wicked good." brand.
 - The family names the sites' CSS already uses (`--canvas`, `--surface`, `--ink`, `--muted`,
   `--faint`, `--hairline*`, `--accent-ink`) are aliases onto the package tokens; `--accent`, `--link`,
   `--plane-*` and `--font-sans|mono` are the package's own.
